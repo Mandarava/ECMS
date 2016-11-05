@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.finance.dao.FundNetDao">
+    <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundNet">
+        <id column="ID" jdbcType="INTEGER" property="id"/>
+        <result column="CODE" jdbcType="VARCHAR" property="code"/>
+        <result column="NET_DATE" jdbcType="TIMESTAMP" property="netDate"/>
+        <result column="UNIT_NET_VALUE" jdbcType="DECIMAL" property="unitNetValue"/>
+        <result column="ACCUMULATED_NET_VALUE" jdbcType="DECIMAL" property="accumulatedNetValue"/>
+        <result column="DAILY_GROWTH_RATE" jdbcType="DECIMAL" property="dailyGrowthRate"/>
+        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterid"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        ID, CODE, NET_DATE, UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE, UPDATERID,
+        UPDATETIME
+    </sql>
+
+    <insert id="insertFundNetData" parameterType="FundNet">
+        INSERT INTO FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
+        VALUES
+        <foreach collection="list" item="fundNet" separator=",">
+            (
+            #{fundNet.code,jdbcType=VARCHAR},
+            #{fundNet.netDate,jdbcType=TIMESTAMP},
+            #{fundNet.unitNetValue,jdbcType=DECIMAL},
+            #{fundNet.accumulatedNetValue,jdbcType=DECIMAL},
+            #{fundNet.dailyGrowthRate,jdbcType=DECIMAL},
+            'admin',
+            NOW()
+            )
+        </foreach>
+    </insert>
+
+    <select id="findFundNetByCode" resultType="FundNet" parameterType="String">
+        SELECT * FROM FUND_NET WHERE CODE = #{code}
+        ORDER BY NET_DATE DESC
+    </select>
+
+    <select id="findFundNetPage" resultType="FundNet" parameterType="map">
+        SELECT * FROM FUND_NET LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findFundNetCount" resultType="int">
+        SELECT COUNT(1) FROM FUND_NET
+    </select>
+
+    <insert id="insert" parameterType="FundNet">
+        insert into fund_net (ID, CODE, NET_DATE,
+        UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,
+        UPDATERID, UPDATETIME)
+        values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{netDate,jdbcType=TIMESTAMP},
+        #{unitNetValue,jdbcType=DECIMAL}, #{accumulatedNetValue,jdbcType=DECIMAL}, #{dailyGrowthRate,jdbcType=DECIMAL},
+        #{updaterid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
+    </insert>
+    <insert id="insertSelective" parameterType="FundNet">
+        insert into fund_net
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                ID,
+            </if>
+            <if test="code != null">
+                CODE,
+            </if>
+            <if test="netDate != null">
+                NET_DATE,
+            </if>
+            <if test="unitNetValue != null">
+                UNIT_NET_VALUE,
+            </if>
+            <if test="accumulatedNetValue != null">
+                ACCUMULATED_NET_VALUE,
+            </if>
+            <if test="dailyGrowthRate != null">
+                DAILY_GROWTH_RATE,
+            </if>
+            <if test="updaterid != null">
+                UPDATERID,
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="code != null">
+                #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="netDate != null">
+                #{netDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="unitNetValue != null">
+                #{unitNetValue,jdbcType=DECIMAL},
+            </if>
+            <if test="accumulatedNetValue != null">
+                #{accumulatedNetValue,jdbcType=DECIMAL},
+            </if>
+            <if test="dailyGrowthRate != null">
+                #{dailyGrowthRate,jdbcType=DECIMAL},
+            </if>
+            <if test="updaterid != null">
+                #{updaterid,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="FundNet">
+        update fund_net
+        <set>
+            <if test="code != null">
+                CODE = #{code,jdbcType=VARCHAR},
+            </if>
+            <if test="netDate != null">
+                NET_DATE = #{netDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="unitNetValue != null">
+                UNIT_NET_VALUE = #{unitNetValue,jdbcType=DECIMAL},
+            </if>
+            <if test="accumulatedNetValue != null">
+                ACCUMULATED_NET_VALUE = #{accumulatedNetValue,jdbcType=DECIMAL},
+            </if>
+            <if test="dailyGrowthRate != null">
+                DAILY_GROWTH_RATE = #{dailyGrowthRate,jdbcType=DECIMAL},
+            </if>
+            <if test="updaterid != null">
+                UPDATERID = #{updaterid,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="FundNet">
+        update fund_net
+        set CODE = #{code,jdbcType=VARCHAR},
+        NET_DATE = #{netDate,jdbcType=TIMESTAMP},
+        UNIT_NET_VALUE = #{unitNetValue,jdbcType=DECIMAL},
+        ACCUMULATED_NET_VALUE = #{accumulatedNetValue,jdbcType=DECIMAL},
+        DAILY_GROWTH_RATE = #{dailyGrowthRate,jdbcType=DECIMAL},
+        UPDATERID = #{updaterid,jdbcType=VARCHAR},
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP}
+        where ID = #{id,jdbcType=INTEGER}
+    </update>
+</mapper>

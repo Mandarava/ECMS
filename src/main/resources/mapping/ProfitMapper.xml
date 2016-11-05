@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.finance.dao.ProfitDao">
+
+    <!-- <resultMap id="BaseResultMap" type="com.finance.model.pojo.Fund">
+        <result column="id" jdbcType="Integer" property="id" />
+        <result column="code" jdbcType="VARCHAR" property="fundId" />
+        <result column="time" jdbcType="datetime" property="time" />
+        <result column="profit" jdbcType="double" property="profit" />
+        <result column="daily_gains_percent" jdbcType="double" property="dailyGainPercent" />
+    </resultMap> -->
+
+    <insert id="insertDailyProfit" parameterType="Profit">
+        INSERT INTO profit (
+        CODE,
+        time,
+        profit
+        )
+        VALUES(#{code,jdbcType=VARCHAR},DATE_SUB(NOW(),INTERVAL 1 DAY),#{profit})
+
+    </insert>
+</mapper>

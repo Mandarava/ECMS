@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>index</title>
+    <script src="js/jquery-3.1.0.min.js"></script>
+</head>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#button_submit").click(function () {
+            var fundId = $("#fundId option:selected").attr('id');
+            var profit = $("#profit").val();
+
+            var profit = {code: fundId, profit: profit};//拼装成json格式
+
+            $.ajax({
+                type: "POST",
+                url: "fund/addProfit",
+                data: profit,
+                success: function (data) {
+                    if (data.hasOwnProperty('flag')) {
+                        if (data.flag === 1) {
+                            $("#profit").val('');
+                            $("#dailyGainPercent").val('');
+                        } else {
+                            alert("insert failed!!!!!")
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("出错：");
+                }
+            });
+        });
+
+        $('#insertOrUpdateFundNetValue').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "fund/insertOrUpdateFundNetData",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data.hasOwnProperty('flag')) {
+                        if (data.flag === 1) {
+                            alert("数据更新成功！");
+                        } else {
+                            alert("数据更新失败！");
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("error!");
+                }
+            })
+        });
+
+        $('#insertOrUpdateFundValue').click(function () {
+            $.ajax({
+                type: "POST",
+                url: "fund/insertOrUpdateFundData",
+                async: true,
+                cache: false,
+                success: function (data) {
+                    if (data.hasOwnProperty('flag')) {
+                        if (data.flag === 1) {
+                            alert("数据更新成功！");
+                        } else {
+                            alert("数据更新失败！");
+                        }
+                    }
+                },
+                error: function (e) {
+                    alert("error!");
+                }
+            })
+        });
+
+        $('#test').click(function () {
+            $.ajax({
+                type: "GET",
+                url: "fund/test",
+                async: true,
+                cache: false,
+                success: function (data) {
+
+                },
+                error: function (e) {
+                    alert("error!");
+                }
+            })
+        });
+    });
+
+
+</script>
+<body>
+<form id="form1">
+    <select id="fundId">
+        <option id="020003">国泰金龙行业混合</option>
+        <option id="160706">嘉实沪深300ETF联接</option>
+        <option id="151002">银河收益债券</option>
+        <option id="210009">金鹰核心资源混合</option>
+        <option id="502003">易方达军工指数</option>
+        <option id="161725">招商中证白酒指数分级</option>
+        <option id="502053">长盛中证全指证券公司指数分级</option>
+    </select>
+    <br><br>
+    <input id="profit" type="text" placeholder="昨日收益(元)"><br><br>
+    <input type="button" id="button_submit" placeholder="提交" value="提交"><br><br>
+    <input type="button" id="insertOrUpdateFundNetValue" value="更新基金净值数据"><br><br>
+    <input type="button" id="insertOrUpdateFundValue" value="更新基金数据"><br><br>
+    <input type="button" id="test" value="test"><br><br>
+</form>
+</body>
+</html>
