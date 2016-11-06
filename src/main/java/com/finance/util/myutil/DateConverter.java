@@ -1,4 +1,4 @@
-package com.finance.util;
+package com.finance.util.myutil;
 
 import org.apache.commons.beanutils.Converter;
 import org.apache.commons.lang3.time.DateUtils;

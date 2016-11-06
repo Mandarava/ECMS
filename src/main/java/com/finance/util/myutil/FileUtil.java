@@ -1,4 +1,4 @@
-package com.finance.util;
+package com.finance.util.myutil;
 
 import org.apache.commons.io.FileUtils;
 
@@ -22,8 +22,6 @@ public final class FileUtil {
      * @throws IOException
      */
     public static void saveFile(File file, String fileName) throws IOException {
-        // TODO String realpath =
-        // ServletActionContext.getServletContext().getRealPath("/images");
         File savefile = new File(new File(BaseConstants.FILESAVEPATH), fileName);
         if (!savefile.getParentFile().exists())
             savefile.getParentFile().mkdirs();

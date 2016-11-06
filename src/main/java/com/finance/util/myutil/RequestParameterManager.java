@@ -1,4 +1,4 @@
-package com.finance.util;
+package com.finance.util.myutil;
 
 import com.finance.model.dto.BaseDTO;
 import org.apache.commons.beanutils.BeanUtils;

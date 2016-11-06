@@ -1,7 +1,6 @@
 package com.finance.model.dto;
 
 import com.finance.model.pojo.User;
-import com.finance.util.myutil.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +24,7 @@ public class BaseDTO implements Serializable {
     /**
      * 分页信息
      */
-    private Page page = PageUtils.initPage();
+    private Page page = new Page();
 
     public User getUser() {
         return user;

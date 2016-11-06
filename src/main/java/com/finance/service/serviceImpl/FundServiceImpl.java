@@ -13,6 +13,7 @@ import com.finance.util.excel.ExportExcelUtil;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpResponseException;
@@ -36,10 +37,7 @@ import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -295,7 +293,7 @@ public class FundServiceImpl implements FundService {
                         fundNet.setNetDate(df.parse(tds.get(0).text()));
                         fundNet.setUnitNetValue(Double.valueOf(tds.get(1).text()));
                         fundNet.setAccumulatedNetValue(Double.valueOf(tds.get(2).text()));
-                        fundNet.setDailyGrowthRate(Double.valueOf(tds.get(3).text().replace("%", "")));
+                        fundNet.setDailyGrowthRate(Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", ""))));
                         fundNetList.add(fundNet);
                     }
                 } else {
@@ -378,7 +376,8 @@ public class FundServiceImpl implements FundService {
     @Override
     public void test() {
         try {
-            ExportExcelUtil.exportBigDataExcel(fundNetDao);
+            String[] headers = {"1", "2", "3", "4"};
+            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
         } catch (IOException e) {
             e.printStackTrace();
         }

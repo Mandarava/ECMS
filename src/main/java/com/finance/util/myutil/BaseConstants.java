@@ -1,4 +1,4 @@
-package com.finance.util;
+package com.finance.util.myutil;
 
 public final class BaseConstants {
 

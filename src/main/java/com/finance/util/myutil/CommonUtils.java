@@ -1,4 +1,4 @@
-package com.finance.util;
+package com.finance.util.myutil;
 
 import com.mysql.jdbc.Blob;
 
@@ -106,11 +106,8 @@ public final class CommonUtils {
                     Type t = field.getGenericType();
                     if (t.toString().equals("class java.lang.String")
                             && Modifier.toString(field.getModifiers()).equals("private")) {
-
                         Method m = classz.getMethod("get" + change(field.getName()));
-
                         Object name = m.invoke(obj);
-
                         if (name == null) {
                             Method mtd = classz.getMethod("set" + change(field.getName()),
                                     String.class);// 取得所需类的方法对象
@@ -140,11 +137,8 @@ public final class CommonUtils {
                     Type t = field.getGenericType();
                     if (t.toString().equals("class java.lang.String")
                             && Modifier.toString(field.getModifiers()).equals("private")) {
-
                         Method m = classz.getMethod("get" + change(field.getName()));
-
                         Object name = m.invoke(obj);
-
                         Method mtd = classz.getMethod("set" + change(field.getName()),
                                 String.class);// 取得所需类的方法对象
                         mtd.invoke(obj, escapeString(name));// 执行相应赋值方法

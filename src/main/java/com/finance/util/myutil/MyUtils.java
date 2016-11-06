@@ -53,12 +53,6 @@ public final class MyUtils {
         return s.isEmpty() && flag;
     }
 
-    public static void main(String[] args) {
-        System.out.println(evalRPN("34 4 -".split(" ")));
-        System.out.println(calc("34 4 -"));
-
-    }
-
     public static int evalRPN(String[] input) {
         Stack<Integer> results = new Stack<>();
         String operators = "+-*/";
@@ -113,5 +107,9 @@ public final class MyUtils {
         return numbers;
     }
 
+    public static void main(String[] args) {
+        System.out.println(evalRPN("34 4 -".split(" ")));
+        System.out.println(calc("34 4 -"));
+    }
 
 }

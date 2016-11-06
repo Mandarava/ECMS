@@ -2,7 +2,7 @@ package com.finance.interceptor;
 
 import com.finance.model.dto.BaseDTO;
 import com.finance.model.dto.Page;
-import com.finance.util.CommonUtils;
+import com.finance.util.myutil.CommonUtils;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
