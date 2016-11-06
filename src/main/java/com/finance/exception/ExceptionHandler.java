@@ -27,10 +27,8 @@ public class ExceptionHandler implements HandlerExceptionResolver {
         String type = "api";    //TODO:
         if (!type.equals("api") && StrUtil.isNullOrEmpty(requestType)) {
             // 非API请求
-
             return new ModelAndView("redirect:/500.html");
         } else {// JSON格式返回
-
             Map<String, Object> responseMap = new HashMap<String, Object>();
             responseMap.put("code", -1);
             responseMap.put("msg", "系统异常，请稍后重试！");

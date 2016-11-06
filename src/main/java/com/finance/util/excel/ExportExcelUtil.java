@@ -9,10 +9,8 @@ import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.*;
 import java.util.List;
 import java.util.Map;
@@ -23,9 +21,7 @@ import java.util.Map;
 @Component
 public final class ExportExcelUtil {
 
-    private static Config config;
-    @Autowired
-    private Config configTemp;
+    private final static int MAX_ROW = 1048576;
 
     public static void exportBigDataExcel(List<String> headers, String fileName, FundNetDao fundNetDao)
             throws IOException {
@@ -43,6 +39,9 @@ public final class ExportExcelUtil {
         // 数据库中存储的数据行
         int page_size = 10000;
         int listCount = fundNetDao.findFundNetCount();
+        if (listCount > MAX_ROW) {
+            listCount = MAX_ROW;
+        }
         int exportTimes = listCount % page_size > 0 ? listCount / page_size
                 + 1 : listCount / page_size;
         List<FundNet> list = null;
@@ -62,7 +61,7 @@ public final class ExportExcelUtil {
     }
 
     private static void output(SXSSFWorkbook sxssfWorkbook, String fileName) {
-        String path = config.getFilePath() + fileName + ".xlsx";
+        String path = Config.getFilePath() + fileName + ".xlsx";
         FileOutputStream fileOutputStream = null;
         try {
             fileOutputStream = new FileOutputStream(path);
@@ -73,11 +72,6 @@ public final class ExportExcelUtil {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @PostConstruct
-    private void init() {
-        config = this.configTemp;
     }
 
     protected void generateExcel(Map<String, Object> beanParams, String templateExcelName)
