@@ -5,8 +5,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +13,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 /**
  * 从Excel文件中读取数据的类
@@ -60,7 +61,7 @@ public class ReadDataFromExcel {
      * @throws SAXException
      * @throws ParserConfigurationException
      */
-    public List<List<String>> readFile(String f) throws ZipException, IOException, SAXException, ParserConfigurationException {
+    public List<List<String>> readFile(String f) throws IOException, SAXException, ParserConfigurationException {
         ZipFile xlsxFile = new ZipFile(new File(f));
         ZipEntry workbookXML = xlsxFile.getEntry("xl/workbook.xml");
         InputStream workbookXMLIS = xlsxFile.getInputStream(workbookXML);
@@ -136,9 +137,9 @@ public class ReadDataFromExcel {
         ZipFile xlsxFile1 = new ZipFile(new File(file));
         ZipEntry sharedStringXML = xlsxFile1.getEntry("xl/sharedStrings.xml");
         InputStream sharedStringXMLIS = xlsxFile1.getInputStream(sharedStringXML);
-        Document sharedString = (Document) dbf.newDocumentBuilder().parse(
+        Document sharedString = dbf.newDocumentBuilder().parse(
                 sharedStringXMLIS);
-        NodeList str = ((org.w3c.dom.Document) sharedString).getElementsByTagName("t");
+        NodeList str = sharedString.getElementsByTagName("t");
         if (str.getLength() > 0) {
             sharedStrings = new ArrayList<>();
             for (int n = 0; n < str.getLength(); n++) {

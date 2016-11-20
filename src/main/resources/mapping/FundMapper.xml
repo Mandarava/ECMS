@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.finance.dao.FundDao">
     <resultMap id="BaseResultMap" type="com.finance.model.pojo.Fund">
         <id column="CODE" jdbcType="VARCHAR" property="code"/>
@@ -87,6 +88,72 @@
         UPDATETIME = NOW()
         where CODE = #{code,jdbcType=VARCHAR}
     </update>
+
+    <insert id="insertOrUpdateFundData" parameterType="Fund">
+        <selectKey keyProperty="count" resultType="int" order="BEFORE">
+            SELECT COUNT(1) FROM FUND WHERE CODE = #{code,jdbcType=VARCHAR}
+        </selectKey>
+        <if test="count > 0">
+            UPDATE
+            FUND
+            SET
+            NAME = #{name,jdbcType=VARCHAR},
+            TYPE = #{type,jdbcType=VARCHAR},
+            TYPE1 = #{type1,jdbcType=VARCHAR},
+            COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+            SUBJECT_NAME = #{subjectName,jdbcType=VARCHAR},
+            FUND_SCALE = #{fundScale,jdbcType=VARCHAR},
+            ESTABLISH_DATE = #{establishDate,jdbcType=TIMESTAMP },
+            CXPJ = #{cxpj,jdbcType=INTEGER},
+            YHPJ = #{yhpj,jdbcType=INTEGER},
+            HTPJ = #{htpj,jdbcType=INTEGER},
+            JAJXPJ = #{jajxpj,jdbcType=INTEGER},
+            ZSPJ = #{zspj,jdbcType=INTEGER},
+            UPDATERID = 'admin',
+            UPDATETIME = NOW()
+            WHERE
+            CODE = #{code,jdbcType=VARCHAR}
+        </if>
+        <if test="count == 0">
+            INSERT INTO
+            FUND
+            (
+            CODE,
+            NAME,
+            TYPE,
+            TYPE1,
+            COMPANY_NAME,
+            SUBJECT_NAME,
+            FUND_SCALE,
+            ESTABLISH_DATE,
+            CXPJ,
+            YHPJ,
+            HTPJ,
+            JAJXPJ,
+            ZSPJ,
+            UPDATERID,
+            UPDATETIME
+            )
+            VALUES
+            (
+            #{code,jdbcType=VARCHAR},
+            #{name,jdbcType=VARCHAR},
+            #{type,jdbcType=VARCHAR},
+            #{type1,jdbcType=VARCHAR},
+            #{companyName,jdbcType=VARCHAR},
+            #{subjectName,jdbcType=VARCHAR},
+            #{fundScale,jdbcType=VARCHAR},
+            #{establishDate,jdbcType=TIMESTAMP },
+            #{cxpj,jdbcType=INTEGER},
+            #{yhpj,jdbcType=INTEGER},
+            #{htpj,jdbcType=INTEGER},
+            #{jajxpj,jdbcType=INTEGER},
+            #{zspj,jdbcType=INTEGER},
+            'admin',
+            NOW()
+            )
+        </if>
+    </insert>
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from fund

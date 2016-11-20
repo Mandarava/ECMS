@@ -22,7 +22,7 @@ public class Config {
 
     @PostConstruct
     public void init() {
-        this.filePath = filePathTemp;
+        filePath = filePathTemp;
     }
 
 }
