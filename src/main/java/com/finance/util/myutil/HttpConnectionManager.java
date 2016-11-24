@@ -68,7 +68,6 @@ public class HttpConnectionManager {
                 .build();
         httpget.setConfig(requestConfig);
         try {
-            System.out.println(httpClient.hashCode());
             response = httpClient.execute(httpget, context);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = response.getEntity();
@@ -88,7 +87,9 @@ public class HttpConnectionManager {
             try {
                 // Shall I release it manually?
                 httpget.releaseConnection();
-                response.close();
+                if (response != null) {
+                    response.close();
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -17,16 +17,8 @@ import com.finance.util.excel.ExportExcelUtil;
 import com.finance.util.myutil.HttpConnectionManager;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpResponseException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -59,7 +51,7 @@ public class FundServiceImpl implements FundService {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    private int recordsPerInsert = 10000;
+    private int recordsPerInsert = 5000;
 
     @Resource
     private ProfitDao ProfitDao;
@@ -103,9 +95,9 @@ public class FundServiceImpl implements FundService {
             List<FundNet> fetchedNetList = this.fetchFundNetDataFromEasyMoney(code);
             Collections.sort(fetchedNetList, (FundNet arg0, FundNet arg1) -> arg1.getNetDate().compareTo(arg0.getNetDate()));
             // 只保留数据库中不存在的数据
-            Iterator it = fetchedNetList.iterator();
+            Iterator<FundNet> it = fetchedNetList.iterator();
             while (it.hasNext()) {
-                FundNet fundNet = (FundNet) it.next();
+                FundNet fundNet = it.next();
                 for (FundNet temp : result) {
                     if (df.format(temp.getNetDate()).equals(df.format(fundNet.getNetDate()))) {
                         it.remove();
@@ -242,8 +234,7 @@ public class FundServiceImpl implements FundService {
      * 查找所有基金
      */
     public List<Fund> findFunds() {
-        List<Fund> fundList = fundDao.findFunds();
-        return fundList;
+        return fundDao.findFunds();
     }
 
     /**
@@ -252,8 +243,7 @@ public class FundServiceImpl implements FundService {
      * @param code 基金代码
      */
     public List<FundNet> findFundNetByCode(String code) {
-        List<FundNet> fundNetList = fundNetDao.findFundNetByCode(code);
-        return fundNetList;
+        return fundNetDao.findFundNetByCode(code);
     }
 
     /**
@@ -264,7 +254,7 @@ public class FundServiceImpl implements FundService {
      */
     private List<FundNet> fetchFundNetDataFromEasyMoney(String fundCode) {
         List<FundNet> fundNetList = new ArrayList<>();
-        URI uri = null;
+        URI uri;
         try {
             uri = new URIBuilder()
                     .setScheme("http")
@@ -333,122 +323,6 @@ public class FundServiceImpl implements FundService {
         return result;
     }
 
-    /**
-     * 获得基金数据
-     *
-     * @return 基金
-     */
-    @Deprecated
-    private List<SinaFinanceFund> fetchFundData2() {
-        CloseableHttpResponse response = null;
-        List<SinaFinanceFund> result = null;
-        try {
-            URI uri = new URIBuilder()
-                    .setScheme("http")
-                    .setHost("stock.finance.sina.com.cn/")
-                    .setPath("fundfilter/api/openapi.php/MoneyFinanceFundFilterService.getFundFilterAll")
-                    .setParameter("callback", "makeFilterData")
-                    .setParameter("page", "1")
-                    .setParameter("num", "200000")
-                    .setParameter("dpc", "1")
-                    .build();
-            HttpGet httpget = new HttpGet(uri);
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            response = httpclient.execute(httpget);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    String strResult = EntityUtils.toString(entity, "UTF-8");
-//                    Pattern pattern = Pattern.compile("\"data\"((?!data).)*]");
-                    Pattern pattern = Pattern.compile("\\[.*?]");
-                    Matcher matcher = pattern.matcher(strResult);
-                    while (matcher.find()) {
-                        strResult = matcher.group(0);
-                    }
-//                    strResult = "{" + strResult + "}";
-                    Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-//                    map = gson.fromJson(strResult, new TypeToken<Map<String, Object>>() {}.getType());
-                    result = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFund>>() {
-                    }.getType());
-                } else {
-                    throw new ClientProtocolException("Response contains no content");
-                }
-            } else {
-                throw new HttpResponseException(
-                        response.getStatusLine().getStatusCode(),
-                        response.getStatusLine().getReasonPhrase());
-            }
-        } catch (Exception e) {
-            logger.debug(e.getMessage(), e);
-        } finally {
-            try {
-                response.close();
-            } catch (IOException e) {
-                logger.debug(e.getMessage(), e);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * 获得基金净值数据
-     *
-     * @param fundCode 基金代码
-     * @return 基金净值
-     */
-    @Deprecated
-    private List<FundNet> fetchFundNetDataFromEasyMoney2(String fundCode) {
-        CloseableHttpResponse response = null;
-        List<FundNet> fundNetList = new ArrayList<>();
-        try {
-            URI uri = new URIBuilder()
-                    .setScheme("http")
-                    .setHost("fund.eastmoney.com/")
-                    .setPath("/f10/F10DataApi.aspx")
-                    .setParameter("type", "lsjz")
-                    .setParameter("code", fundCode)
-                    .setParameter("page", "1")
-                    .setParameter("per", "20000")
-                    .build();
-            HttpGet httpget = new HttpGet(uri);
-            CloseableHttpClient httpclient = HttpClients.createDefault();
-            response = httpclient.execute(httpget);
-            if (response.getStatusLine().getStatusCode() == 200) {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    String strResult = EntityUtils.toString(entity, "UTF-8");
-                    Document
-                            doc = Jsoup.parse(strResult);
-                    Elements trs = doc.select("tbody").select("tr");
-                    for (Element tr : trs) {
-                        Elements tds = tr.select("td");
-                        FundNet fundNet = new FundNet();
-                        fundNet.setCode(fundCode);
-                        fundNet.setNetDate(df.parse(tds.get(0).text()));
-                        fundNet.setUnitNetValue(Double.valueOf(tds.get(1).text()));
-                        fundNet.setAccumulatedNetValue(Double.valueOf(tds.get(2).text()));
-                        fundNet.setDailyGrowthRate(Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", ""))));
-                        fundNetList.add(fundNet);
-                    }
-                } else {
-                    throw new ClientProtocolException("Response contains no content");
-                }
-            } else {
-                throw new HttpResponseException(
-                        response.getStatusLine().getStatusCode(),
-                        response.getStatusLine().getReasonPhrase());
-            }
-        } catch (Exception e) {
-            logger.debug(e.getMessage(), e);
-        } finally {
-            try {
-                response.close();
-            } catch (IOException e) {
-                logger.debug(e.getMessage(), e);
-            }
-        }
-        return fundNetList;
-    }
 
     @Override
     public void test() {
