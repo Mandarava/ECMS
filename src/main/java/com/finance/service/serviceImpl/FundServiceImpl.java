@@ -246,14 +246,6 @@ public class FundServiceImpl implements FundService {
         if (fundToUpdate.size() > 0) {
             fundDao.batchUpdateFund(fundToUpdate);
         }
-//        if (fundList.size() > 0) {
-//            for (Fund fund : fundList) {
-//                int i = fundDao.insertOrUpdateFundData(fund);
-//                if (i != 1) {
-//                    throw new BusinessException("更新或插入基金数据失败！");
-//                }
-//            }
-//        }
     }
 
 
@@ -301,13 +293,19 @@ public class FundServiceImpl implements FundService {
             Elements trs = doc.select("tbody").select("tr");
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
-                FundNet fundNet = new FundNet();
-                fundNet.setCode(fundCode);
-                fundNet.setNetDate(df.parse(tds.get(0).text()));
-                fundNet.setUnitNetValue(Double.valueOf(tds.get(1).text()));
-                fundNet.setAccumulatedNetValue(Double.valueOf(tds.get(2).text()));
-                fundNet.setDailyGrowthRate(Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", ""))));
-                fundNetList.add(fundNet);
+                if (tds.size() == 7) {
+                    FundNet fundNet = new FundNet();
+                    fundNet.setCode(fundCode);
+                    fundNet.setNetDate(df.parse(tds.get(0).text()));
+                    fundNet.setUnitNetValue(StringUtils.isEmpty(tds.get(1).text()) ? 0 : Double.valueOf(tds.get(1).text()));
+                    double accumulatedNetValue = Double.valueOf((StringUtils.isEmpty(tds.get(2).text().replace("%", "")) ? "0" : tds.get(2).text().replace("%", "")));
+                    fundNet.setAccumulatedNetValue(accumulatedNetValue);
+                    double dailyGrowthRate = Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", "")));
+                    fundNet.setDailyGrowthRate(dailyGrowthRate);
+                    fundNetList.add(fundNet);
+                } else if (tds.size() == 6) {
+                    logger.info("7日年化：" + fundCode);
+                }
             }
         } catch (URISyntaxException e) {
             logger.debug(e.getMessage(), e);

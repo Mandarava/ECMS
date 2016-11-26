@@ -36,12 +36,14 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.inject.Singleton;
 import javax.net.ssl.SSLException;
 
 /**
  * Created by zt on 2016/11/19.
  */
 @Component
+@Singleton
 public class HttpConnectionManager {
 
     private static final int MAX_TOTAL = 200;
