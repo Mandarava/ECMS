@@ -1,6 +1,7 @@
 package com.finance.dao;
 
 import com.finance.model.pojo.Fund;
+
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,16 +14,16 @@ public interface FundDao {
 
     /**
      * 查找所有基金
-     *
-     * @return
      */
     List<Fund> findFunds();
 
     int insertOrUpdateFundData(Fund fund);
 
-    int findFundByCode(String code);
-
     int updateFund(Fund fund);
 
     int insertFund(Fund fund);
+
+    int batchInsertFund(List<Fund> funds);
+
+    int batchUpdateFund(List<Fund> funds);
 }

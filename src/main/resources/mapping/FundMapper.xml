@@ -18,14 +18,6 @@
         SELECT
         CODE, NAME, TYPE
         FROM FUND
-        WHERE CODE IN ('020003','160706','151002','210009','502003','161725','502053')
-    </select>
-
-    <select id="findFundByCode" resultType="Integer" parameterType="String">
-        SELECT
-        COUNT(1)
-        FROM FUND
-        where CODE = #{code,jdbcType=VARCHAR}
     </select>
 
     <insert id="insertFund" parameterType="Fund">
@@ -87,6 +79,71 @@
         UPDATERID = 'admin',
         UPDATETIME = NOW()
         where CODE = #{code,jdbcType=VARCHAR}
+    </update>
+
+    <insert id="batchInsertFund" parameterType="java.util.List">
+        INSERT INTO
+        FUND
+        (
+        CODE,
+        NAME,
+        TYPE,
+        TYPE1,
+        COMPANY_NAME,
+        SUBJECT_NAME,
+        FUND_SCALE,
+        ESTABLISH_DATE,
+        CXPJ,
+        YHPJ,
+        HTPJ,
+        JAJXPJ,
+        ZSPJ,
+        UPDATERID,
+        UPDATETIME
+        )
+        VALUES
+        <foreach collection="list" item="fund" separator=",">
+            (
+            #{fund.code,jdbcType=VARCHAR},
+            #{fund.name,jdbcType=VARCHAR},
+            #{fund.type,jdbcType=VARCHAR},
+            #{fund.type1,jdbcType=VARCHAR},
+            #{fund.companyName,jdbcType=VARCHAR},
+            #{fund.subjectName,jdbcType=VARCHAR},
+            #{fund.fundScale,jdbcType=VARCHAR},
+            #{fund.establishDate,jdbcType=TIMESTAMP },
+            #{fund.cxpj,jdbcType=INTEGER},
+            #{fund.yhpj,jdbcType=INTEGER},
+            #{fund.htpj,jdbcType=INTEGER},
+            #{fund.jajxpj,jdbcType=INTEGER},
+            #{fund.zspj,jdbcType=INTEGER},
+            'admin',
+            NOW()
+            )
+        </foreach>
+    </insert>
+
+    <update id="batchUpdateFund" parameterType="java.util.List">
+        <foreach collection="list" item="item" separator=";">
+            UPDATE
+            FUND
+            SET
+            NAME = #{item.name,jdbcType=VARCHAR},
+            TYPE = #{item.type,jdbcType=VARCHAR},
+            TYPE1 = #{item.type1,jdbcType=VARCHAR},
+            COMPANY_NAME = #{item.companyName,jdbcType=VARCHAR},
+            SUBJECT_NAME = #{item.subjectName,jdbcType=VARCHAR},
+            FUND_SCALE = #{item.fundScale,jdbcType=VARCHAR},
+            ESTABLISH_DATE = #{item.establishDate,jdbcType=TIMESTAMP },
+            CXPJ = #{item.cxpj,jdbcType=INTEGER},
+            YHPJ = #{item.yhpj,jdbcType=INTEGER},
+            HTPJ = #{item.htpj,jdbcType=INTEGER},
+            JAJXPJ = #{item.jajxpj,jdbcType=INTEGER},
+            ZSPJ = #{item.zspj,jdbcType=INTEGER},
+            UPDATERID = 'admin',
+            UPDATETIME = NOW()
+            where CODE = #{item.code,jdbcType=VARCHAR}
+        </foreach>
     </update>
 
     <insert id="insertOrUpdateFundData" parameterType="Fund">

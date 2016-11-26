@@ -93,6 +93,9 @@ public class FundServiceImpl implements FundService {
             List<FundNet> result = this.findFundNetByCode(code);
             // 获得到的净值数据
             List<FundNet> fetchedNetList = this.fetchFundNetDataFromEasyMoney(code);
+            if (fetchedNetList == null || fetchedNetList.size() == 0) {
+                continue;
+            }
             Collections.sort(fetchedNetList, (FundNet arg0, FundNet arg1) -> arg1.getNetDate().compareTo(arg0.getNetDate()));
             // 只保留数据库中不存在的数据
             Iterator<FundNet> it = fetchedNetList.iterator();
@@ -122,7 +125,7 @@ public class FundServiceImpl implements FundService {
      */
     @Override
     public void batchInsertFundNetData(List<FundNet> fundNetList) throws BusinessException {
-        int i = fundNetDao.insertFundNetData(fundNetList);
+        int i = fundNetDao.batchInsertFundNetData(fundNetList);
         if (i != fundNetList.size()) {
             throw new BusinessException("更新或插入基金净值数据失败！");
         }
@@ -134,6 +137,9 @@ public class FundServiceImpl implements FundService {
     @Override
     public void insertOrUpdateFundData() throws BusinessException {
         List<SinaFinanceFund> sinaFundList = this.fetchFundData();
+        if (sinaFundList == null || sinaFundList.size() == 0) {
+            return;
+        }
         List<Fund> fundList = new ArrayList<>();
         for (SinaFinanceFund sinaFund : sinaFundList) {
             Fund fund = new Fund();
@@ -220,15 +226,36 @@ public class FundServiceImpl implements FundService {
             fundList.add(fund);
         }
 
-        if (fundList.size() > 0) {
-            for (Fund fund : fundList) {
-                int i = fundDao.insertOrUpdateFundData(fund);
-                if (i != 1) {
-                    throw new BusinessException("更新或插入基金数据失败！");
+        List<Fund> existsFund = this.findFunds();
+        List<Fund> fundToUpdate = new ArrayList<>();
+        Iterator<Fund> fundIterator = fundList.iterator();
+        while (fundIterator.hasNext()) {
+            Fund newFund = fundIterator.next();
+            for (Fund oldFund : existsFund) {
+                if (newFund.getCode().equals(oldFund.getCode())) {
+                    fundToUpdate.add(newFund);
+                    fundIterator.remove();
                 }
             }
         }
+        // do  batch insert
+        if (fundList.size() > 0) {
+            fundDao.batchInsertFund(fundList);
+        }
+        // do batch update
+        if (fundToUpdate.size() > 0) {
+            fundDao.batchUpdateFund(fundToUpdate);
+        }
+//        if (fundList.size() > 0) {
+//            for (Fund fund : fundList) {
+//                int i = fundDao.insertOrUpdateFundData(fund);
+//                if (i != 1) {
+//                    throw new BusinessException("更新或插入基金数据失败！");
+//                }
+//            }
+//        }
     }
+
 
     /**
      * 查找所有基金
@@ -266,6 +293,9 @@ public class FundServiceImpl implements FundService {
                     .setParameter("per", "20000")
                     .build();
             String strResult = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+            if (StringUtils.isEmpty(strResult)) {
+                return null;
+            }
             Document
                     doc = Jsoup.parse(strResult);
             Elements trs = doc.select("tbody").select("tr");
@@ -280,9 +310,9 @@ public class FundServiceImpl implements FundService {
                 fundNetList.add(fundNet);
             }
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         } catch (ParseException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
         return fundNetList;
     }
@@ -305,21 +335,21 @@ public class FundServiceImpl implements FundService {
                     .setParameter("dpc", "1")
                     .build();
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
         String strResult = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+        if (StringUtils.isEmpty(strResult)) {
+            return null;
+        }
 //                    Pattern pattern = Pattern.compile("\"data\"((?!data).)*]");
         Pattern pattern = Pattern.compile("\\[.*?]");
         Matcher matcher = pattern.matcher(strResult);
         while (matcher.find()) {
             strResult = matcher.group(0);
         }
-//                    strResult = "{" + strResult + "}";
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-//                    map = gson.fromJson(strResult, new TypeToken<Map<String, Object>>() {}.getType());
         List<SinaFinanceFund> result = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFund>>() {
         }.getType());
-
         return result;
     }
 
@@ -330,7 +360,7 @@ public class FundServiceImpl implements FundService {
             String[] headers = {"1", "2", "3", "4"};
             ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
     }
 }

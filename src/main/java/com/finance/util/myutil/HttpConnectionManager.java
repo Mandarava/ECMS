@@ -45,11 +45,11 @@ import javax.net.ssl.SSLException;
 public class HttpConnectionManager {
 
     private static final int MAX_TOTAL = 200;
-    private static final int DEFAULT_MAX_PER_ROUTE = 20;
+    private static final int DEFAULT_MAX_PER_ROUTE = 25;
     private static final int CONNECTION_REQUEST_TIMEOUT = 2500;
     private static final int CONNECT_TIMEOUT = 2500;
-    private static final int SOCKET_TIMEOUT = 2000;
-    private static final long MAX_IDLE_TIME = 5L;
+    private static final int SOCKET_TIMEOUT = 2500;
+    private static final long MAX_IDLE_TIME = 3L;
     private static CloseableHttpClient httpClient;
     private static Logger logger = LoggerFactory.getLogger(HttpConnectionManager.class);
 
@@ -82,16 +82,15 @@ public class HttpConnectionManager {
                         response.getStatusLine().getReasonPhrase());
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         } finally {
             try {
-                // Shall I release it manually?
                 httpget.releaseConnection();
                 if (response != null) {
                     response.close();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.debug(e.getMessage(), e);
             }
         }
         return result;

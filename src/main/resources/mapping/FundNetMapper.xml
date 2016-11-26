@@ -16,7 +16,7 @@
         UPDATETIME
     </sql>
 
-    <insert id="insertFundNetData" parameterType="FundNet">
+    <insert id="batchInsertFundNetData" parameterType="FundNet">
         INSERT INTO FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
         VALUES
         <foreach collection="list" item="fundNet" separator=",">
