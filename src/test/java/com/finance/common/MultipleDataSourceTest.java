@@ -3,6 +3,7 @@ package com.finance.common;
 import com.finance.dao.MySqlMapper;
 import com.finance.dao.MySqlMapper2;
 import com.finance.model.pojo.Fund;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -22,11 +23,11 @@ public class MultipleDataSourceTest {
         MySqlMapper2 mySqlMapper2 = applicationContext.getBean(MySqlMapper2.class);
 
         //设置数据源为MySql,使用了AOP测试时请将下面这行注释
-        DynamicDataSource.setContextHolder("masterDataSource");
+        DataSourceContextHolder.setDataSourceType("masterDataSource");
         List<Fund> result = mySqlMapper.getList();
         result.parallelStream().forEach(x -> System.out.println(x));
         //设置数据源为mySqlMapper2,使用AOP测试时请将下面这行注释
-        DynamicDataSource.setContextHolder("slaveDataSource");
+        DataSourceContextHolder.setDataSourceType("slaveDataSource");
         mySqlMapper2.getList();
     }
 }

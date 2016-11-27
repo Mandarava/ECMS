@@ -9,5 +9,5 @@ public enum AuthorityType {
     NoValidate,
 
     // 不验证权限
-    NoAuthority;
+    NoAuthority
 }

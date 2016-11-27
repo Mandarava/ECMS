@@ -15,7 +15,8 @@
                         http://www.springframework.org/schema/tx/spring-tx.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
     <!-- 自动扫描 -->
     <context:component-scan base-package="com.finance"/>
-
+    <!-- AOP自动代理功能 -->
+    <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"
