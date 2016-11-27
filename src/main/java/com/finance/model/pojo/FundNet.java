@@ -91,4 +91,23 @@ public class FundNet implements Serializable {
                 ", dailyGrowthRate=" + dailyGrowthRate +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        FundNet fundNet = (FundNet) o;
+
+        if (!code.equals(fundNet.code)) return false;
+        return netDate.equals(fundNet.netDate);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = code.hashCode();
+        result = 31 * result + netDate.hashCode();
+        return result;
+    }
 }

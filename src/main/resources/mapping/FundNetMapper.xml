@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.finance.dao.FundNetDao">
     <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundNet">
         <id column="ID" jdbcType="INTEGER" property="id"/>
@@ -17,7 +18,8 @@
     </sql>
 
     <insert id="batchInsertFundNetData" parameterType="FundNet">
-        INSERT INTO FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
+        INSERT INTO
+        FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
         VALUES
         <foreach collection="list" item="fundNet" separator=",">
             (
@@ -31,6 +33,16 @@
             )
         </foreach>
     </insert>
+
+    <select id="findFundNetDateByCodes" resultType="FundNet" parameterType="java.util.List">
+        SELECT CODE,NET_DATE FROM FUND_NET
+        WHERE
+        CODE IN
+        <foreach collection="list" item="item" separator="," open="(" close=")">
+            #{item.code}
+        </foreach>
+        ORDER BY CODE ASC,NET_DATE ASC
+    </select>
 
     <select id="findFundNetByCode" resultType="FundNet" parameterType="String">
         SELECT * FROM FUND_NET WHERE CODE = #{code}

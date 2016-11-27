@@ -19,6 +19,7 @@ import com.finance.util.myutil.HttpConnectionManager;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.protocol.HttpContext;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,9 +35,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -52,6 +58,8 @@ public class FundServiceImpl implements FundService {
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
     private int recordsPerInsert = 5000;
+
+    private int fundNetPerSelect = 100;
 
     @Resource
     private ProfitDao ProfitDao;
@@ -86,37 +94,59 @@ public class FundServiceImpl implements FundService {
     @Override
     public void insertOrUpdateFundNetData() throws Exception {
         List<Fund> fundList = this.findFunds();
-        List<FundNet> fundNetList = new ArrayList<>();
-        for (Fund fund : fundList) {
-            String code = fund.getCode();
-            // 当前数据库中存在的净值数据
-            List<FundNet> result = this.findFundNetByCode(code);
+        while (fundList.size() > 0) {
+            List<Fund> funds = fundList.subList(0, fundList.size() > fundNetPerSelect ? fundNetPerSelect : fundList.size());
+            ExecutorService pool = Executors.newFixedThreadPool(20);
+            List<Future<List<FundNet>>> futures = new ArrayList<>();
             // 获得到的净值数据
-            List<FundNet> fetchedNetList = this.fetchFundNetDataFromEasyMoney(code);
-            if (fetchedNetList == null || fetchedNetList.size() == 0) {
-                continue;
+            List<FundNet> fetchedNetList = new ArrayList<>();
+            for (Fund fund : funds) {
+                Callable<List<FundNet>> callable = new GetThread(fund.getCode());
+                Future<List<FundNet>> future = pool.submit(callable);
+                futures.add(future);
             }
-            Collections.sort(fetchedNetList, (FundNet arg0, FundNet arg1) -> arg1.getNetDate().compareTo(arg0.getNetDate()));
-            // 只保留数据库中不存在的数据
-            Iterator<FundNet> it = fetchedNetList.iterator();
-            while (it.hasNext()) {
-                FundNet fundNet = it.next();
-                for (FundNet temp : result) {
-                    if (df.format(temp.getNetDate()).equals(df.format(fundNet.getNetDate()))) {
-                        it.remove();
-                        break;
-                    }
+            for (int i = 0; i < futures.size(); i++) {
+                Future<List<FundNet>> future = futures.get(i);
+                if (future.get() != null) {
+                    fetchedNetList.addAll(future.get());
                 }
             }
-            fundNetList.addAll(fetchedNetList);
-        }
-        if (fundNetList.size() > 0) {
-            while (fundNetList.size() > 0) {
-                List<FundNet> subFundNetList = fundNetList.subList(0, fundNetList.size() > recordsPerInsert ? recordsPerInsert : fundNetList.size());
-                /* 自己注给自己，否则嵌套事务无法执行*/
-                fundService.batchInsertFundNetData(subFundNetList);
-                fundNetList.subList(0, fundNetList.size() > recordsPerInsert ? recordsPerInsert : fundNetList.size()).clear();
+            pool.shutdown();
+            if (fetchedNetList == null || fetchedNetList.size() == 0) {
+                return;
             }
+            // 当前数据库中存在的净值数据
+            List<FundNet> result = fundNetDao.findFundNetDateByCodes(funds);
+            Set<FundNet> fundNets = new HashSet<>(fetchedNetList);
+            for (int i = 0; i < result.size(); i++) {
+                FundNet temp = result.get(i);
+                if (fundNets.contains(temp)) {
+                    fundNets.remove(temp);
+                }
+            }
+            // too slow
+//            fetchedNetList.sort(Comparator.comparing(FundNet::getCode).thenComparing(FundNet::getNetDate));
+            // 只保留数据库中不存在的数据
+//            Iterator<FundNet> it = fetchedNetList.iterator();
+//            while (it.hasNext()) {
+//                FundNet fundNet = it.next();
+//                for (FundNet temp : result) {
+//                    if (temp.getCode().equals(fundNet.getCode()) && df.format(temp.getNetDate()).equals(df.format(fundNet.getNetDate()))) {
+//                        it.remove();
+//                        break;
+//                    }
+//                }
+//            }
+            List<FundNet> fundNetList = new ArrayList<>(fundNets);
+            if (fundNetList.size() > 0) {
+                while (fundNetList.size() > 0) {
+                    List<FundNet> subFundNetList = fundNetList.subList(0, fundNetList.size() > recordsPerInsert ? recordsPerInsert : fundNetList.size());
+                    /* 自己注给自己，否则嵌套事务无法执行*/
+                    fundService.batchInsertFundNetData(subFundNetList);
+                    fundNetList.subList(0, fundNetList.size() > recordsPerInsert ? recordsPerInsert : fundNetList.size()).clear();
+                }
+            }
+            fundList.subList(0, fundList.size() > fundNetPerSelect ? fundNetPerSelect : fundList.size()).clear();
         }
     }
 
@@ -248,7 +278,6 @@ public class FundServiceImpl implements FundService {
         }
     }
 
-
     /**
      * 查找所有基金
      */
@@ -351,7 +380,6 @@ public class FundServiceImpl implements FundService {
         return result;
     }
 
-
     @Override
     public void test() {
         try {
@@ -359,6 +387,63 @@ public class FundServiceImpl implements FundService {
             ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
         } catch (IOException e) {
             logger.debug(e.getMessage(), e);
+        }
+    }
+
+    static class GetThread implements Callable<List<FundNet>> {
+
+        private final HttpContext context;
+        private final String fundCode;
+        private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        public GetThread(String fundCode) {
+            this.context = HttpClientContext.create();
+            this.fundCode = fundCode;
+        }
+
+        @Override
+        public List<FundNet> call() {
+            List<FundNet> fundNetList = new ArrayList<>();
+            URI uri;
+            try {
+                uri = new URIBuilder()
+                        .setScheme("http")
+                        .setHost("fund.eastmoney.com/")
+                        .setPath("/f10/F10DataApi.aspx")
+                        .setParameter("type", "lsjz")
+                        .setParameter("code", fundCode)
+                        .setParameter("page", "1")
+                        .setParameter("per", "200000")
+                        .build();
+                String strResult = HttpConnectionManager.executeHttpGet(uri, context);
+                if (StringUtils.isEmpty(strResult)) {
+                    return null;
+                }
+                Document
+                        doc = Jsoup.parse(strResult);
+                Elements trs = doc.select("tbody").select("tr");
+                for (Element tr : trs) {
+                    Elements tds = tr.select("td");
+                    if (tds.size() == 7) {
+                        FundNet fundNet = new FundNet();
+                        fundNet.setCode(fundCode);
+                        fundNet.setNetDate(df.parse(tds.get(0).text()));
+                        fundNet.setUnitNetValue(StringUtils.isEmpty(tds.get(1).text()) ? 0 : Double.valueOf(tds.get(1).text()));
+                        double accumulatedNetValue = Double.valueOf((StringUtils.isEmpty(tds.get(2).text().replace("%", "")) ? "0" : tds.get(2).text().replace("%", "")));
+                        fundNet.setAccumulatedNetValue(accumulatedNetValue);
+                        double dailyGrowthRate = Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", "")));
+                        fundNet.setDailyGrowthRate(dailyGrowthRate);
+                        fundNetList.add(fundNet);
+                    } else if (tds.size() == 6) {
+//                        logger.info("7日年化：" + fundCode);
+                    }
+                }
+            } catch (URISyntaxException e) {
+                logger.debug(e.getMessage(), e);
+            } catch (ParseException e) {
+                logger.debug(e.getMessage(), e);
+            }
+            return fundNetList;
         }
     }
 }

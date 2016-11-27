@@ -1,5 +1,6 @@
 package com.finance.dao;
 
+import com.finance.model.pojo.Fund;
 import com.finance.model.pojo.FundNet;
 
 import org.apache.ibatis.annotations.Param;
@@ -14,6 +15,8 @@ import java.util.List;
 public interface FundNetDao {
 
     int batchInsertFundNetData(List<FundNet> fundNetList);
+
+    List<FundNet> findFundNetDateByCodes(List<Fund> funds);
 
     List<FundNet> findFundNetByCode(String code);
 
