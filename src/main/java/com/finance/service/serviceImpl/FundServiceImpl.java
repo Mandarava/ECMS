@@ -59,7 +59,7 @@ public class FundServiceImpl implements FundService {
 
     private int recordsPerInsert = 5000;
 
-    private int fundNetPerSelect = 100;
+    private int fundNetPerSelect = 150;
 
     @Resource
     private ProfitDao ProfitDao;
