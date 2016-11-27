@@ -57,7 +57,7 @@ public class FundServiceImpl implements FundService {
 
     private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
-    private int recordsPerInsert = 5000;
+    private int recordsPerInsert = 10000;
 
     private int fundNetPerSelect = 150;
 
