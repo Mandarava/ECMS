@@ -55,8 +55,6 @@ public class FundServiceImpl implements FundService {
 
     private static Logger logger = LoggerFactory.getLogger(FundServiceImpl.class);
 
-    private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-
     private int recordsPerInsert = 10000;
 
     private int fundNetPerSelect = 150;
@@ -322,6 +320,7 @@ public class FundServiceImpl implements FundService {
             Elements trs = doc.select("tbody").select("tr");
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 if (tds.size() == 7) {
                     FundNet fundNet = new FundNet();
                     fundNet.setCode(fundCode);
@@ -394,7 +393,6 @@ public class FundServiceImpl implements FundService {
 
         private final HttpContext context;
         private final String fundCode;
-        private SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         public GetThread(String fundCode) {
             this.context = HttpClientContext.create();
@@ -424,6 +422,7 @@ public class FundServiceImpl implements FundService {
                 Elements trs = doc.select("tbody").select("tr");
                 for (Element tr : trs) {
                     Elements tds = tr.select("td");
+                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                     if (tds.size() == 7) {
                         FundNet fundNet = new FundNet();
                         fundNet.setCode(fundCode);
