@@ -57,7 +57,7 @@ public class FundServiceImpl implements FundService {
 
     private int recordsPerInsert = 10000;
 
-    private int fundNetPerSelect = 150;
+    private int fundNetPerSelect = 500;
 
     @Resource
     private ProfitDao ProfitDao;
@@ -92,9 +92,9 @@ public class FundServiceImpl implements FundService {
     @Override
     public void insertOrUpdateFundNetData() throws Exception {
         List<Fund> fundList = this.findFunds();
+        ExecutorService pool = Executors.newFixedThreadPool(20);
         while (fundList.size() > 0) {
             List<Fund> funds = fundList.subList(0, fundList.size() > fundNetPerSelect ? fundNetPerSelect : fundList.size());
-            ExecutorService pool = Executors.newFixedThreadPool(20);
             List<Future<List<FundNet>>> futures = new ArrayList<>();
             // 获得到的净值数据
             List<FundNet> fetchedNetList = new ArrayList<>();
@@ -109,7 +109,6 @@ public class FundServiceImpl implements FundService {
                     fetchedNetList.addAll(future.get());
                 }
             }
-            pool.shutdown();
             if (fetchedNetList == null || fetchedNetList.size() == 0) {
                 return;
             }
@@ -122,19 +121,7 @@ public class FundServiceImpl implements FundService {
                     fundNets.remove(temp);
                 }
             }
-            // too slow
 //            fetchedNetList.sort(Comparator.comparing(FundNet::getCode).thenComparing(FundNet::getNetDate));
-            // 只保留数据库中不存在的数据
-//            Iterator<FundNet> it = fetchedNetList.iterator();
-//            while (it.hasNext()) {
-//                FundNet fundNet = it.next();
-//                for (FundNet temp : result) {
-//                    if (temp.getCode().equals(fundNet.getCode()) && df.format(temp.getNetDate()).equals(df.format(fundNet.getNetDate()))) {
-//                        it.remove();
-//                        break;
-//                    }
-//                }
-//            }
             List<FundNet> fundNetList = new ArrayList<>(fundNets);
             if (fundNetList.size() > 0) {
                 while (fundNetList.size() > 0) {
@@ -146,6 +133,8 @@ public class FundServiceImpl implements FundService {
             }
             fundList.subList(0, fundList.size() > fundNetPerSelect ? fundNetPerSelect : fundList.size()).clear();
         }
+
+        pool.shutdown();
     }
 
     /**
