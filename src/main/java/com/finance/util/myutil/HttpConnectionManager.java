@@ -3,6 +3,7 @@ package com.finance.util.myutil;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpRequestRetryHandler;
@@ -14,6 +15,7 @@ import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -50,10 +52,10 @@ public class HttpConnectionManager {
     private static final int DEFAULT_MAX_PER_ROUTE = 25;
     private static final int CONNECTION_REQUEST_TIMEOUT = 2500;
     private static final int CONNECT_TIMEOUT = 2500;
-    private static final int SOCKET_TIMEOUT = 3000;
+    private static final int SOCKET_TIMEOUT = 2500;
     private static final long MAX_IDLE_TIME = 3L;
     private static CloseableHttpClient httpClient;
-    private static Logger logger = LoggerFactory.getLogger(HttpConnectionManager.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(HttpConnectionManager.class);
 
     public static String executeHttpGet(URI uri, HttpContext context) {
         if (context == null) {
@@ -84,7 +86,7 @@ public class HttpConnectionManager {
                         response.getStatusLine().getReasonPhrase());
             }
         } catch (Exception e) {
-            logger.debug(e.getMessage(), e);
+            LOGGER.debug(e.getMessage(), e);
         } finally {
             try {
                 httpget.releaseConnection();
@@ -92,7 +94,7 @@ public class HttpConnectionManager {
                     response.close();
                 }
             } catch (IOException e) {
-                logger.debug(e.getMessage(), e);
+                LOGGER.debug(e.getMessage(), e);
             }
         }
         return result;
@@ -143,6 +145,23 @@ public class HttpConnectionManager {
             return false;
         };
 
+        ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
+
+            @Override
+            public long getKeepAliveDuration(
+                    HttpResponse response,
+                    HttpContext context) {
+                long keepAlive = super.getKeepAliveDuration(response, context);
+                if (keepAlive == -1) {
+                    // Keep connections alive 5 seconds if a keep-alive value
+                    // has not be explicitly set by the server
+                    keepAlive = 3000;
+                }
+                return keepAlive;
+            }
+
+        };
+
         // 客户端级别请求的超时配置
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
@@ -157,19 +176,19 @@ public class HttpConnectionManager {
                 .setDefaultRequestConfig(requestConfig)
                 .evictExpiredConnections()
                 .evictIdleConnections(MAX_IDLE_TIME, TimeUnit.SECONDS)
-                .setKeepAliveStrategy(new DefaultConnectionKeepAliveStrategy())
+                .setKeepAliveStrategy(keepAliveStrategy)
                 .build();
 
-        logger.info("httpclient 初始化完成！");
+        LOGGER.info("httpclient 初始化完成！");
     }
 
     @PreDestroy
     public void destory() {
         try {
             httpClient.close();
-            logger.info("httpclient 成功关闭！");
+            LOGGER.info("httpclient 成功关闭！");
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.debug(e.getMessage(), e);
         }
     }
 
