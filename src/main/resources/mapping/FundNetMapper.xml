@@ -9,8 +9,8 @@
         <result column="UNIT_NET_VALUE" jdbcType="DECIMAL" property="unitNetValue"/>
         <result column="ACCUMULATED_NET_VALUE" jdbcType="DECIMAL" property="accumulatedNetValue"/>
         <result column="DAILY_GROWTH_RATE" jdbcType="DECIMAL" property="dailyGrowthRate"/>
-        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterid"/>
-        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
+        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterId"/>
+        <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
     <sql id="Base_Column_List">
         ID, CODE, NET_DATE, UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE, UPDATERID,

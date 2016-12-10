@@ -1,6 +1,6 @@
 package com.finance.controller;
 
-import com.finance.service.FundService;
+import com.finance.service.FundNetService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,21 +14,24 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+/**
+ * Created by zt on 2016/12/10.
+ */
 @Controller
-@RequestMapping(value = "/fund")
-public class FundController {
+@RequestMapping(value = "/fund/net")
+public class FundNetController {
 
-    private static Logger logger = LoggerFactory.getLogger(FundController.class);
+    private static Logger logger = LoggerFactory.getLogger(FundNetController.class);
 
     @Resource
-    private FundService fundService;
+    private FundNetService fundNetService;
 
     @ResponseBody
-    @RequestMapping(value = "/insertOrUpdateFundData", method = RequestMethod.POST)
-    public Map insertOrUpdateFundData() {
+    @RequestMapping(value = "/insertOrUpdateFundNetData", method = RequestMethod.POST)
+    public Map insertOrUpdateFundNetData() {
         Map<String, Object> map = new HashMap<>();
         try {
-            fundService.insertOrUpdateFundData();
+            fundNetService.insertOrUpdateFundNetData();
             map.put("flag", 1);
             return map;
         } catch (Exception e) {
@@ -36,6 +39,11 @@ public class FundController {
             map.put("flag", 0);
         }
         return map;
+    }
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public void test() {
+        fundNetService.test();
     }
 
 }

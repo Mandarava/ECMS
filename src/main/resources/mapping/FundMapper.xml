@@ -6,7 +6,7 @@
         <id column="CODE" jdbcType="VARCHAR" property="code"/>
         <result column="NAME" jdbcType="VARCHAR" property="name"/>
         <result column="TYPE" jdbcType="VARCHAR" property="type"/>
-        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterid"/>
+        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterId"/>
         <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
     </resultMap>
 

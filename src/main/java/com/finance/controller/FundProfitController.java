@@ -1,6 +1,7 @@
 package com.finance.controller;
 
-import com.finance.service.FundService;
+import com.finance.model.pojo.Profit;
+import com.finance.service.FundProfitService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,21 +15,24 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+/**
+ * Created by zt on 2016/12/10.
+ */
 @Controller
-@RequestMapping(value = "/fund")
-public class FundController {
+@RequestMapping(value = "/fund/profit")
+public class FundProfitController {
 
-    private static Logger logger = LoggerFactory.getLogger(FundController.class);
+    private static Logger logger = LoggerFactory.getLogger(FundProfitController.class);
 
     @Resource
-    private FundService fundService;
+    private FundProfitService fundProfitService;
 
+    @RequestMapping(value = "/addProfit", method = RequestMethod.POST)
     @ResponseBody
-    @RequestMapping(value = "/insertOrUpdateFundData", method = RequestMethod.POST)
-    public Map insertOrUpdateFundData() {
+    public Map addProfit(Profit profit) {
         Map<String, Object> map = new HashMap<>();
         try {
-            fundService.insertOrUpdateFundData();
+            fundProfitService.insertFundProfit(profit);
             map.put("flag", 1);
             return map;
         } catch (Exception e) {
@@ -37,5 +41,4 @@ public class FundController {
         }
         return map;
     }
-
 }

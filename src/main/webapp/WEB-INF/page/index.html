@@ -17,7 +17,7 @@
 
             $.ajax({
                 type: "POST",
-                url: "fund/addProfit",
+                       url: "/fund/profit/addProfit",
                 data: profit,
                 success: function (data) {
                     if (data.hasOwnProperty('flag')) {
@@ -38,7 +38,7 @@
         $('#insertOrUpdateFundNetValue').click(function () {
             $.ajax({
                 type: "POST",
-                url: "fund/insertOrUpdateFundNetData",
+                       url: "fund/net/insertOrUpdateFundNetData",
                 async: true,
                 cache: false,
                 success: function (data) {
@@ -80,7 +80,7 @@
         $('#test').click(function () {
             $.ajax({
                 type: "GET",
-                url: "fund/test",
+                       url: "fund/net/test",
                 async: true,
                 cache: false,
                 success: function (data) {
@@ -97,7 +97,7 @@
 </script>
 <body>
 <form id="form1">
-    <select id="fundId">
+    <select id="fundId" width="400">
         <option id="160706">嘉实沪深300ETF联接</option>
         <option id="020003">国泰金龙行业混合</option>
         <option id="210009">金鹰核心资源混合</option>
@@ -105,7 +105,7 @@
         <option id="151002">银河收益债券</option>
     </select>
     <br><br>
-    <input id="profit" type="text" placeholder="昨日收益(元)"><br><br>
+    <input id="profit" type="text" placeholder="昨日收益(元)" width="400"><br><br>
     <input type="button" id="button_submit" placeholder="提交" value="提交"><br><br>
     <input type="button" id="insertOrUpdateFundNetValue" value="更新基金净值数据"><br><br>
     <input type="button" id="insertOrUpdateFundValue" value="更新基金数据"><br><br>
