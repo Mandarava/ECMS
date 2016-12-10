@@ -55,11 +55,6 @@ public class ReadDataFromExcel {
      * 读取数据
      *
      * @param f 要读取的Excel文件路径
-     * @return
-     * @throws ZipException
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
      */
     public List<List<String>> readFile(String f) throws IOException, SAXException, ParserConfigurationException {
         ZipFile xlsxFile = new ZipFile(new File(f));
@@ -126,10 +121,6 @@ public class ReadDataFromExcel {
      * 读取Excel中的共享字符串
      *
      * @param file 要读取的Excel路径
-     * @return
-     * @throws SAXException
-     * @throws IOException
-     * @throws ParserConfigurationException
      */
     public List<String> readXml(String file) throws SAXException,
             IOException, ParserConfigurationException {

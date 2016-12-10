@@ -1,13 +1,14 @@
 package com.finance.webmagic;
 
 import org.apache.commons.collections.CollectionUtils;
+
+import java.util.List;
+
 import us.codecraft.webmagic.Page;
 import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 import us.codecraft.webmagic.selector.JsonPathSelector;
-
-import java.util.List;
 
 /**
  * Created by zt on 2016/10/1.

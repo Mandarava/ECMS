@@ -27,8 +27,6 @@ public final class PropertyManager {
 
     /**
      * 构造方法
-     *
-     * @throws BusinessException
      */
     private PropertyManager(String fileName) {
         properties = new Properties();
@@ -46,7 +44,6 @@ public final class PropertyManager {
      * 实例化引用
      *
      * @return 该类的实例化对象
-     * @throws BusinessException
      */
     public static PropertyManager getInstance(String fileName) {
         if (content == null) {

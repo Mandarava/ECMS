@@ -3,11 +3,16 @@ package com.finance.interceptor;
 import com.finance.model.dto.BaseDTO;
 import com.finance.model.dto.Page;
 import com.finance.util.myutil.CommonUtils;
+
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
-import org.apache.ibatis.plugin.*;
+import org.apache.ibatis.plugin.Interceptor;
+import org.apache.ibatis.plugin.Intercepts;
+import org.apache.ibatis.plugin.Invocation;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
@@ -84,9 +89,6 @@ public class PageInterceptor implements Interceptor {
 
     /**
      * 如果orderKey不为空 则替换原有的排序语句
-     *
-     * @param sql
-     * @return
      */
     private String addOrderKey(String sql, Page page) {
         if (!CommonUtils.isElementBlank(page.getSortKey())) {

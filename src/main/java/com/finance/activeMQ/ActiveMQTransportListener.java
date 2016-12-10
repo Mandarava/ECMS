@@ -22,8 +22,6 @@ public class ActiveMQTransportListener implements TransportListener {
 
     /**
      * 对监控到的异常进行触发
-     *
-     * @param error
      */
     @Override
     public void onException(IOException error) {

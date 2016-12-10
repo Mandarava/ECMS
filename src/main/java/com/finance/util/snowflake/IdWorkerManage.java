@@ -11,8 +11,6 @@ public class IdWorkerManage {
 
     /**
      * single 单例模式
-     *
-     * @return
      */
     private static IdWorker getIdWorkerInstance() {
 
@@ -24,8 +22,6 @@ public class IdWorkerManage {
 
     /**
      * single 单例模式
-     *
-     * @return
      */
     public static long getId() throws Exception {
         return IdWorkerManage.getIdWorkerInstance().get_id("springdemo");

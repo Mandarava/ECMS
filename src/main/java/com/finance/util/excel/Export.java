@@ -2,13 +2,18 @@ package com.finance.util.excel;
 
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRichTextString;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -23,7 +28,8 @@ import java.util.Map;
 public class Export {
 
     /**
-     * 生成XLSX为后缀的Excel模板文件（Excel 2007/2010） eg:Export.Template3("model.Employee", "员工数据", al, "F:/Template/n2.xlsx");
+     * 生成XLSX为后缀的Excel模板文件（Excel 2007/2010） eg:Export.Template3("model.Employee", "员工数据", al,
+     * "F:/Template/n2.xlsx");
      *
      * @param object 保存数据的bean类的对象
      * @param title  报表的标题
@@ -174,7 +180,6 @@ public class Export {
     /**
      * 设置单元格格式
      *
-     * @param wb
      * @return 返回设置的单元格格式
      */
     private static CellStyle titleFormat(XSSFWorkbook wb) {
@@ -191,9 +196,6 @@ public class Export {
 
     /**
      * 设置单元格日期格式
-     *
-     * @param wb
-     * @return
      */
     private static CellStyle dateFormat(XSSFWorkbook wb) {
         CreationHelper createHelper = wb.getCreationHelper();
@@ -205,9 +207,6 @@ public class Export {
 
     /**
      * 将生成的Excel模板输出的制定的路径
-     *
-     * @param wb
-     * @param path
      */
     private static void Output(XSSFWorkbook wb, String path) {
         FileOutputStream out = null;
@@ -219,7 +218,9 @@ public class Export {
             e.printStackTrace();
         } finally {
             try {
-                out.close();
+                if (out != null) {
+                    out.close();
+                }
             } catch (IOException e) {
                 System.out.println(e.toString());
                 e.printStackTrace();
@@ -229,9 +230,6 @@ public class Export {
 
     /**
      * 获得类字段名的简写
-     *
-     * @param str
-     * @return
      */
     private static String getField(String str) {
         int i = str.lastIndexOf(".");

@@ -138,11 +138,7 @@ public class HttpConnectionManager {
             HttpClientContext clientContext = HttpClientContext.adapt(context);
             HttpRequest request = clientContext.getRequest();
             boolean idempotent = !(request instanceof HttpEntityEnclosingRequest);
-            if (idempotent) {
-                // Retry if the request is considered idempotent
-                return true;
-            }
-            return false;
+            return idempotent;
         };
 
         ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {

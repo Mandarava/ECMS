@@ -2,16 +2,17 @@ package com.finance.util.myutil;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.Mac;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * hash
@@ -274,7 +275,6 @@ public final class EncryptUtil {
      * SHA1
      *
      * @param str 字符串
-     * @return
      */
     public static String getSHA1(String str) {
         String generatedPassword = null;
@@ -306,7 +306,7 @@ public final class EncryptUtil {
         return generatedPassword;
     }
 
-    public static String Bcrypt(String plaintext) {
+    public static String bcrypt(String plaintext) {
         String ciphertext = null;
         ciphertext = BCrypt.hashpw(plaintext, BCrypt.gensalt());
         return ciphertext;

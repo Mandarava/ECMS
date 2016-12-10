@@ -381,8 +381,8 @@ public class BCrypt {
      *
      * @param d   the byte array to encode
      * @param len the number of bytes to encode
-     * @throws IllegalArgumentException if the length is invalid
      * @return base64-encoded string
+     * @throws IllegalArgumentException if the length is invalid
      */
     private static String encode_base64(byte d[], int len)
             throws IllegalArgumentException {
@@ -437,8 +437,8 @@ public class BCrypt {
      *
      * @param s       the string to decode
      * @param maxolen the maximum number of bytes to decode
-     * @throws IllegalArgumentException if maxolen is invalid
      * @return an array containing the decoded bytes
+     * @throws IllegalArgumentException if maxolen is invalid
      */
     private static byte[] decode_base64(String s, int maxolen)
             throws IllegalArgumentException {
@@ -485,8 +485,7 @@ public class BCrypt {
      * Cycically extract a word of key material
      *
      * @param data the string to extract the data from
-     * @param offp a "pointer" (as a one-entry array) to the
-     *             current offset into data
+     * @param offp a "pointer" (as a one-entry array) to the current offset into data
      * @return the next word of material from data
      */
     private static int streamtoword(byte data[], int offp[]) {
@@ -507,8 +506,7 @@ public class BCrypt {
      * Hash a password using the OpenBSD bcrypt scheme
      *
      * @param password the password to hash
-     * @param salt     the salt to hash with (perhaps generated
-     *                 using BCrypt.gensalt)
+     * @param salt     the salt to hash with (perhaps generated using BCrypt.gensalt)
      * @return the hashed password
      */
     public static String hashpw(String password, String salt) {
@@ -569,9 +567,8 @@ public class BCrypt {
     /**
      * Generate a salt for use with the BCrypt.hashpw() method
      *
-     * @param log_rounds the log2 of the number of rounds of
-     *                   hashing to apply - the work factor therefore increases as
-     *                   2**log_rounds.
+     * @param log_rounds the log2 of the number of rounds of hashing to apply - the work factor
+     *                   therefore increases as 2**log_rounds.
      * @param random     an instance of SecureRandom to use
      * @return an encoded salt value
      */
@@ -597,9 +594,8 @@ public class BCrypt {
     /**
      * Generate a salt for use with the BCrypt.hashpw() method
      *
-     * @param log_rounds the log2 of the number of rounds of
-     *                   hashing to apply - the work factor therefore increases as
-     *                   2**log_rounds.
+     * @param log_rounds the log2 of the number of rounds of hashing to apply - the work factor
+     *                   therefore increases as 2**log_rounds.
      * @return an encoded salt value
      */
     public static String gensalt(int log_rounds) {
@@ -748,8 +744,7 @@ public class BCrypt {
      *
      * @param password   the password to hash
      * @param salt       the binary salt to hash with the password
-     * @param log_rounds the binary logarithm of the number
-     *                   of rounds of hashing to apply
+     * @param log_rounds the binary logarithm of the number of rounds of hashing to apply
      * @param cdata      the plaintext to encrypt
      * @return an array containing the binary hashed password
      */

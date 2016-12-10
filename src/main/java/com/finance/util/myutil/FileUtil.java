@@ -19,21 +19,21 @@ public final class FileUtil {
      *
      * @param file     文件
      * @param fileName 文件名
-     * @throws IOException
      */
     public static void saveFile(File file, String fileName) throws IOException {
         File savefile = new File(new File(BaseConstants.FILESAVEPATH), fileName);
-        if (!savefile.getParentFile().exists())
-            savefile.getParentFile().mkdirs();
-        FileUtils.copyFile(file, savefile);
+        if (!savefile.getParentFile().exists()) {
+            boolean isSuccess = savefile.getParentFile().mkdirs();
+            if (isSuccess) {
+                FileUtils.copyFile(file, savefile);
+            }
+        }
     }
 
     /**
      * 读文件
      *
      * @param fileName 文件名
-     * @return
-     * @throws IOException
      */
     public static InputStream readFile(String fileName) throws IOException {
 

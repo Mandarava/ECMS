@@ -3,15 +3,22 @@ package com.finance.util.excel;
 import com.finance.dao.FundNetDao;
 import com.finance.model.dto.Config;
 import com.finance.model.pojo.FundNet;
+
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
+
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.springframework.stereotype.Component;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -62,11 +69,8 @@ public final class ExportExcelUtil {
 
     private static void output(SXSSFWorkbook sxssfWorkbook, String fileName) {
         String path = Config.getFilePath() + fileName + ".xlsx";
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(path);
+        try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
             sxssfWorkbook.write(fileOutputStream);
-            fileOutputStream.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {

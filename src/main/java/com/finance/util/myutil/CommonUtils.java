@@ -16,7 +16,6 @@ public final class CommonUtils {
     /**
      * 判断元素是否空
      *
-     * @param element
      * @return 空返回true 否则返回false
      */
     public static boolean isElementBlank(String element) {
@@ -26,9 +25,6 @@ public final class CommonUtils {
 
     /**
      * null 转为空字符串
-     *
-     * @param value
-     * @return
      */
     public static String escapeNull(String value) {
         if (value == null) {
@@ -63,7 +59,6 @@ public final class CommonUtils {
      * 上传文件重命名
      *
      * @param NO 番号
-     * @return
      */
     public static String newUploadFileName(String NO, String originalFileName) {
         // 添付資料ファイル名＝番号 ＋ 当前日期．年 ＋ 当前日期．月 ＋ 当前日期．日 ＋ 当前日期．时 ＋ 当前日期．分
@@ -74,9 +69,6 @@ public final class CommonUtils {
 
     /**
      * 把list中所有string类型的null值转成空串
-     *
-     * @param list
-     * @throws Exception
      */
     public static void convertNullToEmptyString(List<?> list) {
         if (list == null) {
@@ -91,9 +83,6 @@ public final class CommonUtils {
 
     /**
      * 把dataBean中所有String类型的null转成空字符串(注意get/set的规范性)
-     *
-     * @param obj
-     * @throws Exception
      */
     @SuppressWarnings("unchecked")
     public static void convertNullToEmptyString(Object obj) {
@@ -123,8 +112,6 @@ public final class CommonUtils {
 
     /**
      * html转义
-     *
-     * @param obj
      */
     @SuppressWarnings("unchecked")
     public static void escapeHtml(Object obj) {
@@ -181,8 +168,6 @@ public final class CommonUtils {
 
     /**
      * trim全角和半角空格
-     *
-     * @return
      */
     public static String trimFull(String str) {
         // 用半角空格替换调字符串中所有的全角空格,再trim
@@ -191,9 +176,6 @@ public final class CommonUtils {
 
     /**
      * Blob表情的二进制存储方案
-     *
-     * @param blob
-     * @return
      */
     public static String emojiEscape(Blob blob) {
         String result = "";

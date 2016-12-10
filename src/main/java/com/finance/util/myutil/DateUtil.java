@@ -13,10 +13,6 @@ public class DateUtil {
 
     /**
      * 日期对象转字符串
-     *
-     * @param date
-     * @param format
-     * @return
      */
     public static String formatDate(Date date, String format) {
         String result = "";
@@ -29,11 +25,6 @@ public class DateUtil {
 
     /**
      * 字符串转日期对象
-     *
-     * @param str
-     * @param format
-     * @return
-     * @throws Exception
      */
     public static Date formatString(String str, String format) throws Exception {
         if (StringUtils.isEmpty(str)) {
@@ -51,8 +42,6 @@ public class DateUtil {
 
     /**
      * 当前日期．年 ＋ 当前日期．月 ＋ 当前日期．日
-     *
-     * @return
      */
     public static String getTime() {
         Calendar cal = Calendar.getInstance();
@@ -63,8 +52,6 @@ public class DateUtil {
 
     /**
      * 当前日期．年 ＋ 当前日期．月 ＋ 当前日期．日 ＋ 当前日期．时 ＋ 当前日期．分 ＋ 当前日期．秒
-     *
-     * @return
      */
     public static String getFullTime() {
         Calendar cal = Calendar.getInstance();

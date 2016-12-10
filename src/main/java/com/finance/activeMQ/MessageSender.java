@@ -1,18 +1,20 @@
 package com.finance.activeMQ;
 
 import com.google.gson.Gson;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.Session;
 import javax.jms.TextMessage;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by zt on 2016/10/5.
@@ -47,8 +49,7 @@ public class MessageSender {
     /**
      * 发送到消息队列
      *
-     * @param messgae
-     * @param type    类型，0:默认队列 1：金币队列 ...
+     * @param type 类型，0:默认队列 1：金币队列 ...
      */
     public void sendMessage(final String messgae, int type) {
         try {

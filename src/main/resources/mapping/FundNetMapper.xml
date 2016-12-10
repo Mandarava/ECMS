@@ -62,7 +62,8 @@
         UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,
         UPDATERID, UPDATETIME)
         values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{netDate,jdbcType=TIMESTAMP},
-        #{unitNetValue,jdbcType=DECIMAL}, #{accumulatedNetValue,jdbcType=DECIMAL}, #{dailyGrowthRate,jdbcType=DECIMAL},
+        #{unitNetValue,jdbcType=DECIMAL}, #{accumulatedNetValue,jdbcType=DECIMAL},
+        #{dailyGrowthRate,jdbcType=DECIMAL},
         #{updaterid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
     </insert>
     <insert id="insertSelective" parameterType="FundNet">

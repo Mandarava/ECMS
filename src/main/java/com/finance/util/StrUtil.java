@@ -5,7 +5,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -55,9 +60,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成GBK码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toGBK(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, GBK);
@@ -66,9 +69,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成UTF-8码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toUTF8(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, UTF_8);
@@ -77,9 +78,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成US-ASCII码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toASCII(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, US_ASCII);
@@ -88,9 +87,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成UTF-16码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toUTF16(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, UTF_16);
@@ -102,7 +99,6 @@ public final class StrUtil {
      * @param sStr        待转换编码的字符串
      * @param sNewCharset 目标编码
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String changeCharset(String sStr, String sNewCharset) throws UnsupportedEncodingException {
         // 用默认字符编码解码字符串。
@@ -114,9 +110,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成ISO-8859-1码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toISO_8859_1(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, ISO_8859_1);
@@ -125,9 +119,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成UTF-16BE码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toUTF16BE(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, UTF_16BE);
@@ -136,9 +128,7 @@ public final class StrUtil {
     /**
      * 将字符编码转换成UTF-16LE码
      *
-     * @param sStr
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String toUTF16LE(String sStr) throws UnsupportedEncodingException {
         return changeCharset(sStr, UTF_16LE);
@@ -151,7 +141,6 @@ public final class StrUtil {
      * @param sOldCharset 原编码
      * @param sNewCharset 目标编码
      * @return String
-     * @throws UnsupportedEncodingException
      */
     public final static String changeCharset(String sStr, String sOldCharset, String sNewCharset)
             throws UnsupportedEncodingException {
@@ -164,8 +153,6 @@ public final class StrUtil {
     /**
      * 返回正则表达式的结果集
      *
-     * @param sStr
-     * @param sPattern
      * @return List<String>
      */
     public final static List<String> getRegexResult(String sStr, String sPattern) {
@@ -184,9 +171,6 @@ public final class StrUtil {
     /**
      * 字符串正则表达式替换
      *
-     * @param sSource
-     * @param sReplace
-     * @param sPattern
      * @return String
      */
     public final static String getRegexReplaceResult(String sSource, String sReplace, String sPattern) {
@@ -199,8 +183,6 @@ public final class StrUtil {
     /**
      * 正则表达式检查结果
      *
-     * @param sStr
-     * @param sPattern
      * @return boolean
      */
     public final static boolean checkMather(String sStr, String sPattern) {
@@ -212,8 +194,6 @@ public final class StrUtil {
     /**
      * 如果字符串为空则用默认值
      *
-     * @param sStr
-     * @param sDefault
      * @return String
      */
     public final static String toStr(Object sStr, String sDefault) {
@@ -223,8 +203,6 @@ public final class StrUtil {
     /**
      * 如果字符串为空则用默认值
      *
-     * @param sStr
-     * @param sDefault
      * @return String
      */
     public final static String toStrNOTrim(Object sStr, String sDefault) {
@@ -234,8 +212,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成整数
      *
-     * @param sValue
-     * @param nDefault
      * @return int
      */
     public final static int toInt(String sValue, int nDefault) {
@@ -252,8 +228,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成Long数
      *
-     * @param sValue
-     * @param nDefault
      * @return int
      */
     public final static Long toLong(String sValue, Long nDefault) {
@@ -270,8 +244,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成小数
      *
-     * @param sValue
-     * @param nDefault
      * @return Float
      */
     public final static Float toFloat(String sValue, Float nDefault) {
@@ -283,8 +255,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成双精度小数
      *
-     * @param sValue
-     * @param nDefault
      * @return Double
      */
     public final static Double toDouble(String sValue, Double nDefault) {
@@ -296,8 +266,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成浮点
      *
-     * @param sValue
-     * @param nDefault
      * @return float
      */
     public final static float toFloat(String sValue, float nDefault) {
@@ -309,8 +277,6 @@ public final class StrUtil {
     /**
      * 把字符串转换成 布尔型
      *
-     * @param sValue
-     * @param nDefault
      * @return boolean
      */
     public final static boolean toBoolean(String sValue, boolean nDefault) {
@@ -321,9 +287,6 @@ public final class StrUtil {
 
     /**
      * 数据显示小数点问题
-     *
-     * @param d
-     * @return
      */
     public final static String doubleToStr(Double dd) {
         if (null == dd) {
@@ -350,10 +313,6 @@ public final class StrUtil {
 
     /**
      * 字符串 ： 解决数据库入库时候的非法符号 转 HTML 符号
-     *
-     * @param sStr
-     * @param sDefault
-     * @return
      */
     public final static String toHtml(Object sStr, String sDefault) {
         String sValue = sStr == null ? sDefault : sStr.toString();
@@ -365,9 +324,6 @@ public final class StrUtil {
 
     /**
      * 获取八位不重复随机码（取当前时间戳转化为16进制）
-     *
-     * @param time
-     * @return
      */
     public final static String toHex(long time) {
         return Integer.toHexString((int) time);
@@ -391,7 +347,6 @@ public final class StrUtil {
     /**
      * 检测字符串是否为空(null,"","null")
      *
-     * @param value
      * @return 为空则返回true，否则返回false
      */
     public final static boolean isNullOrEmpty(String value) {
@@ -420,9 +375,6 @@ public final class StrUtil {
 
     /**
      * json字符串转换为List<Map<String, Object>>
-     *
-     * @param jsonString
-     * @return
      */
     public final static List<Map<String, Object>> toMapList(String jsonString) {
         List<Map<String, Object>> mapList = new ArrayList<>();
@@ -435,9 +387,6 @@ public final class StrUtil {
 
     /**
      * json字符串转换为Map<String, Object>
-     *
-     * @param jsonString
-     * @return
      */
     public final static Map<String, Object> toMap(String jsonString) {
         Map<String, Object> map = new HashMap<>();

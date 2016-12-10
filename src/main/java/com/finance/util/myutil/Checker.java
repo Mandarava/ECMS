@@ -1,6 +1,7 @@
 package com.finance.util.myutil;
 
 import com.finance.exception.BusinessException;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
@@ -11,9 +12,6 @@ import java.util.regex.Pattern;
 public final class Checker {
     /**
      * 检查是否为空
-     *
-     * @param value
-     * @throws Exception
      */
     public static void checkNull(String value) throws BusinessException {
         if (StringUtils.isEmpty(value)) {
@@ -23,9 +21,6 @@ public final class Checker {
 
     /**
      * 检查是否为空
-     *
-     * @param value
-     * @throws Exception
      */
     public static void checkNull(Integer value) throws BusinessException {
         if (null == value) {
@@ -35,9 +30,6 @@ public final class Checker {
 
     /**
      * 检查是否为空
-     *
-     * @param value
-     * @throws Exception
      */
     public static void checkNull(Date value) throws BusinessException {
         if (null == value) {
@@ -47,10 +39,6 @@ public final class Checker {
 
     /**
      * 检查最大长度
-     *
-     * @param value
-     * @param length
-     * @throws BusinessException
      */
     public static void checkMaxLength(String value, Integer length) throws BusinessException {
         if (null != value && value.length() > length) {
@@ -63,7 +51,6 @@ public final class Checker {
      *
      * @param from 开始日期
      * @param to   结束日期
-     * @throws BusinessException
      */
     public static void compareDate(Date from, Date to) throws BusinessException {
         if (from.compareTo(to) > 0) {
@@ -76,7 +63,6 @@ public final class Checker {
      *
      * @param from 开始日期
      * @param to   结束日期
-     * @throws BusinessException
      */
     public static void compareDate(String from, String to) throws BusinessException {
         if (from.compareTo(to) > 0) {
@@ -110,9 +96,6 @@ public final class Checker {
 
     /**
      * 判断电话号码和传真
-     *
-     * @param value
-     * @throws BusinessException
      */
     public static void chechIsNumber(String value) throws BusinessException {
         Pattern regTel = Pattern.compile("^[0-9]*");
