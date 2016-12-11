@@ -14,8 +14,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,8 +66,10 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
         }
         Object obj = this._targetDataSources.get(serverName);
         if (obj != null && sid.equals(serverName)) {
+            logger.info(String.format("已找到[SourceName=%s]对应的数据源!", serverName));
             return;
         } else {
+            logger.info(String.format("未找到[SourceName=%s]对应的数据源，从数据库重新获取...", serverName));
             DruidDataSource druidDataSource = this.getDataSource(serverName);
             if (null != druidDataSource)
                 this.setDataSource(serverName, druidDataSource);
@@ -82,17 +82,21 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
     public DruidDataSource getDataSource(String serverName) {
         this.selectDataSource(DEFAULT_TARGET_DATA_SOURCE);
         this.determineCurrentLookupKey();
-        List<DataSourceDTO> dataSources = this.findDataSources(serverName);
-        if (null != dataSources && dataSources.size() > 0) {
-            DruidDataSource dataSource = this.createDataSource(dataSources.get(0));
+        DataSourceDTO dataSources = this.findDataSources(serverName);
+        if (null == dataSources) {
+            logger.error(String.format("从数据库重新获取，未找到[SourceName=%s]对应的数据源", serverName));
+        } else if (!dataSources.getState().equals("1")) {
+            logger.error(String.format("[SourceName=%s]对应的数据源状态未开启", serverName));
+        } else {
+            DruidDataSource dataSource = this.createDataSource(dataSources);
             return dataSource;
         }
         return null;
     }
 
-    public List<DataSourceDTO> findDataSources(String serverName) {
+    public DataSourceDTO findDataSources(String serverName) {
         Connection conn = null;
-        List<DataSourceDTO> result = new ArrayList<>();
+        DataSourceDTO result = null;
         try {
             conn = this.getConnection();
             PreparedStatement ps = conn
@@ -103,6 +107,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
                 DataSourceDTO dataSourceDTO = new DataSourceDTO();
                 dataSourceDTO.setDriverClassName(rs.getString("DRIVER_CLASS_NAME"));
                 dataSourceDTO.setId(rs.getInt("ID"));
+                dataSourceDTO.setState(rs.getString("STATE"));
+                dataSourceDTO.setSourceType(rs.getString("SOURCE_TYPE"));
                 dataSourceDTO.setName(rs.getString("NAME"));
                 dataSourceDTO.setUrl(rs.getString("URL"));
                 dataSourceDTO.setUserName(rs.getString("USERNAME"));
@@ -122,7 +128,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
                 dataSourceDTO.setLogAbandoned(rs.getString("LOG_ABANDONED"));
                 dataSourceDTO.setRemoveAbandoned(rs.getString("REMOVE_ABANDONED"));
                 dataSourceDTO.setRemoveAbandonedTimeout(rs.getInt("REMOVE_ABANDONED_TIMEOUT"));
-                result.add(dataSourceDTO);
+                result = dataSourceDTO;
             }
             rs.close();
             ps.close();
@@ -167,9 +173,10 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
      * @param dataSource
      */
     public void setDataSource(String serverName, DruidDataSource dataSource) {
-        this._targetDataSources.put(serverName, dataSource);
         DefaultListableBeanFactory acf = (DefaultListableBeanFactory) ac.getAutowireCapableBeanFactory();
         acf.registerSingleton(serverName, dataSource);
+
+        this._targetDataSources.put(serverName, dataSource);
         this.setTargetDataSources(this._targetDataSources);
         DynamicDataSourceContextHolder.setCustomerType(serverName);
     }

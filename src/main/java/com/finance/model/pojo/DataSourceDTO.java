@@ -11,6 +11,10 @@ public class DataSourceDTO implements Serializable {
 
     private String name;
 
+    private String state;
+
+    private String sourceType;
+
     private String driverClassName;
 
     private String url;
@@ -215,5 +219,21 @@ public class DataSourceDTO implements Serializable {
 
     public void setRemoveAbandonedTimeout(int removeAbandonedTimeout) {
         this.removeAbandonedTimeout = removeAbandonedTimeout;
+    }
+
+    public String getSourceType() {
+        return sourceType;
+    }
+
+    public void setSourceType(String sourceType) {
+        this.sourceType = sourceType;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
