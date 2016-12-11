@@ -33,7 +33,7 @@
         <property name="fileEncoding" value="utf-8"/>
     </bean>
 
-    <bean id="MasterDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="master" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <!-- 指定连接数据库的驱动 -->
         <property name="driverClassName" value="${jdbc.driverClass}"/>
@@ -63,7 +63,7 @@
     </bean>
 
     <!--slave 配置数据源 -->
-    <bean id="SlaveDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+    <bean id="slave" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <property name="driverClassName" value="${jdbc.driverClass}"/>
         <property name="url" value="${jdbc.url}"/>
@@ -123,14 +123,12 @@
     <bean id="dataSource" class="com.finance.common.DynamicDataSource">
         <property name="targetDataSources">
             <map>
-                <entry key="masterDataSource" value-ref="MasterDataSource"/>
-                <entry key="slaveDataSource" value-ref="SlaveDataSource"/>
+                <entry key="master" value-ref="master"/>
+                <entry key="slave" value-ref="slave"/>
             </map>
         </property>
-        <property name="defaultTargetDataSource" ref="MasterDataSource"/>
+        <property name="defaultTargetDataSource" ref="master"/>
     </bean>
-    <!-- 数据源切换类 -->
-    <bean id="dataSourceAspect" class="com.finance.common.DataSourceAspect"/>
 
     <!-- 配置Jdbc模板 -->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
@@ -160,10 +158,7 @@
     <aop:config>
         <aop:pointcut id="defaultServiceOperation"
                       expression="execution(* com.finance.service..*.*(..))"/>
-        <aop:advisor pointcut-ref="defaultServiceOperation" advice-ref="TxAdvice" order="2"/>
-        <aop:aspect ref="dataSourceAspect" order="1">
-            <aop:before method="before" pointcut-ref="defaultServiceOperation"/>
-        </aop:aspect>
+        <aop:advisor pointcut-ref="defaultServiceOperation" advice-ref="TxAdvice"/>
     </aop:config>
 
     <tx:annotation-driven transaction-manager="transactionManager"/>

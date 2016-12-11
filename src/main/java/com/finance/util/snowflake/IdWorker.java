@@ -112,9 +112,6 @@ public class IdWorker {
 
     /**
      * 等待下一个毫秒的到来
-     *
-     * @param lastTimestamp
-     * @return
      */
     protected long tilNextMillis(long lastTimestamp) {
 

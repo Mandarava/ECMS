@@ -18,9 +18,9 @@ public class MultipleDataSourceTest2 {
     @Around("execution(* com.finance.service..*.*(..))")
     public Object doAround(ProceedingJoinPoint jp) throws Throwable {
         if (jp.getTarget() instanceof MySqlMapper) {
-            DataSourceContextHolder.setDataSourceType("masterDataSource");
+            DynamicDataSourceContextHolder.setCustomerType("master");
         } else if (jp.getTarget() instanceof MySqlMapper2) {
-            DataSourceContextHolder.setDataSourceType("slaveDataSource");
+            DynamicDataSourceContextHolder.setCustomerType("slave");
         }
         return jp.proceed();
     }

@@ -83,7 +83,7 @@ public class TestEncrypt {
     @Test
     public void bcrypt() {
         String plaintext = "This is a test";
-        String ciphertext = EncryptUtil.Bcrypt(plaintext);
+        String ciphertext = EncryptUtil.bcrypt(plaintext);
         boolean flag = BCrypt.checkpw(plaintext, ciphertext);
         Assert.assertTrue(flag);
     }

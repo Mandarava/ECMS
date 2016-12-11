@@ -1,12 +1,12 @@
 package com.finance.service.serviceImpl;
 
+import com.finance.common.DynamicDataSourceContextHolder;
 import com.finance.dao.FundNetDao;
 import com.finance.exception.BusinessException;
 import com.finance.model.pojo.Fund;
 import com.finance.model.pojo.FundNet;
 import com.finance.service.FundNetService;
 import com.finance.service.FundService;
-import com.finance.util.excel.ExportExcelUtil;
 import com.finance.util.myutil.HttpConnectionManager;
 
 import org.apache.commons.lang3.StringUtils;
@@ -21,13 +21,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,12 +117,15 @@ public class FundNetServiceImpl implements FundNetService {
 
     @Override
     public void test() {
-        try {
-            String[] headers = {"1", "2", "3", "4"};
-            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
-        } catch (IOException e) {
-            logger.debug(e.getMessage(), e);
-        }
+//        try {
+//            String[] headers = {"1", "2", "3", "4"};
+//            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
+//        } catch (IOException e) {
+//            logger.debug(e.getMessage(), e);
+//        }
+        DynamicDataSourceContextHolder.setCustomerType("keen");
+        int i = fundNetDao.findFundNetCount();
+        logger.error("=-------------------------" + i);
     }
 
     /**

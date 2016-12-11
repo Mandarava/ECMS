@@ -21,6 +21,7 @@
         <typeAlias type="com.finance.model.pojo.Fund" alias="Fund"/>
         <typeAlias type="com.finance.model.pojo.FundNet" alias="FundNet"/>
         <typeAlias type="com.finance.model.pojo.Profit" alias="Profit"/>
+        <typeAlias type="com.finance.model.pojo.DataSourceDTO" alias="DataSourceDTO"/>
     </typeAliases>
 
     <plugins>

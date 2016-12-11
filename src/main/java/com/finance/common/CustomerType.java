@@ -1,16 +1,16 @@
 package com.finance.common;
 
-public enum DataSourceType {
+public enum CustomerType {
 
     // 主库
-    Master("masterDataSource"),
+    MASTER("master"),
 
     // 从库
-    Slave("slaveDataSource");
+    SLAVE("slave");
 
     private String name;
 
-    private DataSourceType(String name) {
+    CustomerType(String name) {
         this.name = name;
     }
 
