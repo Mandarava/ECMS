@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/fund/net")
 public class FundNetController {
 
-    private static Logger logger = LoggerFactory.getLogger(FundNetController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundNetController.class);
 
     @Resource
     private FundNetService fundNetService;

@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/fund")
 public class FundController {
 
-    private static Logger logger = LoggerFactory.getLogger(FundController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundController.class);
 
     @Resource
     private FundService fundService;

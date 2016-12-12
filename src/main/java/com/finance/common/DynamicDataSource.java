@@ -3,7 +3,8 @@ package com.finance.common;
 import com.alibaba.druid.pool.DruidDataSource;
 import com.finance.model.pojo.DataSourceDTO;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -22,7 +23,7 @@ import java.util.Map;
 public class DynamicDataSource extends AbstractRoutingDataSource implements ApplicationContextAware {
 
     private static final String DEFAULT_TARGET_DATA_SOURCE = CustomerType.MASTER.getName();
-    private Logger log = Logger.getLogger(this.getClass());
+    private static final Logger log = LoggerFactory.getLogger(DynamicDataSource.class);
     private ApplicationContext ac;
     private Map<Object, Object> _targetDataSources;
 

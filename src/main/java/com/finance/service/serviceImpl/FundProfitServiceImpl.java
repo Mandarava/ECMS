@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 @Service
 public class FundProfitServiceImpl implements FundProfitService {
 
-    private static Logger logger = LoggerFactory.getLogger(FundProfitServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundProfitServiceImpl.class);
 
     @Resource
     private ProfitDao profitDao;

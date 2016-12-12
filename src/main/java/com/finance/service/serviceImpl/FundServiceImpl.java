@@ -33,7 +33,7 @@ import javax.annotation.Resource;
 @Service
 public class FundServiceImpl implements FundService {
 
-    private static Logger logger = LoggerFactory.getLogger(FundServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundServiceImpl.class);
 
     @Resource
     private FundDao fundDao;

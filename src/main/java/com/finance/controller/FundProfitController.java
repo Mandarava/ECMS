@@ -22,7 +22,7 @@ import javax.annotation.Resource;
 @RequestMapping(value = "/fund/profit")
 public class FundProfitController {
 
-    private static Logger logger = LoggerFactory.getLogger(FundProfitController.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundProfitController.class);
 
     @Resource
     private FundProfitService fundProfitService;

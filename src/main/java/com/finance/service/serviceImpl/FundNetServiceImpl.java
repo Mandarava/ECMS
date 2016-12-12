@@ -43,7 +43,8 @@ public class FundNetServiceImpl implements FundNetService {
 
     private static final int FUND_NET_PER_SELECT = 500;
     private static final int THREAD_POOL_SIZE = 10;
-    private static Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
+
     @Resource
     private FundNetService fundNetService;
 
