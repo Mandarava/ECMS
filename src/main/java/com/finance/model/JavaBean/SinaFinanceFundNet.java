@@ -11,17 +11,40 @@ import java.util.Date;
  */
 public class SinaFinanceFundNet implements Serializable {
 
+    /**
+     * 净值日期
+     */
     @Expose
     @SerializedName("fbrq")
     private Date fbrq;
 
+    /**
+     * 单位净值
+     */
     @Expose
     @SerializedName("jjjz")
-    private double jjjz;
+    private Double jjjz;
 
+    /**
+     * 累计净值
+     */
     @Expose
     @SerializedName("ljjz")
-    private double ljjz;
+    private Double ljjz;
+
+    /**
+     * 七日年化收益率
+     */
+    @Expose
+    @SerializedName("nhsyl")
+    private Double nhsyl;
+
+    /**
+     * 万份收益
+     */
+    @Expose
+    @SerializedName("dwsy")
+    private Double dwsy;
 
     public Date getFbrq() {
         return fbrq;
@@ -31,20 +54,36 @@ public class SinaFinanceFundNet implements Serializable {
         this.fbrq = fbrq;
     }
 
-    public double getJjjz() {
+    public Double getJjjz() {
         return jjjz;
     }
 
-    public void setJjjz(double jjjz) {
+    public void setJjjz(Double jjjz) {
         this.jjjz = jjjz;
     }
 
-    public double getLjjz() {
+    public Double getLjjz() {
         return ljjz;
     }
 
-    public void setLjjz(double ljjz) {
+    public void setLjjz(Double ljjz) {
         this.ljjz = ljjz;
+    }
+
+    public Double getNhsyl() {
+        return nhsyl;
+    }
+
+    public void setNhsyl(Double nhsyl) {
+        this.nhsyl = nhsyl;
+    }
+
+    public Double getDwsy() {
+        return dwsy;
+    }
+
+    public void setDwsy(Double dwsy) {
+        this.dwsy = dwsy;
     }
 
     @Override
@@ -53,6 +92,8 @@ public class SinaFinanceFundNet implements Serializable {
                 "fbrq=" + fbrq +
                 ", jjjz=" + jjjz +
                 ", ljjz=" + ljjz +
+                ", nhsyl=" + nhsyl +
+                ", dwsy=" + dwsy +
                 '}';
     }
 }

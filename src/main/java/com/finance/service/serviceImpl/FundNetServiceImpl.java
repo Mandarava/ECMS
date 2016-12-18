@@ -50,7 +50,7 @@ import static com.finance.util.myutil.BaseConstants.RECORDS_PER_INSERT;
 @Service
 public class FundNetServiceImpl implements FundNetService {
 
-    private static final int FUND_NET_PER_SELECT = 200;
+    private static final int FUND_NET_PER_SELECT = 150;
     private static final int THREAD_POOL_SIZE = 10;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
 
@@ -210,11 +210,41 @@ public class FundNetServiceImpl implements FundNetService {
             this.fundCode = fundCode;
         }
 
+        private String getFundType() {
+            String currency;
+            URI uri = null;
+            try {
+                uri = new URIBuilder()
+                        .setScheme("http")
+                        .setHost("finance.sina.com.cn/")
+                        .setPath(String.format("fund/quotes/%s/bc.shtml", fundCode)).build();
+            } catch (URISyntaxException e) {
+                logger.debug(e.getMessage(), e);
+            }
+            String html = HttpConnectionManager.executeHttpGet(uri, context);
+            if (StringUtils.isEmpty(html)) {
+                return null;
+            }
+            Pattern pattern = Pattern.compile("\\$FConfig\\['isCurrency'].*;");
+            Matcher matcher = pattern.matcher(html);
+            while (matcher.find()) {
+                html = matcher.group(0);
+            }
+            currency = html.replaceAll("\\$FConfig\\['isCurrency']|;|'|=", "").trim();
+            return currency;
+        }
+
         @Override
         public List<FundNet> call() {
+            String currency = getFundType();
+            // 万份收益
+            if (currency.equals("1")) {
+                return null;
+            }
             List<FundNet> result = null;
             URI uri = null;
             // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav?callback=fundnetcallback&symbol=160706&page=1
+            // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNavcur"  // 万份收益
             try {
                 uri = new URIBuilder()
                         .setScheme("http")
@@ -232,18 +262,19 @@ public class FundNetServiceImpl implements FundNetService {
             if (StringUtils.isEmpty(strResult)) {
                 return null;
             }
-            Pattern pattern = Pattern.compile("\\[.*?]");
+            Pattern pattern = Pattern.compile("\\$FConfig\\['isCurrency'].*;");
             Matcher matcher = pattern.matcher(strResult);
             while (matcher.find()) {
                 strResult = matcher.group(0);
             }
+            System.out.print(strResult);
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
             List<SinaFinanceFundNet> fundNets = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFundNet>>() {
             }.getType());
             if (fundNets != null && fundNets.size() > 0) {
                 result = new ArrayList<>();
                 for (int i = 0; i < fundNets.size(); i++) {
-                    // the last one is the fund's initialize value 1 1
+                    // the last one is the fund's initial value 1
                     if (i == fundNets.size() - 1) {
                         break;
                     }
