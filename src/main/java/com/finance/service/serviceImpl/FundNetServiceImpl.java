@@ -98,8 +98,8 @@ public class FundNetServiceImpl implements FundNetService {
                     fundNets.remove(temp);
                 }
             }
-//            fetchedNetList.sort(Comparator.comparing(FundNet::getCode).thenComparing(FundNet::getNetDate));
             List<FundNet> fundNetList = new ArrayList<>(fundNets);
+            fundNetList.sort(Comparator.comparing(FundNet::getNetDate));
             if (fundNetList.size() > 0) {
                 while (fundNetList.size() > 0) {
                     List<FundNet> subFundNetList = fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size());
@@ -258,7 +258,6 @@ public class FundNetServiceImpl implements FundNetService {
                     fundNet.setDailyGrowthRate(Double.valueOf(dailyGrowthRate));
                     result.add(fundNet);
                 }
-                result.sort(Comparator.comparing(FundNet::getNetDate));
             }
             return result;
         }
