@@ -1,8 +1,13 @@
 package com.finance.service.serviceImpl;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
 import com.finance.common.DynamicDataSourceContextHolder;
 import com.finance.dao.FundNetDao;
 import com.finance.exception.BusinessException;
+import com.finance.model.JavaBean.SinaFinanceFundNet;
 import com.finance.model.pojo.Fund;
 import com.finance.model.pojo.FundNet;
 import com.finance.service.FundNetService;
@@ -23,9 +28,11 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +40,8 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.Resource;
 
@@ -41,7 +50,7 @@ import static com.finance.util.myutil.BaseConstants.RECORDS_PER_INSERT;
 @Service
 public class FundNetServiceImpl implements FundNetService {
 
-    private static final int FUND_NET_PER_SELECT = 500;
+    private static final int FUND_NET_PER_SELECT = 200;
     private static final int THREAD_POOL_SIZE = 10;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
 
@@ -67,7 +76,7 @@ public class FundNetServiceImpl implements FundNetService {
             // 获得到的净值数据
             List<FundNet> fetchedNetList = new ArrayList<>();
             for (Fund fund : funds) {
-                Callable<List<FundNet>> callable = new GetThread(fund.getCode());
+                Callable<List<FundNet>> callable = new FetchFundNetDataFromSinaThread(fund.getCode());
                 Future<List<FundNet>> future = pool.submit(callable);
                 futures.add(future);
             }
@@ -116,19 +125,6 @@ public class FundNetServiceImpl implements FundNetService {
         }
     }
 
-    @Override
-    public void test() {
-//        try {
-//            String[] headers = {"1", "2", "3", "4"};
-//            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
-//        } catch (IOException e) {
-//            logger.debug(e.getMessage(), e);
-//        }
-        DynamicDataSourceContextHolder.setCustomerType("keen");
-        int i = fundNetDao.findFundNetCount();
-        logger.error("=-------------------------" + i);
-    }
-
     /**
      * 查找基金净值数据
      *
@@ -138,12 +134,14 @@ public class FundNetServiceImpl implements FundNetService {
         return fundNetDao.findFundNetByCode(code);
     }
 
+
     /**
      * 获得基金净值数据
      *
      * @param fundCode 基金代码
      * @return 基金净值
      */
+    @Deprecated
     private List<FundNet> fetchFundNetDataFromEasyMoney(String fundCode) {
         List<FundNet> fundNetList = new ArrayList<>();
         URI uri;
@@ -189,60 +187,80 @@ public class FundNetServiceImpl implements FundNetService {
         return fundNetList;
     }
 
-    static class GetThread implements Callable<List<FundNet>> {
+    @Override
+    public void test() {
+//        try {
+//            String[] headers = {"1", "2", "3", "4"};
+//            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
+//        } catch (IOException e) {
+//            logger.debug(e.getMessage(), e);
+//        }
+        DynamicDataSourceContextHolder.setCustomerType("keen");
+        int i = fundNetDao.findFundNetCount();
+        logger.error("=-------------------------" + i);
+    }
+
+    static class FetchFundNetDataFromSinaThread implements Callable<List<FundNet>> {
 
         private final HttpContext context;
         private final String fundCode;
 
-        public GetThread(String fundCode) {
+        public FetchFundNetDataFromSinaThread(String fundCode) {
             this.context = HttpClientContext.create();
             this.fundCode = fundCode;
         }
 
         @Override
         public List<FundNet> call() {
-            List<FundNet> fundNetList = new ArrayList<>();
-            URI uri;
+            List<FundNet> result = null;
+            URI uri = null;
+            // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav?callback=fundnetcallback&symbol=160706&page=1
             try {
                 uri = new URIBuilder()
                         .setScheme("http")
-                        .setHost("fund.eastmoney.com/")
-                        .setPath("/f10/F10DataApi.aspx")
-                        .setParameter("type", "lsjz")
-                        .setParameter("code", fundCode)
+                        .setHost("stock.finance.sina.com.cn/")
+                        .setPath("fundInfo/api/openapi.php/CaihuiFundInfoService.getNav")
+                        .setParameter("callback", "fundnetcallback")
+                        .setParameter("symbol", fundCode)
                         .setParameter("page", "1")
-                        .setParameter("per", "200000")
+                        .setParameter("num", "200000")
                         .build();
-                String strResult = HttpConnectionManager.executeHttpGet(uri, context);
-                if (StringUtils.isEmpty(strResult)) {
-                    return null;
-                }
-                Document
-                        doc = Jsoup.parse(strResult);
-                Elements trs = doc.select("tbody").select("tr");
-                for (Element tr : trs) {
-                    Elements tds = tr.select("td");
-                    SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-                    if (tds.size() == 7) {
-                        FundNet fundNet = new FundNet();
-                        fundNet.setCode(fundCode);
-                        fundNet.setNetDate(df.parse(tds.get(0).text()));
-                        fundNet.setUnitNetValue(StringUtils.isEmpty(tds.get(1).text()) ? 0 : Double.valueOf(tds.get(1).text()));
-                        double accumulatedNetValue = Double.valueOf((StringUtils.isEmpty(tds.get(2).text().replace("%", "")) ? "0" : tds.get(2).text().replace("%", "")));
-                        fundNet.setAccumulatedNetValue(accumulatedNetValue);
-                        double dailyGrowthRate = Double.valueOf((StringUtils.isEmpty(tds.get(3).text().replace("%", "")) ? "0" : tds.get(3).text().replace("%", "")));
-                        fundNet.setDailyGrowthRate(dailyGrowthRate);
-                        fundNetList.add(fundNet);
-                    } else if (tds.size() == 6) {
-//                        logger.info("7日年化：" + fundCode);
-                    }
-                }
             } catch (URISyntaxException e) {
                 logger.debug(e.getMessage(), e);
-            } catch (ParseException e) {
-                logger.debug(e.getMessage(), e);
             }
-            return fundNetList;
+            String strResult = HttpConnectionManager.executeHttpGet(uri, context);
+            if (StringUtils.isEmpty(strResult)) {
+                return null;
+            }
+            Pattern pattern = Pattern.compile("\\[.*?]");
+            Matcher matcher = pattern.matcher(strResult);
+            while (matcher.find()) {
+                strResult = matcher.group(0);
+            }
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+            List<SinaFinanceFundNet> fundNets = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFundNet>>() {
+            }.getType());
+            if (fundNets != null && fundNets.size() > 0) {
+                result = new ArrayList<>();
+                for (int i = 0; i < fundNets.size(); i++) {
+                    // the last one is the fund's initialize value 1 1
+                    if (i == fundNets.size() - 1) {
+                        break;
+                    }
+                    SinaFinanceFundNet sinaFinanceFundNet = fundNets.get(i);
+                    FundNet fundNet = new FundNet();
+                    fundNet.setCode(fundCode);
+                    fundNet.setNetDate(sinaFinanceFundNet.getFbrq());
+                    fundNet.setUnitNetValue(sinaFinanceFundNet.getJjjz());
+                    fundNet.setAccumulatedNetValue(sinaFinanceFundNet.getLjjz());
+                    DecimalFormat df = new DecimalFormat("#.00000");
+                    String dailyGrowthRate = df.format((sinaFinanceFundNet.getJjjz() / fundNets.get(i + 1).getJjjz() - 1) * 100);
+                    fundNet.setDailyGrowthRate(Double.valueOf(dailyGrowthRate));
+                    result.add(fundNet);
+                }
+                result.sort(Comparator.comparing(FundNet::getNetDate));
+            }
+            return result;
         }
     }
 
