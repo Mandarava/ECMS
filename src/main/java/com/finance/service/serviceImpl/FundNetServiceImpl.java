@@ -50,7 +50,7 @@ import static com.finance.util.myutil.BaseConstants.RECORDS_PER_INSERT;
 @Service
 public class FundNetServiceImpl implements FundNetService {
 
-    private static final int FUND_NET_PER_SELECT = 150;
+    private static final int FUND_NET_PER_SELECT = 300;
     private static final int THREAD_POOL_SIZE = 10;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
 
@@ -262,12 +262,14 @@ public class FundNetServiceImpl implements FundNetService {
             if (StringUtils.isEmpty(strResult)) {
                 return null;
             }
-            Pattern pattern = Pattern.compile("\\$FConfig\\['isCurrency'].*;");
+            if (strResult.contains("\"data\":null") || strResult.contains("\"total_num\":\"0\"")) {
+                return null;
+            }
+            Pattern pattern = Pattern.compile("\\[.*?]");
             Matcher matcher = pattern.matcher(strResult);
             while (matcher.find()) {
                 strResult = matcher.group(0);
             }
-            System.out.print(strResult);
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
             List<SinaFinanceFundNet> fundNets = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFundNet>>() {
             }.getType());
@@ -282,11 +284,17 @@ public class FundNetServiceImpl implements FundNetService {
                     FundNet fundNet = new FundNet();
                     fundNet.setCode(fundCode);
                     fundNet.setNetDate(sinaFinanceFundNet.getFbrq());
-                    fundNet.setUnitNetValue(sinaFinanceFundNet.getJjjz());
-                    fundNet.setAccumulatedNetValue(sinaFinanceFundNet.getLjjz());
-                    DecimalFormat df = new DecimalFormat("#.00000");
-                    String dailyGrowthRate = df.format((sinaFinanceFundNet.getJjjz() / fundNets.get(i + 1).getJjjz() - 1) * 100);
-                    fundNet.setDailyGrowthRate(Double.valueOf(dailyGrowthRate));
+                    fundNet.setUnitNetValue(sinaFinanceFundNet.getJjjz() == null ? 0 : sinaFinanceFundNet.getJjjz());
+                    fundNet.setAccumulatedNetValue(sinaFinanceFundNet.getLjjz() == null ? 0 : sinaFinanceFundNet.getLjjz());
+                    if (sinaFinanceFundNet.getJjjz() != null && fundNets.get(i + 1).getJjjz() != null) {
+                        DecimalFormat df = new DecimalFormat("#.00000");
+                        String dailyGrowthRate = df.format((sinaFinanceFundNet.getJjjz() / fundNets.get(i + 1).getJjjz() - 1) * 100);
+                        fundNet.setDailyGrowthRate(Double.valueOf(dailyGrowthRate));
+                    } else {
+                        fundNet.setDailyGrowthRate(0);
+                        logger.info(fundCode + "has null values!");
+                    }
+
                     result.add(fundNet);
                 }
             }
