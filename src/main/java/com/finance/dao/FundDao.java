@@ -1,6 +1,7 @@
 package com.finance.dao;
 
 import com.finance.model.pojo.Fund;
+import com.googlecode.ehcache.annotations.Cacheable;
 
 import org.springframework.stereotype.Repository;
 
@@ -15,6 +16,7 @@ public interface FundDao {
     /**
      * 查找所有基金
      */
+    @Cacheable(cacheName = "baseCache")
     List<Fund> findFunds();
 
     int insertOrUpdateFundData(Fund fund);

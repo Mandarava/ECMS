@@ -18,6 +18,8 @@
     <!-- AOP自动代理功能 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
+    <import resource="classpath:spring-ehcache.xml"/>
+
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -102,7 +104,6 @@
         <!-- 关闭abanded连接时输出错误日志 -->
         <property name="logAbandoned" value="true"/>
     </bean>
-
 
     <!-- 上面的druid的配置 -->
     <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">

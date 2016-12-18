@@ -187,6 +187,7 @@ public class FundNetServiceImpl implements FundNetService {
         return fundNetList;
     }
 
+
     @Override
     public void test() {
 //        try {
@@ -195,9 +196,9 @@ public class FundNetServiceImpl implements FundNetService {
 //        } catch (IOException e) {
 //            logger.debug(e.getMessage(), e);
 //        }
+
         DynamicDataSourceContextHolder.setCustomerType("keen");
         int i = fundNetDao.findFundNetCount();
-        logger.error("=-------------------------" + i);
     }
 
     static class FetchFundNetDataFromSinaThread implements Callable<List<FundNet>> {
