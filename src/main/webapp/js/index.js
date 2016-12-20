@@ -11,7 +11,7 @@ $(document).ready(function () {
 
         $.ajax({
                    type: "POST",
-                   url: "/fund/profit/addProfit",
+                   url: "fund/profit/addProfit",
                    data: profit,
                    success: function (data) {
                        if (data.hasOwnProperty('flag')) {
@@ -74,7 +74,7 @@ $(document).ready(function () {
     $('#test').click(function () {
         $.ajax({
                    type: "GET",
-                   url: "/fund/net/test",
+                   url: "fund/net/test",
                    async: true,
                    cache: false,
                    success: function (data) {
