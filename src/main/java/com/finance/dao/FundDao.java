@@ -16,7 +16,7 @@ import java.util.List;
 public interface FundDao {
 
     /**
-     * 查找所有基金
+     * 查找所有的基金
      */
     @Cacheable(cacheName = "baseCache")
     List<Fund> findFunds();
