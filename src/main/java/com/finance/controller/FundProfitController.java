@@ -27,8 +27,8 @@ public class FundProfitController {
     @Resource
     private FundProfitService fundProfitService;
 
-    @RequestMapping(value = "/addProfit", method = RequestMethod.POST)
     @ResponseBody
+    @RequestMapping(value = "/addProfit", method = RequestMethod.POST)
     public Map addProfit(Profit profit) {
         Map<String, Object> map = new HashMap<>();
         try {
@@ -41,4 +41,5 @@ public class FundProfitController {
         }
         return map;
     }
+
 }
