@@ -3,6 +3,8 @@ package com.finance.activemq;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Component;
 
+import java.io.Serializable;
+
 import javax.annotation.Resource;
 
 /**
@@ -38,8 +40,8 @@ public class QueueSender {
      *
      * @param object 消息内容
      */
-    public void send(final Object object) {
-        jmsTemplate.convertAndSend(object);
+    public void send(String queueName, final Serializable object) {
+        jmsTemplate.send(queueName, session -> session.createObjectMessage(object));
     }
 
 }

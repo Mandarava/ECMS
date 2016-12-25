@@ -35,7 +35,7 @@ public class TestSendMessage {
     }
 
     @Test
-    public void test4() {
+    public void test3() {
         for (int i = 0; i < 5; i++) {
             topicSender.send("Hi，这是第 " + (i + 1) + " 条消息！");
         }
