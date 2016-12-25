@@ -1,4 +1,4 @@
-package com.finance.activeMQ;
+package com.finance.activemq;
 
 import org.apache.activemq.transport.TransportListener;
 import org.apache.log4j.Logger;

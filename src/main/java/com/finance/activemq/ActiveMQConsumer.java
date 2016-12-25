@@ -1,4 +1,4 @@
-package com.finance.activeMQ;
+package com.finance.activemq;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -13,7 +13,7 @@ import javax.jms.Session;
  * Created with IDEA
  * Created by ${jie.chen} on 2016/7/11.
  */
-public class MQConsumer {
+public class ActiveMQConsumer {
     private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
     private static final String BROKERURL = ActiveMQConnection.DEFAULT_BROKER_URL;

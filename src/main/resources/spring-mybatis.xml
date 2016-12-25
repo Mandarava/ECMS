@@ -19,7 +19,7 @@
     <aop:aspectj-autoproxy proxy-target-class="true"/>
 
     <import resource="classpath*:spring-ehcache.xml"/>
-    <import resource="classpath*:spring-jms.xml"/>
+    <import resource="classpath*:spring-activemq.xml"/>
 
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"
@@ -30,7 +30,7 @@
                 <value>classpath*:/jdbc.properties</value>
                 <value>classpath*:/config.properties</value>
                 <value>classpath*:/redis.properties</value>
-                <value>classpath*:/jms.properties</value>
+                <value>classpath*:/activemq.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="utf-8"/>

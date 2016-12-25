@@ -1,4 +1,4 @@
-package com.finance.activeMQ;
+package com.finance.activemq;
 
 import org.apache.activemq.ActiveMQConnection;
 import org.apache.activemq.ActiveMQConnectionFactory;
@@ -16,11 +16,10 @@ import javax.jms.TextMessage;
  * Created with IDEA
  * Created by ${jie.chen} on 2016/7/11.
  */
-public class MQproducer {
+public class ActiveMQProducer {
     private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
     private static final String BROKERURL = ActiveMQConnection.DEFAULT_BROKER_URL;
-    private static final int NUM = 10;
 
     public static void main(String args[]) {
         ConnectionFactory connectionFactory;//连接工厂
@@ -38,7 +37,7 @@ public class MQproducer {
             session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
             destination = session.createQueue("queueDemo"); // 创建消息队列
             messageProducer = session.createProducer(destination);
-            sendMsg(session, messageProducer);//发送消息
+            sendMessage(session, messageProducer);//发送消息
             //因为开了事务的，所以需要提交事务
             session.commit();
         } catch (Exception e) {
@@ -54,15 +53,12 @@ public class MQproducer {
         }
     }
 
-    public static void sendMsg(Session session, MessageProducer messageProducer) {
-        for (int i = 0; i < NUM; i++) {
+    public static void sendMessage(Session session, MessageProducer messageProducer) {
             try {
-                TextMessage textMessage = session.createTextMessage("发送消息" + i);
-                System.out.println("发送消息第" + i);
+                TextMessage textMessage = session.createTextMessage("发送消息");
                 messageProducer.send(textMessage);
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }
     }
 }
