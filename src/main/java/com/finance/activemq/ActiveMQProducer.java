@@ -54,11 +54,11 @@ public class ActiveMQProducer {
     }
 
     public static void sendMessage(Session session, MessageProducer messageProducer) {
-            try {
-                TextMessage textMessage = session.createTextMessage("发送消息");
-                messageProducer.send(textMessage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        try {
+            TextMessage textMessage = session.createTextMessage("发送消息");
+            messageProducer.send(textMessage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
