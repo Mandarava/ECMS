@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 /**
  * Created by zt on 2016/10/22.
  */
-public final class MyUtils {
+public final class MathUtil {
 
     public static boolean isExpressionValid(String expression) {
         int length = expression.length();
