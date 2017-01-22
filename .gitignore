@@ -15,14 +15,13 @@ hs_err_pid*
 
 .gradle/
 .idea/
-build.gradle
+#build.gradle
 build/
 gradle/
 gradlew
 gradlew.bat
 out/
-settings.gradle
-src/main/groovy/
+#settings.gradle
 src/main/resources-dev/
 src/main/webapp/WEB-INF/css/
 src/main/webapp/WEB-INF/fonts/
