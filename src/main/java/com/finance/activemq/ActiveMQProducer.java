@@ -33,7 +33,6 @@ public class ActiveMQProducer {
         try {
             connection = connectionFactory.createConnection();
             connection.start(); //启动连接
-            //AUTO_ACKNOWLEDGE 常用的接收方式
             session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
             destination = session.createQueue("queueDemo"); // 创建消息队列
             messageProducer = session.createProducer(destination);

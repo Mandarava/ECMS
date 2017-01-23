@@ -30,11 +30,12 @@ public class ActiveMQConsumer {
         try {
             connection = connectionFactory.createConnection();
             connection.start(); //启动连接
-            //AUTO_ACKNOWLEDGE 常用的接收方式
             session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
             destination = session.createQueue("queueDemo"); // 获得消息队列
             messageConsumer = session.createConsumer(destination);
             messageConsumer.setMessageListener(new ConsumerMessageListener());
+            connection.setExceptionListener(new ConsumerExceptionListener());
+            ((ActiveMQConnection) connection).addTransportListener(new ActiveMQTransportListener());
         } catch (Exception e) {
             e.printStackTrace();
         }

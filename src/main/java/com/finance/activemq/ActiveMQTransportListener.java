@@ -2,12 +2,14 @@ package com.finance.activemq;
 
 import org.apache.activemq.transport.TransportListener;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
 /**
  * Created by zt on 2016/10/5.
  */
+@Component("activeMQTransportListener")
 public class ActiveMQTransportListener implements TransportListener {
 
     private Logger logger = Logger.getLogger(ActiveMQTransportListener.class);
