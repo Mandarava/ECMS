@@ -127,8 +127,7 @@ dependencies {
     compile group: 'org.wildfly.swarm', name: 'logstash', version: '2016.12.1'
     compile group: 'io.fabric8.devops.apps', name: 'kibana', version: '2.2.298'
 
-
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.1.2'
+    /*compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.1.2'*/
 
     compile group: 'org.apache.solr', name: 'solr-core', version: '6.4.0'
     compile group: 'org.apache.solr', name: 'solr-solrj', version: '6.4.0'
