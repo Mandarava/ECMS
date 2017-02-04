@@ -15,17 +15,6 @@ hs_err_pid*
 
 .gradle/
 .idea/
-#build.gradle
 build/
-gradle/
-gradlew
-gradlew.bat
 out/
-#settings.gradle
 src/main/resources-dev/
-src/main/webapp/WEB-INF/css/
-src/main/webapp/WEB-INF/fonts/
-src/main/webapp/WEB-INF/images/
-src/test/groovy/
-src/test/java/com/finance/service/
-src/test/resources/
