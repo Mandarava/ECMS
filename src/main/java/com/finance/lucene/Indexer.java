@@ -38,6 +38,16 @@ public class Indexer {
         }
     }
 
+    public static void main(String[] args) {
+        String indexDir = "G:\\workspace\\lucene";
+        String dataDir = "G:\\workspace\\lucene\\data";
+        Indexer indexer = new Indexer(indexDir);
+        indexer.index(dataDir);
+        int indexedNumber = indexer.index(dataDir);
+        System.out.println(indexedNumber);
+        indexer.close();
+    }
+
     /**
      * 关闭写索引
      */
@@ -93,15 +103,5 @@ public class Indexer {
         }
 
         return document;
-    }
-
-    public static void main(String[] args) {
-        String indexDir = "G:\\workspace\\lucene";
-        String dataDir = "G:\\workspace\\lucene\\data";
-        Indexer indexer = new Indexer(indexDir);
-        indexer.index(dataDir);
-        int indexedNumber = indexer.index(dataDir);
-        System.out.println(indexedNumber);
-        indexer.close();
     }
 }

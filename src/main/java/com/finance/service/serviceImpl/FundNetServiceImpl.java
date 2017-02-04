@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import com.finance.common.DynamicDataSourceContextHolder;
 import com.finance.dao.FundNetDao;
+import com.finance.datasource.DynamicDataSourceContextHolder;
 import com.finance.exception.BusinessException;
 import com.finance.model.JavaBean.SinaFinanceFundNet;
 import com.finance.model.pojo.Fund;

@@ -2,6 +2,7 @@ package com.finance.common;
 
 import com.finance.dao.MySqlMapper;
 import com.finance.dao.MySqlMapper2;
+import com.finance.datasource.DynamicDataSourceContextHolder;
 import com.finance.model.pojo.Fund;
 
 import org.springframework.context.ApplicationContext;

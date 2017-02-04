@@ -1,4 +1,4 @@
-package com.finance.common;
+package com.finance.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.finance.model.pojo.DataSourceDTO;

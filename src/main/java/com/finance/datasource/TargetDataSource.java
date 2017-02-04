@@ -1,4 +1,4 @@
-package com.finance.annotation;
+package com.finance.datasource;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

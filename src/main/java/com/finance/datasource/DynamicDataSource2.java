@@ -1,4 +1,4 @@
-package com.finance.common;
+package com.finance.datasource;
 
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;

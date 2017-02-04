@@ -1,4 +1,4 @@
-package com.finance.common;
+package com.finance.datasource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +29,7 @@ public class DynamicDataSourceContextHolder {
      * @param customerType 数据源类型
      */
     public static void setCustomerType(String customerType) {
+        // TODO 多数据源事务问题
         logger.debug("==============切换数据源，类型：" + customerType + "================");
         Assert.notNull(customerType, "customerType cannot be null");
         contextHolder.set(customerType);

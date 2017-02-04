@@ -122,7 +122,7 @@
         <property name="statementLogErrorEnabled" value="true"/>
     </bean>
 
-    <bean id="dataSource" class="com.finance.common.DynamicDataSource">
+    <bean id="dataSource" class="com.finance.datasource.DynamicDataSource">
         <property name="targetDataSources">
             <map>
                 <entry key="master" value-ref="master"/>
