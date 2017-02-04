@@ -27,11 +27,15 @@ public class LoginController {
     public String login(@RequestParam String userId,
                         @RequestParam String password,
                         HttpSession httpSession) {
+        String returnPage;
         boolean isSuccess = userService.userLogin(userId, password);
         if (isSuccess) {
             httpSession.setAttribute("user", userId);
+            returnPage = "redirect:/index";
+        } else {
+            returnPage = "login";
         }
-        return "redirect:/index";
+        return returnPage;
     }
 
     @RequestMapping(value = "/index")

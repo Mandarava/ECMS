@@ -12,6 +12,7 @@
     
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
     <context:component-scan base-package="com.finance.controller"/>
+    <context:component-scan base-package="com.finance.websocket"/>
     
     <mvc:annotation-driven/>
     <!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
