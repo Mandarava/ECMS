@@ -232,5 +232,5 @@
     <jaxws:endpoint
             implementor="#helloWorld"
             address="/HelloWorld"/>
-
+    
 </beans>

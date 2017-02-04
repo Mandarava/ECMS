@@ -38,7 +38,7 @@
     <!-- spring-mvc 首页配置 -->
     <servlet-mapping>
         <servlet-name>ECMS</servlet-name>
-        <url-pattern>/WEB-INF/page/index.html</url-pattern>
+        <url-pattern>/WEB-INF/page/login.html</url-pattern>
     </servlet-mapping>
     
     <!-- 编码过滤器 -->
@@ -133,6 +133,6 @@
         <location>/WEB-INF/page/500.html</location>
     </error-page>
     <welcome-file-list>
-        <welcome-file>/WEB-INF/page/index.html</welcome-file>
+        <welcome-file>/WEB-INF/page/login.html</welcome-file>
     </welcome-file-list>
 </web-app>
