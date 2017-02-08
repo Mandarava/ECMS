@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>新增基金订单</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+</head>
+<body>
+<div id="main-content" class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <form id="form">
+                <br>
+                <select id="fundId"class="form-control">
+                    <option id="160706" value="160706">嘉实沪深300ETF联接</option>
+                    <option id="210009" value="210009">金鹰核心资源混合</option>
+                    <option id="502003" value="502003">易方达军工指数</option>
+                </select><br>
+                <input id="buy_date"  type="date" placeholder="交易日期" class="form-control"><br>
+                <input id="buy_amount"  type="text" placeholder="确认金额" class="form-control"><br>
+                <input id="buy_net_value"  type="text" placeholder="确认净值" class="form-control"><br>
+                <input id="share"  type="text" placeholder="确认份额" class="form-control"><br>
+                <input id="fee" type="text" placeholder="手续费" class="form-control"><br>
+                <select id="order_type"  class="form-control">
+                    <option id="0" value="0">买入</option>
+                    <option id="1" value="1">卖出</option>
+                    <option id="2" value="2">分红</option>
+                    <option id="3" value="3">定投</option>
+                    <option id="4" value="4">其他</option>
+                </select><br>
+                <input type="button" id="submitOrder" value="submit"
+                       class="btn btn-default"><br><br>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="/ECMS/resource/js/jquery-3.1.1.min.js"></script>
+<script src="/ECMS/resource/js/insertFundOrder.js"></script>
+</body>
+</html>

@@ -42,6 +42,7 @@ public class FundNetController {
     }
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
+    @ResponseBody
     public void test() {
         fundNetService.test();
     }

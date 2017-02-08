@@ -30,7 +30,7 @@ public class LoginController {
         String returnPage;
         boolean isSuccess = userService.userLogin(userId, password);
         if (isSuccess) {
-            httpSession.setAttribute("user", userId);
+            httpSession.setAttribute("userId", userId);
             returnPage = "redirect:/index";
         } else {
             returnPage = "login";

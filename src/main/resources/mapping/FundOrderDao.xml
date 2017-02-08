@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finance.dao.FundOrderDao">
+    <insert id="insertFundOrder">
+        INSERT INTO FUND_ORDER (CODE,BUY_TIME,BUY_AMOUNT,BUY_NET_VALUE,SHARE,FEE,ORDERTYPE,USER_ID)
+        VALUES (#{code},#{buyDate},#{buyAmount},#{buyNetValue},#{share},#{fee},#{orderType},#{userId})
+    </insert>
+</mapper>

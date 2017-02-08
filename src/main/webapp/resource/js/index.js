@@ -90,4 +90,8 @@ $(document).ready(function () {
         $('#form1').submit();
     })
 
+    $('#gotoFundOrder').on('click', function () {
+        $('#formFundOrder').submit();
+    })
+
 });
