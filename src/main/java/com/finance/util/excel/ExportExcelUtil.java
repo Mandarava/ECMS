@@ -30,8 +30,12 @@ public final class ExportExcelUtil {
 
     private final static int MAX_ROW = 1048576;
 
+    /**
+     * 性能  单表查询sql没有性能问题的情况下，SSD，30W条数据在20s左右  100W条在70s左右
+     */
     public static void exportBigDataExcel(List<String> headers, String fileName, FundNetDao fundNetDao)
             throws IOException {
+        long a = System.currentTimeMillis();
         // 最重要的就是使用SXSSFWorkbook，表示流的方式进行操作
         // 在内存中保持1000行，超过1000行将被刷新到磁盘
         SXSSFWorkbook sxssfWorkbook = new SXSSFWorkbook(1000);
@@ -60,11 +64,17 @@ public final class ExportExcelUtil {
                 rowValue.createCell(0).setCellValue(list.get(i).getId());
                 rowValue.createCell(1).setCellValue(list.get(i).getCode());
                 rowValue.createCell(2).setCellValue(list.get(i).getUnitNetValue());
+                rowValue.createCell(3).setCellValue(list.get(i).getUnitNetValue());
+                rowValue.createCell(4).setCellValue(list.get(i).getUnitNetValue());
+                rowValue.createCell(5).setCellValue(list.get(i).getUnitNetValue());
+                rowValue.createCell(6).setCellValue(list.get(i).getUnitNetValue());
             }
             list.clear();
         }
         output(sxssfWorkbook, fileName);
         sxssfWorkbook.dispose();
+        long b = System.currentTimeMillis();
+        System.out.println("耗时：" + (b - a));
     }
 
     private static void output(SXSSFWorkbook sxssfWorkbook, String fileName) {
