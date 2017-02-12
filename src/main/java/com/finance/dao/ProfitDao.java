@@ -1,11 +1,11 @@
 package com.finance.dao;
 
-import com.finance.model.pojo.Profit;
+import com.finance.model.pojo.ProfitDO;
 
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProfitDao {
 
-    int insertDailyProfit(Profit profit);
+    int insertDailyProfit(ProfitDO profit);
 }

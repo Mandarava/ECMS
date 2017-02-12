@@ -15,10 +15,10 @@ import us.codecraft.webmagic.selector.JsonPathSelector;
  */
 public class EastMoneyFundPageProcessor implements PageProcessor {
 
-    private static final String LIST_URL = "http://angularjs\\.cn/api/article/latest.*";
+    private static final String LIST_URL = "http://angularjs\\.cn/api/article/latest.*" ;
 
     /* @Override
-     public void process(Page page) {
+     public void process(PageDTO page) {
          page.addTargetRequests(page.getHtml().links().regex("http://fund.eastmoney.com/f10/jjjz_160706.html").all());
          page.putField("fund", page.getHtml().$("#jztable"));
          if (page.getResultItems().get("fund") == null) {

@@ -2,11 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.finance.dao.DataSourceDao">
-
-    <select id="findDataSources" resultType="com.finance.model.pojo.DataSourceDTO">
+    
+    <select id="findDataSources" resultType="com.finance.model.pojo.DataSourceDO">
         SELECT * FROM DATA_SOURCE
     </select>
-    <select id="findDataSourceById" resultType="com.finance.model.pojo.DataSourceDTO"
+    <select id="findDataSourceById" resultType="com.finance.model.pojo.DataSourceDO"
             parameterType="string">
         SELECT * FROM DATA_SOURCE WHERE ID = #{id}
     </select>

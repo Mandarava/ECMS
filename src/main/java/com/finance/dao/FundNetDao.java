@@ -1,7 +1,7 @@
 package com.finance.dao;
 
-import com.finance.model.pojo.Fund;
-import com.finance.model.pojo.FundNet;
+import com.finance.model.pojo.FundDO;
+import com.finance.model.pojo.FundNetDO;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -14,13 +14,13 @@ import java.util.List;
 @Repository
 public interface FundNetDao {
 
-    int batchInsertFundNetData(List<FundNet> fundNetList);
+    int batchInsertFundNetData(List<FundNetDO> fundNetList);
 
-    List<FundNet> findFundNetDateByCodes(List<Fund> funds);
+    List<FundNetDO> findFundNetDateByCodes(List<FundDO> funds);
 
-    List<FundNet> findFundNetByCode(String code);
+    List<FundNetDO> findFundNetByCode(String code);
 
-    List<FundNet> findFundNetPage(@Param("limit") int limit, @Param("offset") int offset);
+    List<FundNetDO> findFundNetPage(@Param("limit") int limit, @Param("offset") int offset);
 
     int findFundNetCount();
 }

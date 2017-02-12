@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Created by zt on 2016/10/1.
  */
-public class FundNet implements Serializable {
+public class FundNetDO implements Serializable {
 
     private int id;
 
@@ -119,7 +119,7 @@ public class FundNet implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        FundNet fundNet = (FundNet) o;
+        FundNetDO fundNet = (FundNetDO) o;
 
         if (!code.equals(fundNet.code)) return false;
         return netDate.equals(fundNet.netDate);

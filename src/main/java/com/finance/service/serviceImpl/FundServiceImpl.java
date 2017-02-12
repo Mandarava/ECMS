@@ -6,8 +6,8 @@ import com.google.gson.reflect.TypeToken;
 
 import com.finance.dao.FundDao;
 import com.finance.exception.BusinessException;
-import com.finance.model.JavaBean.SinaFinanceFund;
-import com.finance.model.pojo.Fund;
+import com.finance.model.dto.SinaFinanceFundDTO;
+import com.finance.model.pojo.FundDO;
 import com.finance.service.FundService;
 import com.finance.util.myutil.HttpConnectionManager;
 
@@ -53,13 +53,13 @@ public class FundServiceImpl implements FundService {
      */
     @Override
     public void insertOrUpdateFundData() throws BusinessException {
-        List<SinaFinanceFund> sinaFundList = this.fetchFundData();
+        List<SinaFinanceFundDTO> sinaFundList = this.fetchFundData();
         if (sinaFundList == null || sinaFundList.size() == 0) {
             return;
         }
-        List<Fund> fundList = new ArrayList<>();
-        for (SinaFinanceFund sinaFund : sinaFundList) {
-            Fund fund = new Fund();
+        List<FundDO> fundList = new ArrayList<>();
+        for (SinaFinanceFundDTO sinaFund : sinaFundList) {
+            FundDO fund = new FundDO();
             fund.setCode(sinaFund.getSymbol());
             fund.setName(sinaFund.getName());
             fund.setCompanyName(sinaFund.getCompanyName());
@@ -143,12 +143,12 @@ public class FundServiceImpl implements FundService {
             fundList.add(fund);
         }
 
-        List<Fund> existsFund = this.findFunds();
-        List<Fund> fundToUpdate = new ArrayList<>();
-        Iterator<Fund> fundIterator = fundList.iterator();
+        List<FundDO> existsFund = this.findFunds();
+        List<FundDO> fundToUpdate = new ArrayList<>();
+        Iterator<FundDO> fundIterator = fundList.iterator();
         while (fundIterator.hasNext()) {
-            Fund newFund = fundIterator.next();
-            for (Fund oldFund : existsFund) {
+            FundDO newFund = fundIterator.next();
+            for (FundDO oldFund : existsFund) {
                 if (newFund.getCode().equals(oldFund.getCode())) {
                     fundToUpdate.add(newFund);
                     fundIterator.remove();
@@ -169,7 +169,7 @@ public class FundServiceImpl implements FundService {
      * 查找所有基金
      */
     @Override
-    public List<Fund> findFunds() {
+    public List<FundDO> findFunds() {
         return fundDao.findFunds();
     }
 
@@ -178,7 +178,7 @@ public class FundServiceImpl implements FundService {
      *
      * @return 基金
      */
-    private List<SinaFinanceFund> fetchFundData() {
+    private List<SinaFinanceFundDTO> fetchFundData() {
         URI uri = null;
         try {
             uri = new URIBuilder()
@@ -204,7 +204,7 @@ public class FundServiceImpl implements FundService {
             strResult = matcher.group(0);
         }
         Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
-        List<SinaFinanceFund> result = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFund>>() {
+        List<SinaFinanceFundDTO> result = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFundDTO>>() {
         }.getType());
         return result;
     }

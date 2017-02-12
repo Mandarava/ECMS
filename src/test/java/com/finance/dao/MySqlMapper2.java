@@ -1,6 +1,6 @@
 package com.finance.dao;
 
-import com.finance.model.pojo.Fund;
+import com.finance.model.pojo.FundDO;
 
 import org.apache.ibatis.annotations.Select;
 
@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface MySqlMapper2 {
     @Select("select * from Fund")
-    List<Fund> getList();
+    List<FundDO> getList();
 }

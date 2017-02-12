@@ -21,7 +21,7 @@ public class TestIsExpressionValidate {
 
     @Test
     public void test() {
-        String expression = "[sum+b*(1)*](5-4)*{x+b+b*(1+2)}";
+        String expression = "[sum+b*(1)*](5-4)*{x+b+b*(1+2)}" ;
         boolean result = isExpressionValid2(expression);
         Assert.assertTrue(result);
     }
@@ -80,7 +80,7 @@ public class TestIsExpressionValidate {
 
     @Test
     public void testExpression() {
-        String expression = "[sum+b*(1)](5-4)*{x+b+b*(1+2)}";
+        String expression = "[sum+b*(1)](5-4)*{x+b+b*(1+2)}" ;
         String temp = expression.replaceAll("sum|x|b", "1");
         ScriptEngineManager manager = new ScriptEngineManager();
         ScriptEngine engine = manager.getEngineByName("javascript");
@@ -95,7 +95,7 @@ public class TestIsExpressionValidate {
 
     @Test
     public void test66() {
-        String s = "2016-10-23";
+        String s = "2016-10-23" ;
         Pattern p = Pattern.compile("(?<year>\\d{4})-(?<month>\\d{2})-(?<day>\\d{2})");
         Matcher m = p.matcher(s);
         if (m.find()) {

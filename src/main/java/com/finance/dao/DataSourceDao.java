@@ -1,7 +1,7 @@
 package com.finance.dao;
 
 
-import com.finance.model.pojo.DataSourceDTO;
+import com.finance.model.pojo.DataSourceDO;
 
 import org.springframework.stereotype.Repository;
 
@@ -13,8 +13,8 @@ import java.util.List;
 @Repository
 public interface DataSourceDao {
 
-    List<DataSourceDTO> findDataSources();
+    List<DataSourceDO> findDataSources();
 
-    DataSourceDTO findDataSourceById(String id);
+    DataSourceDO findDataSourceById(String id);
 
 }

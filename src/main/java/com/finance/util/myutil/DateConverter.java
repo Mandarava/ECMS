@@ -31,7 +31,7 @@ public class DateConverter implements Converter {
                     if (index != -1) {
                         String dateTime = ((String) value).substring(0, index);
                         String millisecond = ((String) value).substring(index);
-                        String zero = "000";
+                        String zero = "000" ;
                         String rightzero = zero.substring(0, 4 - millisecond.length());
                         millisecond = millisecond + rightzero;
                         value = dateTime + millisecond;

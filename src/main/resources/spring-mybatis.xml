@@ -17,10 +17,10 @@
     <context:component-scan base-package="com.finance"/>
     <!-- AOP自动代理功能 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
-
+    
     <import resource="classpath*:spring-ehcache.xml"/>
     <import resource="classpath*:spring-activemq.xml"/>
-
+    
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -35,7 +35,7 @@
         </property>
         <property name="fileEncoding" value="utf-8"/>
     </bean>
-
+    
     <bean id="master" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
         <!-- 指定连接数据库的驱动 -->
@@ -64,7 +64,7 @@
         <!-- 配置监控统计拦截的filters，去掉后监控界面sql无法统计 -->
         <property name="filters" value="stat"/>
     </bean>
-
+    
     <!--slave 配置数据源 -->
     <bean id="slave" class="com.alibaba.druid.pool.DruidDataSource"
           init-method="init" destroy-method="close">
@@ -105,12 +105,12 @@
         <!-- 关闭abanded连接时输出错误日志 -->
         <property name="logAbandoned" value="true"/>
     </bean>
-
+    
     <!-- 上面的druid的配置 -->
     <bean id="logFilter" class="com.alibaba.druid.filter.logging.Slf4jLogFilter">
         <property name="statementExecutableSqlLogEnable" value="false"/>
     </bean>
-
+    
     <!-- 慢SQL记录 -->
     <bean id="stat-filter" class="com.alibaba.druid.filter.stat.StatFilter">
         <property name="mergeSql" value="true"/>
@@ -121,7 +121,7 @@
     <bean id="log-filter" class="com.alibaba.druid.filter.logging.Log4jFilter">
         <property name="statementLogErrorEnabled" value="true"/>
     </bean>
-
+    
     <bean id="dataSource" class="com.finance.datasource.DynamicDataSource">
         <property name="targetDataSources">
             <map>
@@ -131,12 +131,12 @@
         </property>
         <property name="defaultTargetDataSource" ref="master"/>
     </bean>
-
+    
     <!-- 配置Jdbc模板 -->
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource"></property>
     </bean>
-
+    
     <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
     <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
         <property name="configLocation" value="classpath:mybatis-config.xml"></property>
@@ -144,27 +144,27 @@
         <!-- 自动扫描mapping.xml文件 -->
         <property name="mapperLocations" value="classpath:mapping/*.xml"></property>
     </bean>
-
+    
     <!-- DAO接口所在包名，Spring会自动查找其下的类 -->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.finance.dao"/>
         <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
     </bean>
-
+    
     <!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource"/>
     </bean>
-
+    
     <aop:config>
         <aop:pointcut id="defaultServiceOperation"
                       expression="execution(* com.finance.service..*.*(..))"/>
         <aop:advisor pointcut-ref="defaultServiceOperation" advice-ref="TxAdvice"/>
     </aop:config>
-
+    
     <tx:annotation-driven transaction-manager="transactionManager"/>
-
+    
     <tx:advice id="TxAdvice" transaction-manager="transactionManager">
         <tx:attributes>
             <tx:method name="delete*" propagation="REQUIRED" isolation="REPEATABLE_READ"
@@ -188,10 +188,10 @@
                        read-only="false" rollback-for="java.lang.Exception"/>
         </tx:attributes>
     </tx:advice>
-
+    
     <bean
             class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
-
+    
     <bean id="mappingJacksonHttpMessageConverter"
           class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
         <property name="supportedMediaTypes">
@@ -201,7 +201,7 @@
             </list>
         </property>
     </bean>
-
+    
     <!-- redis -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxIdle" value="${redis.maxIdle}"/>
@@ -209,7 +209,7 @@
         <property name="maxWaitMillis" value="${redis.maxWait}"/>
         <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
     </bean>
-
+    
     <bean id="jedisConnFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
           p:use-pool="true"
@@ -217,12 +217,12 @@
           p:port="${redis.port}"
           p:password="${redis.pass}"
           p:pool-config-ref="poolConfig"/>
-
+    
     <!-- redis template definition -->
     <bean id="redisTemplate"
           class="org.springframework.data.redis.core.RedisTemplate"
           p:connection-factory-ref="jedisConnFactory"/>
-
+    
     <!-- webservice  -->
     <import resource="classpath:cxf.xml"/>
     <import resource="classpath:cxf-servlet.xml"/>
@@ -232,5 +232,5 @@
     <jaxws:endpoint
             implementor="#helloWorld"
             address="/HelloWorld"/>
-    
+
 </beans>

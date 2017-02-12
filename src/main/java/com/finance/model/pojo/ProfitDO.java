@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Created by zt on 2016/10/3.
  */
-public class Profit implements Serializable {
+public class ProfitDO implements Serializable {
 
     private int id;
 
@@ -60,7 +60,7 @@ public class Profit implements Serializable {
 
     @Override
     public String toString() {
-        return "Profit{" +
+        return "ProfitDO{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", time=" + time +

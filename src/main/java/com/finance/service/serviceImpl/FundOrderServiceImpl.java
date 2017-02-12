@@ -2,7 +2,7 @@ package com.finance.service.serviceImpl;
 
 import com.finance.dao.FundOrderDao;
 import com.finance.exception.BusinessException;
-import com.finance.model.pojo.FundOrder;
+import com.finance.model.pojo.FundOrderDO;
 import com.finance.service.FundOrderService;
 
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ public class FundOrderServiceImpl implements FundOrderService {
     private FundOrderDao fundOrderDao;
 
     @Override
-    public void insertFundOrder(FundOrder fundOrder) throws BusinessException {
+    public void insertFundOrder(FundOrderDO fundOrder) throws BusinessException {
         int i = fundOrderDao.insertFundOrder(fundOrder);
         if (i == 0) {
             throw new BusinessException("insertFundOrder failed!");

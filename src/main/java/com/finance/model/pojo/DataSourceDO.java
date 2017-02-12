@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by zt on 2016/12/11.
  */
-public class DataSourceDTO implements Serializable {
+public class DataSourceDO implements Serializable {
 
     private int id;
 

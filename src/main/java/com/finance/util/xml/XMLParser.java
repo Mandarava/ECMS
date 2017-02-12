@@ -23,8 +23,7 @@ public class XMLParser {
     }
 
     /**
-     *  一次性加载到内存生成DOM树
-     * @param fileURI
+     * 一次性加载到内存生成DOM树
      */
     public void parseXML(String fileURI) {
         // 创建一个DocumentBuilderFactory的对象

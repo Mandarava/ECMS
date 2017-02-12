@@ -1,4 +1,4 @@
-package com.finance.model.JavaBean;
+package com.finance.model.dto;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by zt on 2016/10/4.
  */
-public class SinaFinanceFund implements Serializable {
+public class SinaFinanceFundDTO implements Serializable {
 
     @Expose
     @SerializedName("symbol")

@@ -2,7 +2,7 @@ package com.finance.service.serviceImpl;
 
 import com.finance.dao.ProfitDao;
 import com.finance.exception.BusinessException;
-import com.finance.model.pojo.Profit;
+import com.finance.model.pojo.ProfitDO;
 import com.finance.service.FundProfitService;
 
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class FundProfitServiceImpl implements FundProfitService {
     private ProfitDao profitDao;
 
     @Override
-    public void insertFundProfit(Profit profit) throws BusinessException {
+    public void insertFundProfit(ProfitDO profit) throws BusinessException {
         int i = profitDao.insertDailyProfit(profit);
         if (i == 0) {
             throw new BusinessException("insertFundProfit failed!");

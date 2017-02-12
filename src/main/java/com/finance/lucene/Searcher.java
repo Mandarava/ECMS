@@ -47,8 +47,8 @@ public class Searcher {
     }
 
     public static void main(String[] args) {
-        String indexDir = "G:\\workspace\\lucene";
-        String keyword = "deliberately";
+        String indexDir = "G:\\workspace\\lucene" ;
+        String keyword = "deliberately" ;
         search(indexDir, keyword);
     }
 }

@@ -26,15 +26,15 @@ public class Dom4jXMLParser<T> {
     public static void main(String[] args) {
         Dom4jXMLParser xmlUtil = new Dom4jXMLParser<Book>();
         Book book = new Book();
-        List<Book> books = xmlUtil.parseXML("src/main/java/com/finance/util/xml/books.xml",book);
+        List<Book> books = xmlUtil.parseXML("src/main/java/com/finance/util/xml/books.xml", book);
     }
 
     private List<T> parseXML(String fileURL, T t) {
         List<T> result = new ArrayList<>();
         Field[] fields = t.getClass().getDeclaredFields();
-        Map<String,Field> fieldMap = new HashMap<>();
-        for (int i = 0; i <fields.length; i++) {
-            fieldMap.put(fields[i].getName(),fields[i]);
+        Map<String, Field> fieldMap = new HashMap<>();
+        for (int i = 0; i < fields.length; i++) {
+            fieldMap.put(fields[i].getName(), fields[i]);
         }
         SAXReader saxReader = new SAXReader();
         try {
@@ -46,27 +46,27 @@ public class Dom4jXMLParser<T> {
                 Element element = iterator.next();
                 List<Attribute> attributes = element.attributes();
                 for (Attribute attribute : attributes) {
-                    if(fieldMap.containsKey(attribute.getName())) {
+                    if (fieldMap.containsKey(attribute.getName())) {
                         Field field = fieldMap.get(attribute.getName());
                         Method setMethod = t.getClass().getMethod(
                                 "set"
                                         + field.getName().substring(0, 1)
                                         .toUpperCase()
-                                        + field.getName().substring(1),field.getType());
-                        setMethod.invoke(t,attribute.getValue());
+                                        + field.getName().substring(1), field.getType());
+                        setMethod.invoke(t, attribute.getValue());
                     }
                 }
                 Iterator<Element> iterator1 = element.elementIterator();
                 while (iterator1.hasNext()) {
                     Element node = iterator1.next();
-                    if(fieldMap.containsKey(node.getName())) {
+                    if (fieldMap.containsKey(node.getName())) {
                         Field field = fieldMap.get(node.getName());
                         Method setMethod = t.getClass().getMethod(
                                 "set"
                                         + field.getName().substring(0, 1)
                                         .toUpperCase()
-                                        + field.getName().substring(1),field.getType());
-                        setMethod.invoke(t,node.getStringValue());
+                                        + field.getName().substring(1), field.getType());
+                        setMethod.invoke(t, node.getStringValue());
                     }
                 }
                 result.add(t);

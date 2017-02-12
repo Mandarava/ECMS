@@ -6,7 +6,7 @@
     <!--数据库驱动 -->
     <classPathEntry location="G:\mysql-connector-java-5.1.38.jar"/>
     <context id="my" targetRuntime="MyBatis3">
-
+        
         <property name="javaFileEncoding" value="UTF-8"/>
         <!-- 自动识别数据库关键字，默认false，如果设置为true，根据SqlReservedWords中定义的关键字列表； 一般保留默认值，遇到数据库关键字（Java关键字），使用columnOverride覆盖 -->
         <property name="autoDelimitKeywords" value="false"/>
@@ -43,8 +43,8 @@
                enableCountByExample="false" enableUpdateByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false"
                selectByExampleQueryId="false"></table>
-
+        
         <!-- mvn mybatis-generator:generate -->
-
+    
     </context>
 </generatorConfiguration>

@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/spring-mybatis.xml")
 public class TestSendMessage {
-    private final String QUEUENAME = "default_queue";
+    private final String QUEUENAME = "default_queue" ;
 
     @Autowired
     private QueueSender queueSender;

@@ -1,11 +1,11 @@
 package com.finance.service;
 
-import com.finance.model.pojo.Profit;
+import com.finance.model.pojo.ProfitDO;
 
 /**
  * Created by zt on 2016/12/10.
  */
 public interface FundProfitService {
 
-    void insertFundProfit(Profit profit) throws Exception;
+    void insertFundProfit(ProfitDO profit) throws Exception;
 }

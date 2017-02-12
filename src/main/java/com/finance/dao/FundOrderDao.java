@@ -1,6 +1,6 @@
 package com.finance.dao;
 
-import com.finance.model.pojo.FundOrder;
+import com.finance.model.pojo.FundOrderDO;
 
 import org.springframework.stereotype.Repository;
 
@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface FundOrderDao {
 
-    int insertFundOrder(FundOrder fundOrder);
+    int insertFundOrder(FundOrderDO fundOrder);
 }

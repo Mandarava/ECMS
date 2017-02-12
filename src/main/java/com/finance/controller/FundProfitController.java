@@ -1,6 +1,6 @@
 package com.finance.controller;
 
-import com.finance.model.pojo.Profit;
+import com.finance.model.pojo.ProfitDO;
 import com.finance.service.FundProfitService;
 
 import org.slf4j.Logger;
@@ -29,7 +29,7 @@ public class FundProfitController {
 
     @ResponseBody
     @RequestMapping(value = "/addProfit", method = RequestMethod.POST)
-    public Map addProfit(Profit profit) {
+    public Map addProfit(ProfitDO profit) {
         Map<String, Object> map = new HashMap<>();
         try {
             fundProfitService.insertFundProfit(profit);

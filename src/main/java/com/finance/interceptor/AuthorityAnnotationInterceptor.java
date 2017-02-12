@@ -38,7 +38,7 @@ public class AuthorityAnnotationInterceptor extends HandlerInterceptorAdapter {
                         authority = clazz.getAnnotation(Authority.class);
                     }
                     int code = -1;
-                    String msg = "";
+                    String msg = "" ;
                     if (authority != null) {
                         if (AuthorityType.NoValidate == authority.value()) {
                             // 标记为不验证,放行
@@ -52,7 +52,7 @@ public class AuthorityAnnotationInterceptor extends HandlerInterceptorAdapter {
                             // TODO:
 
                             code = 1;
-                            msg = "验证成功！";
+                            msg = "验证成功！" ;
                             return true;
                         }
                     }

@@ -2,7 +2,7 @@ package com.finance.service;
 
 import com.finance.datasource.TargetDataSource;
 import com.finance.exception.BusinessException;
-import com.finance.model.pojo.FundNet;
+import com.finance.model.pojo.FundNetDO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface FundNetService {
     void insertOrUpdateFundNetData() throws Exception;
 
     @TargetDataSource
-    void batchInsertFundNetData(List<FundNet> fundNetList) throws BusinessException;
+    void batchInsertFundNetData(List<FundNetDO> fundNetList) throws BusinessException;
 
     void test();
 }

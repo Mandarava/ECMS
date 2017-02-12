@@ -55,7 +55,7 @@ public final class MathUtil {
 
     public static int evalRPN(String[] input) {
         Stack<Integer> results = new Stack<>();
-        String operators = "+-*/";
+        String operators = "+-*/" ;
         for (String token : input) {
             if (!operators.contains(token)) {
                 results.push(Integer.valueOf(token));

@@ -22,7 +22,7 @@ public class RequestLogFilter extends AbstractFilter {
     public static String getParamsString(Map<String, String[]> params) {
 
         if (params == null || params.isEmpty())
-            return "";
+            return "" ;
 
         StringBuilder builder = new StringBuilder();
         builder.append("?");

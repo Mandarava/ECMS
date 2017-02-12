@@ -1,6 +1,6 @@
 package com.finance.bind;
 
-import com.finance.model.dto.Page;
+import com.finance.model.dto.PageDTO;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -30,17 +30,17 @@ public class RequestPageInfoMethodArgumentResolver implements HandlerMethodArgum
 
         String strPage = webRequest.getHeader("page");
         String strLimit = webRequest.getHeader("limit");
-        Page pageInfo = new Page();
+        PageDTO pageDTO = new PageDTO();
         if (strPage != null && strPage.matches("\\d+")) {
-            pageInfo.setPageNo(Integer.parseInt(strPage));
+            pageDTO.setPageNo(Integer.parseInt(strPage));
         } else {
-            pageInfo.setPageNo(requestPageInfo.pageNo());
+            pageDTO.setPageNo(requestPageInfo.pageNo());
         }
         if (strLimit != null && strLimit.matches("\\d+")) {
-            pageInfo.setLimit(Integer.parseInt(strLimit));
+            pageDTO.setLimit(Integer.parseInt(strLimit));
         } else {
-            pageInfo.setLimit(requestPageInfo.limit());
+            pageDTO.setLimit(requestPageInfo.limit());
         }
-        return pageInfo;
+        return pageDTO;
     }
 }

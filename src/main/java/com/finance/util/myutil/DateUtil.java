@@ -15,7 +15,7 @@ public class DateUtil {
      * 日期对象转字符串
      */
     public static String formatDate(Date date, String format) {
-        String result = "";
+        String result = "" ;
         SimpleDateFormat sdf = new SimpleDateFormat(format);
         if (date != null) {
             result = sdf.format(date);

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.finance.dao.FundDao">
-
+    
     <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache">
          <property name="timeToIdleSeconds" value="3600"/>
          <property name="timeToLiveSeconds" value="3600"/>
@@ -12,26 +12,26 @@
          <property name="maxEntriesLocalDisk" value="10000000"/>
          <property name="memoryStoreEvictionPolicy" value="LRU"/>
      </cache>-->
-
-    <resultMap id="BaseResultMap" type="com.finance.model.pojo.Fund">
+    
+    <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundDO">
         <id column="CODE" jdbcType="VARCHAR" property="code"/>
         <result column="NAME" jdbcType="VARCHAR" property="name"/>
         <result column="TYPE" jdbcType="VARCHAR" property="type"/>
         <result column="UPDATERID" jdbcType="VARCHAR" property="updaterId"/>
         <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updatetime"/>
     </resultMap>
-
+    
     <sql id="Base_Column_List">
         CODE, NAME, TYPE
     </sql>
-
-    <select id="findFunds" resultType="Fund">
+    
+    <select id="findFunds" resultType="FundDO">
         SELECT
         CODE, NAME, TYPE
         FROM FUND
     </select>
-
-    <insert id="insertFund" parameterType="Fund">
+    
+    <insert id="insertFund" parameterType="FundDO">
         INSERT INTO
         FUND
         (
@@ -70,8 +70,8 @@
         NOW()
         )
     </insert>
-
-    <update id="updateFund" parameterType="Fund">
+    
+    <update id="updateFund" parameterType="FundDO">
         UPDATE
         FUND
         SET
@@ -91,7 +91,7 @@
         UPDATETIME = NOW()
         where CODE = #{code,jdbcType=VARCHAR}
     </update>
-
+    
     <insert id="batchInsertFund" parameterType="java.util.List">
         INSERT INTO
         FUND
@@ -133,7 +133,7 @@
             )
         </foreach>
     </insert>
-
+    
     <update id="batchUpdateFund" parameterType="java.util.List">
         <foreach collection="list" item="item" separator=";">
             UPDATE
@@ -156,8 +156,8 @@
             where CODE = #{item.code,jdbcType=VARCHAR}
         </foreach>
     </update>
-
-    <insert id="insertOrUpdateFundData" parameterType="Fund">
+    
+    <insert id="insertOrUpdateFundData" parameterType="FundDO">
         <selectKey keyProperty="count" resultType="int" order="BEFORE">
             SELECT COUNT(1) FROM FUND WHERE CODE = #{code,jdbcType=VARCHAR}
         </selectKey>
@@ -222,18 +222,18 @@
             )
         </if>
     </insert>
-
+    
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from fund
         where CODE = #{code,jdbcType=VARCHAR}
     </delete>
-    <insert id="insert" parameterType="Fund">
+    <insert id="insert" parameterType="FundDO">
         insert into fund (CODE, NAME, TYPE,
         UPDATERID, UPDATETIME)
         values (#{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR},
         #{updaterid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" parameterType="Fund">
+    <insert id="insertSelective" parameterType="FundDO">
         insert into fund
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="code != null">
@@ -270,7 +270,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="Fund">
+    <update id="updateByPrimaryKeySelective" parameterType="FundDO">
         update fund
         <set>
             <if test="name != null">
@@ -288,7 +288,7 @@
         </set>
         where CODE = #{code,jdbcType=VARCHAR}
     </update>
-    <update id="updateByPrimaryKey" parameterType="Fund">
+    <update id="updateByPrimaryKey" parameterType="FundDO">
         update fund
         set NAME = #{name,jdbcType=VARCHAR},
         TYPE = #{type,jdbcType=VARCHAR},

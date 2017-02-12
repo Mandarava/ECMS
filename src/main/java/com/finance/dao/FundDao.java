@@ -1,6 +1,6 @@
 package com.finance.dao;
 
-import com.finance.model.pojo.Fund;
+import com.finance.model.pojo.FundDO;
 import com.googlecode.ehcache.annotations.Cacheable;
 import com.googlecode.ehcache.annotations.TriggersRemove;
 import com.googlecode.ehcache.annotations.When;
@@ -19,20 +19,20 @@ public interface FundDao {
      * 查找所有的基金
      */
     @Cacheable(cacheName = "baseCache")
-    List<Fund> findFunds();
+    List<FundDO> findFunds();
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
-    int insertOrUpdateFundData(Fund fund);
+    int insertOrUpdateFundData(FundDO fund);
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
-    int updateFund(Fund fund);
+    int updateFund(FundDO fund);
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
-    int insertFund(Fund fund);
+    int insertFund(FundDO fund);
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
-    int batchInsertFund(List<Fund> funds);
+    int batchInsertFund(List<FundDO> funds);
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
-    int batchUpdateFund(List<Fund> funds);
+    int batchUpdateFund(List<FundDO> funds);
 }

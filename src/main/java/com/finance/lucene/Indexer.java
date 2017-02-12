@@ -39,8 +39,8 @@ public class Indexer {
     }
 
     public static void main(String[] args) {
-        String indexDir = "G:\\workspace\\lucene";
-        String dataDir = "G:\\workspace\\lucene\\data";
+        String indexDir = "G:\\workspace\\lucene" ;
+        String dataDir = "G:\\workspace\\lucene\\data" ;
         Indexer indexer = new Indexer(indexDir);
         indexer.index(dataDir);
         int indexedNumber = indexer.index(dataDir);

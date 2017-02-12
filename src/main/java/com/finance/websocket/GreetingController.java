@@ -20,7 +20,7 @@ public class GreetingController {
 
     @RequestMapping(value = "/websocket", method = RequestMethod.POST)
     public String redirectToWebsocket() {
-        return "websocket";
+        return "websocket" ;
     }
 
 }

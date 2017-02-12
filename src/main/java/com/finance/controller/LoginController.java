@@ -31,16 +31,16 @@ public class LoginController {
         boolean isSuccess = userService.userLogin(userId, password);
         if (isSuccess) {
             httpSession.setAttribute("userId", userId);
-            returnPage = "redirect:/index";
+            returnPage = "redirect:/index" ;
         } else {
-            returnPage = "login";
+            returnPage = "login" ;
         }
         return returnPage;
     }
 
     @RequestMapping(value = "/index")
     public String showHomePage() {
-        return "index";
+        return "index" ;
     }
 
 }

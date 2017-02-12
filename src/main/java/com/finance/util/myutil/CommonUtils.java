@@ -28,7 +28,7 @@ public final class CommonUtils {
      */
     public static String escapeNull(String value) {
         if (value == null) {
-            return "";
+            return "" ;
         } else {
             return value;
         }
@@ -47,7 +47,7 @@ public final class CommonUtils {
         int index = fileName.lastIndexOf(".");
         String fileType = null;
         if (index == -1) {
-            fileType = "";
+            fileType = "" ;
         } else {
             fileType = fileName.substring(index, fileName.length());
         }
@@ -178,7 +178,7 @@ public final class CommonUtils {
      * Blob表情的二进制存储方案
      */
     public static String emojiEscape(Blob blob) {
-        String result = "";
+        String result = "" ;
         try {
             result = new String(blob.getBytes(1, (int) blob.length()), "utf-8");
         } catch (UnsupportedEncodingException | SQLException e) {

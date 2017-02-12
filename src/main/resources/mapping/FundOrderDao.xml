@@ -4,6 +4,7 @@
 <mapper namespace="com.finance.dao.FundOrderDao">
     <insert id="insertFundOrder">
         INSERT INTO FUND_ORDER (CODE,BUY_TIME,BUY_AMOUNT,BUY_NET_VALUE,SHARE,FEE,ORDERTYPE,USER_ID)
-        VALUES (#{code},#{buyDate},#{buyAmount},#{buyNetValue},#{share},#{fee},#{orderType},#{userId})
+        VALUES
+        (#{code},#{buyDate},#{buyAmount},#{buyNetValue},#{share},#{fee},#{orderType},#{userId})
     </insert>
 </mapper>

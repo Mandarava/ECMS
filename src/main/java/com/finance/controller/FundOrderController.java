@@ -1,6 +1,6 @@
 package com.finance.controller;
 
-import com.finance.model.pojo.FundOrder;
+import com.finance.model.pojo.FundOrderDO;
 import com.finance.service.FundOrderService;
 
 import org.slf4j.Logger;
@@ -30,12 +30,12 @@ public class FundOrderController {
 
     @RequestMapping(value = "/insertpage", method = RequestMethod.POST)
     public String gotoInsertFundOrder() {
-        return "insertFundOrder";
+        return "insertFundOrder" ;
     }
 
     @ResponseBody
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Map insertOrUpdateFundNetData(FundOrder fundOrder, HttpSession session) {
+    public Map insertOrUpdateFundNetData(FundOrderDO fundOrder, HttpSession session) {
         Map<String, Object> map = new HashMap<>();
         try {
             fundOrder.setUserId((String) session.getAttribute("userId"));

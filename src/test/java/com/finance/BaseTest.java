@@ -27,7 +27,7 @@ public class BaseTest {
     @Before
     public void setUp() throws Exception {
         if (StringUtils.isEmpty(springXmlPath)) {
-            springXmlPath = "classpath:spring-*.xml";
+            springXmlPath = "classpath:spring-*.xml" ;
         }
         try {
             context = new ClassPathXmlApplicationContext(springXmlPath.split("[,\\s]+]"));

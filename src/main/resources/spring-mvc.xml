@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:mvc="http://www.springframework.org/schema/mvc"
-       xmlns="http://www.springframework.org/schema/beans"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
                         http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                         http://www.springframework.org/schema/mvc
@@ -25,10 +25,10 @@
     
     <!-- 静态资源映射 -->
     <mvc:resources mapping="/resource" location="/resource"/>
-    <mvc:resources mapping="/images/**" location="/WEB-INF/images/"/>
-    <mvc:resources mapping="/css/**" location="/WEB-INF/css/"/>
-    <mvc:resources mapping="/js/**" location="/WEB-INF/js/"/>
-    <mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/"/>
+    <mvc:resources mapping="/images/**" location="/resource/images/"/>
+    <mvc:resources mapping="/css/**" location="/resource/css/"/>
+    <mvc:resources mapping="/js/**" location="/resource/js/"/>
+    <mvc:resources mapping="/fonts/**" location="/resource/fonts/"/>
     
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

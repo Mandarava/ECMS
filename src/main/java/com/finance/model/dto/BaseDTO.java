@@ -13,14 +13,14 @@ public class BaseDTO implements Serializable {
     /**
      * 分页信息
      */
-    private Page page = new Page();
+    private PageDTO pageDTO = new PageDTO();
 
 
-    public Page getPage() {
-        return page;
+    public PageDTO getPageDTO() {
+        return pageDTO;
     }
 
-    public void setPage(Page page) {
-        this.page = page;
+    public void setPageDTO(PageDTO pageDTO) {
+        this.pageDTO = pageDTO;
     }
 }

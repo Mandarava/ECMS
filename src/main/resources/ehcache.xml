@@ -1,7 +1,7 @@
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">
     <diskStore path="G:\ehcache"/>
-
+    
     <defaultCache
             maxElementsInMemory="1000"
             maxElementsOnDisk="1000000"
@@ -12,7 +12,7 @@
             diskExpiryThreadIntervalSeconds="120"
             memoryStoreEvictionPolicy="LRU">
     </defaultCache>
-
+    
     <cache name="baseCache"
            eternal="false"
            maxEntriesLocalHeap="200"

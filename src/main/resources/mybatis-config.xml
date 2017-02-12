@@ -16,14 +16,14 @@
         <!-- 开启驼峰命名转换:Table{create_time} -> Entity{createTime} -->
         <setting name="mapUnderscoreToCamelCase" value="true"/>
     </settings>
-
+    
     <typeAliases>
-        <typeAlias type="com.finance.model.pojo.Fund" alias="Fund"/>
-        <typeAlias type="com.finance.model.pojo.FundNet" alias="FundNet"/>
-        <typeAlias type="com.finance.model.pojo.Profit" alias="Profit"/>
-        <typeAlias type="com.finance.model.pojo.DataSourceDTO" alias="DataSourceDTO"/>
+        <typeAlias type="com.finance.model.pojo.FundDO" alias="FundDO"/>
+        <typeAlias type="com.finance.model.pojo.FundNetDO" alias="FundNetDO"/>
+        <typeAlias type="com.finance.model.pojo.ProfitDO" alias="ProfitDO"/>
+        <typeAlias type="com.finance.model.pojo.DataSourceDO" alias="DataSourceDO"/>
     </typeAliases>
-
+    
     <plugins>
         <plugin interceptor="com.finance.interceptor.PageInterceptor">
             <property name="pageInterceptor" value="PageInterceptor"/>

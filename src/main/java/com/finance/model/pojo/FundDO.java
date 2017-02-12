@@ -3,7 +3,7 @@ package com.finance.model.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
-public class Fund implements Serializable {
+public class FundDO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

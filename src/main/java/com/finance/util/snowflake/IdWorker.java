@@ -8,7 +8,7 @@ import org.apache.log4j.Logger;
  * @author Administrator
  */
 public class IdWorker {
-    private static final String USERAGENT = "springdemo";
+    private static final String USERAGENT = "springdemo" ;
     private static final Logger logger = Logger.getLogger(IdWorker.class);
     /**
      *

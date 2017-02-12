@@ -27,7 +27,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
         log.error("ExceptionHandler 捕获的异常：", exception);
 
         String requestType = request.getHeader("X-Requested-With");
-        String type = "api";    //TODO:
+        String type = "api" ;    //TODO:
         if (!type.equals("api") && StrUtil.isNullOrEmpty(requestType)) {
             // 非API请求
             return new ModelAndView("redirect:/500.html");

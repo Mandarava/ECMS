@@ -21,8 +21,8 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class EncryptUtil {
 
-    public static final String SHA_1 = "SHA-1";
-    public static final String MD5 = "MD5";
+    public static final String SHA_1 = "SHA-1" ;
+    public static final String MD5 = "MD5" ;
 
     public static String encodeMD5(String plaintext) {
         MessageDigest md = null;

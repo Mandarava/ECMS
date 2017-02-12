@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.finance.dao.FundNetDao">
-    <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundNet">
+    <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundNetDO">
         <id column="ID" jdbcType="INTEGER" property="id"/>
         <result column="CODE" jdbcType="VARCHAR" property="code"/>
         <result column="NET_DATE" jdbcType="TIMESTAMP" property="netDate"/>
@@ -16,8 +16,8 @@
         ID, CODE, NET_DATE, UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE, UPDATERID,
         UPDATETIME
     </sql>
-
-    <insert id="batchInsertFundNetData" parameterType="FundNet">
+    
+    <insert id="batchInsertFundNetData" parameterType="FundNetDO">
         INSERT INTO
         FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
         VALUES
@@ -33,8 +33,8 @@
             )
         </foreach>
     </insert>
-
-    <select id="findFundNetDateByCodes" resultType="FundNet" parameterType="java.util.List">
+    
+    <select id="findFundNetDateByCodes" resultType="FundNetDO" parameterType="java.util.List">
         SELECT CODE,NET_DATE FROM FUND_NET
         WHERE
         CODE IN
@@ -43,21 +43,21 @@
         </foreach>
         ORDER BY CODE ASC,NET_DATE ASC
     </select>
-
-    <select id="findFundNetByCode" resultType="FundNet" parameterType="String">
+    
+    <select id="findFundNetByCode" resultType="FundNetDO" parameterType="String">
         SELECT * FROM FUND_NET WHERE CODE = #{code}
         ORDER BY NET_DATE DESC
     </select>
-
-    <select id="findFundNetPage" resultType="FundNet" parameterType="map">
+    
+    <select id="findFundNetPage" resultType="FundNetDO" parameterType="map">
         SELECT * FROM FUND_NET LIMIT #{limit} OFFSET #{offset}
     </select>
-
+    
     <select id="findFundNetCount" resultType="int">
         SELECT COUNT(1) FROM FUND_NET
     </select>
-
-    <insert id="insert" parameterType="FundNet">
+    
+    <insert id="insert" parameterType="FundNetDO">
         insert into fund_net (ID, CODE, NET_DATE,
         UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,
         UPDATERID, UPDATETIME)
@@ -66,7 +66,7 @@
         #{dailyGrowthRate,jdbcType=DECIMAL},
         #{updaterid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" parameterType="FundNet">
+    <insert id="insertSelective" parameterType="FundNetDO">
         insert into fund_net
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -121,7 +121,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="FundNet">
+    <update id="updateByPrimaryKeySelective" parameterType="FundNetDO">
         update fund_net
         <set>
             <if test="code != null">
@@ -148,7 +148,7 @@
         </set>
         where ID = #{id,jdbcType=INTEGER}
     </update>
-    <update id="updateByPrimaryKey" parameterType="FundNet">
+    <update id="updateByPrimaryKey" parameterType="FundNetDO">
         update fund_net
         set CODE = #{code,jdbcType=VARCHAR},
         NET_DATE = #{netDate,jdbcType=TIMESTAMP},

@@ -1,7 +1,7 @@
 package com.finance.datasource;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.finance.model.pojo.DataSourceDTO;
+import com.finance.model.pojo.DataSourceDO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,7 +83,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
     public DruidDataSource getDataSource(String serverName) {
         this.selectDataSource(DEFAULT_TARGET_DATA_SOURCE);
         this.determineCurrentLookupKey();
-        DataSourceDTO dataSources = this.findDataSources(serverName);
+        DataSourceDO dataSources = this.findDataSources(serverName);
         if (null == dataSources) {
             logger.error(String.format("从数据库重新获取，未找到[SourceName=%s]对应的数据源", serverName));
         } else if (!dataSources.getState().equals("1")) {
@@ -95,9 +95,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
         return null;
     }
 
-    public DataSourceDTO findDataSources(String serverName) {
+    public DataSourceDO findDataSources(String serverName) {
         Connection conn = null;
-        DataSourceDTO result = null;
+        DataSourceDO result = null;
         try {
             conn = this.getConnection();
             PreparedStatement ps = conn
@@ -105,31 +105,31 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
             ps.setString(1, serverName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                DataSourceDTO dataSourceDTO = new DataSourceDTO();
-                dataSourceDTO.setDriverClassName(rs.getString("DRIVER_CLASS_NAME"));
-                dataSourceDTO.setId(rs.getInt("ID"));
-                dataSourceDTO.setState(rs.getString("STATE"));
-                dataSourceDTO.setSourceType(rs.getString("SOURCE_TYPE"));
-                dataSourceDTO.setName(rs.getString("NAME"));
-                dataSourceDTO.setUrl(rs.getString("URL"));
-                dataSourceDTO.setUserName(rs.getString("USERNAME"));
-                dataSourceDTO.setPassword(rs.getString("PASSWORD"));
-                dataSourceDTO.setMaxActive(rs.getInt("MAX_ACTIVE"));
-                dataSourceDTO.setInitialSize(rs.getInt("INITIAL_SIZE"));
-                dataSourceDTO.setMaxWait(rs.getInt("MAX_WAIT"));
-                dataSourceDTO.setMinIdle(rs.getInt("MIN_IDLE"));
-                dataSourceDTO.setTimeBetweenEvictionRunMills(rs.getInt("TIME_BETWEEN_EVICTION_RUN_MILLS"));
-                dataSourceDTO.setMinEvictableIdleTimeMills(rs.getInt("MIN_EVICTABLE_IDLE_TIME_MILLS"));
-                dataSourceDTO.setTestOnBorrow(rs.getString("TEST_ON_BORROW"));
-                dataSourceDTO.setTestOnReturn(rs.getString("TEST_ON_RETURN"));
-                dataSourceDTO.setTestWhileIdle(rs.getString("TEST_WHILE_IDLE"));
-                dataSourceDTO.setValidationQuery(rs.getString("VALIDATION_QUERY"));
-                dataSourceDTO.setPoolPreparedStatements(rs.getString("POOL_PREPARED_STATEMENTS"));
-                dataSourceDTO.setMaxOpenPreparedStatements(rs.getInt("MAX_OPEN_PREPARED_STATEMENTS"));
-                dataSourceDTO.setLogAbandoned(rs.getString("LOG_ABANDONED"));
-                dataSourceDTO.setRemoveAbandoned(rs.getString("REMOVE_ABANDONED"));
-                dataSourceDTO.setRemoveAbandonedTimeout(rs.getInt("REMOVE_ABANDONED_TIMEOUT"));
-                result = dataSourceDTO;
+                DataSourceDO dataSourceDO = new DataSourceDO();
+                dataSourceDO.setDriverClassName(rs.getString("DRIVER_CLASS_NAME"));
+                dataSourceDO.setId(rs.getInt("ID"));
+                dataSourceDO.setState(rs.getString("STATE"));
+                dataSourceDO.setSourceType(rs.getString("SOURCE_TYPE"));
+                dataSourceDO.setName(rs.getString("NAME"));
+                dataSourceDO.setUrl(rs.getString("URL"));
+                dataSourceDO.setUserName(rs.getString("USERNAME"));
+                dataSourceDO.setPassword(rs.getString("PASSWORD"));
+                dataSourceDO.setMaxActive(rs.getInt("MAX_ACTIVE"));
+                dataSourceDO.setInitialSize(rs.getInt("INITIAL_SIZE"));
+                dataSourceDO.setMaxWait(rs.getInt("MAX_WAIT"));
+                dataSourceDO.setMinIdle(rs.getInt("MIN_IDLE"));
+                dataSourceDO.setTimeBetweenEvictionRunMills(rs.getInt("TIME_BETWEEN_EVICTION_RUN_MILLS"));
+                dataSourceDO.setMinEvictableIdleTimeMills(rs.getInt("MIN_EVICTABLE_IDLE_TIME_MILLS"));
+                dataSourceDO.setTestOnBorrow(rs.getString("TEST_ON_BORROW"));
+                dataSourceDO.setTestOnReturn(rs.getString("TEST_ON_RETURN"));
+                dataSourceDO.setTestWhileIdle(rs.getString("TEST_WHILE_IDLE"));
+                dataSourceDO.setValidationQuery(rs.getString("VALIDATION_QUERY"));
+                dataSourceDO.setPoolPreparedStatements(rs.getString("POOL_PREPARED_STATEMENTS"));
+                dataSourceDO.setMaxOpenPreparedStatements(rs.getInt("MAX_OPEN_PREPARED_STATEMENTS"));
+                dataSourceDO.setLogAbandoned(rs.getString("LOG_ABANDONED"));
+                dataSourceDO.setRemoveAbandoned(rs.getString("REMOVE_ABANDONED"));
+                dataSourceDO.setRemoveAbandonedTimeout(rs.getInt("REMOVE_ABANDONED_TIMEOUT"));
+                result = dataSourceDO;
             }
             rs.close();
             ps.close();
@@ -147,7 +147,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
         return result;
     }
 
-    private DruidDataSource createDataSource(DataSourceDTO dataSource) {
+    private DruidDataSource createDataSource(DataSourceDO dataSource) {
         DruidDataSource druidDataSource = new DruidDataSource();
         druidDataSource.setDriverClassName(dataSource.getDriverClassName());
         druidDataSource.setUrl(dataSource.getUrl());

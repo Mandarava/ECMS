@@ -2,7 +2,7 @@ package com.finance.util.excel;
 
 import com.finance.dao.FundNetDao;
 import com.finance.model.dto.Config;
-import com.finance.model.pojo.FundNet;
+import com.finance.model.pojo.FundNetDO;
 
 import net.sf.jxls.exception.ParsePropertyException;
 import net.sf.jxls.transformer.XLSTransformer;
@@ -55,7 +55,7 @@ public final class ExportExcelUtil {
         }
         int exportTimes = listCount % page_size > 0 ? listCount / page_size
                 + 1 : listCount / page_size;
-        List<FundNet> list = null;
+        List<FundNetDO> list = null;
         for (int j = 0; j < exportTimes; j++) {
             list = fundNetDao.findFundNetPage(page_size, page_size * j);
             int len = list.size() < page_size ? list.size() : page_size;
@@ -78,7 +78,7 @@ public final class ExportExcelUtil {
     }
 
     private static void output(SXSSFWorkbook sxssfWorkbook, String fileName) {
-        String path = Config.getFilePath() + fileName + ".xlsx";
+        String path = Config.getFilePath() + fileName + ".xlsx" ;
         try (FileOutputStream fileOutputStream = new FileOutputStream(path)) {
             sxssfWorkbook.write(fileOutputStream);
         } catch (FileNotFoundException e) {

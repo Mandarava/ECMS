@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Created by zt on 2016/10/3.
  */
-public class User implements Serializable {
+public class UserDO implements Serializable {
 
     private String userId;
 
@@ -80,7 +80,7 @@ public class User implements Serializable {
 
     @Override
     public String toString() {
-        return "User{" +
+        return "UserDO{" +
                 "userId='" + userId + '\'' +
                 ", userName='" + userName + '\'' +
                 ", password='" + password + '\'' +

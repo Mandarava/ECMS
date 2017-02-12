@@ -1,7 +1,7 @@
 package com.finance.interceptor;
 
 import com.finance.model.dto.BaseDTO;
-import com.finance.model.dto.Page;
+import com.finance.model.dto.PageDTO;
 import com.finance.util.myutil.CommonUtils;
 
 import org.apache.ibatis.executor.parameter.ParameterHandler;
@@ -51,7 +51,7 @@ public class PageInterceptor implements Interceptor {
             // 原始的SQL语句
             String sql = boundSql.getSql();
             // 查询总条数的SQL语句
-            String countSql = "select count(1) from (" + sql + ")a";
+            String countSql = "select count(1) from (" + sql + ")a" ;
             Connection connection = (Connection) invocation.getArgs()[0];
             PreparedStatement countStatement = connection.prepareStatement(countSql);
             ParameterHandler parameterHandler = (ParameterHandler) metaObject
@@ -60,27 +60,27 @@ public class PageInterceptor implements Interceptor {
             ResultSet rs = countStatement.executeQuery();
 
             // Map<?, ?> parameter = (Map<?, ?>) boundSql.getParameterObject();
-            // Page page = (Page) parameter.get("page");
+            // PageDTO pageDTO = (PageDTO) parameter.get("pageDTO");
 
             //TODO   过渡用
-            Page page = null;
+            PageDTO pageDTO = null;
             try {
                 Map<?, ?> parameter = (Map<?, ?>) boundSql.getParameterObject();
-                page = (Page) parameter.get("page");
+                pageDTO = (PageDTO) parameter.get("pageDTO");
             } catch (Exception e) {
                 BaseDTO parameter = (BaseDTO) boundSql.getParameterObject();
-                page = parameter.getPage();
+                pageDTO = parameter.getPageDTO();
             }
 
             if (rs.next()) {
-                page.setTotal(rs.getInt(1));
+                pageDTO.setTotal(rs.getInt(1));
             }
 
             // 改造排序字段
-            sql = addOrderKey(sql, page);
+            sql = addOrderKey(sql, pageDTO);
 
             // 改造后带分页查询的SQL语句
-            String pageSql = sql + " LIMIT " + page.getLimit() + " OFFSET " + page.getOffset();
+            String pageSql = sql + " LIMIT " + pageDTO.getLimit() + " OFFSET " + pageDTO.getOffset();
             metaObject.setValue("delegate.boundSql.sql", pageSql);
         }
         return invocation.proceed();
@@ -90,11 +90,11 @@ public class PageInterceptor implements Interceptor {
     /**
      * 如果orderKey不为空 则替换原有的排序语句
      */
-    private String addOrderKey(String sql, Page page) {
-        if (!CommonUtils.isElementBlank(page.getSortKey())) {
+    private String addOrderKey(String sql, PageDTO pageDTO) {
+        if (!CommonUtils.isElementBlank(pageDTO.getSortKey())) {
             // 替换order by内容
             sql = sql.replaceAll("(?i)ORDER BY[\\s\\S]*", "").concat(" ORDER BY ")
-                    .concat(page.getSortKey());
+                    .concat(pageDTO.getSortKey());
         }
         return sql;
     }

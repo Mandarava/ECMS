@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by zt on 2016/10/3.
  */
-public class Page<T> implements Serializable {
+public class PageDTO<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

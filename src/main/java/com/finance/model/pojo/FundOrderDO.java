@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Created by zt on 2017/2/7.
  */
-public class FundOrder implements Serializable {
+public class FundOrderDO implements Serializable {
 
     private Integer id;
 
