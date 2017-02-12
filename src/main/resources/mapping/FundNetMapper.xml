@@ -50,11 +50,11 @@
     </select>
     
     <select id="findFundNetPage" resultType="FundNetDO" parameterType="map">
-        SELECT * FROM FUND_NET LIMIT #{limit} OFFSET #{offset}
+        SELECT a.* FROM FUND_NET a,(SELECT ID FROM FUND_NET  LIMIT #{limit} OFFSET #{offset}) b WHERE a.id = b.id
     </select>
     
     <select id="findFundNetCount" resultType="int">
-        SELECT COUNT(1) FROM FUND_NET
+        SELECT COUNT(*) FROM FUND_NET
     </select>
     
     <insert id="insert" parameterType="FundNetDO">
