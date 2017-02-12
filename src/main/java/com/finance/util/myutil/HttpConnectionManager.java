@@ -69,6 +69,7 @@ public class HttpConnectionManager {
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setSocketTimeout(SOCKET_TIMEOUT)
+//                .setProxy(new HttpHost("183.128.240.179", 808)) // 高匿代理
                 .build();
         httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36");
         httpget.setConfig(requestConfig);
