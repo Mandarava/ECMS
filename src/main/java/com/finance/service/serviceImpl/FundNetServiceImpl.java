@@ -176,7 +176,9 @@ public class FundNetServiceImpl implements FundNetService {
                     fundNet.setDailyGrowthRate(dailyGrowthRate);
                     fundNetList.add(fundNet);
                 } else if (tds.size() == 6) {
-                    logger.info("7日年化：" + fundCode);
+                    if (logger.isInfoEnabled()) {
+                        logger.info("7日年化：{}", fundCode);
+                    }
                 }
             }
         } catch (URISyntaxException e) {

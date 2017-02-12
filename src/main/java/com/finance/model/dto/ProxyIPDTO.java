@@ -66,4 +66,16 @@ public class ProxyIPDTO implements Serializable {
     public void setAnonymnousLevel(String anonymnousLevel) {
         this.anonymnousLevel = anonymnousLevel;
     }
+
+    @Override
+    public String toString() {
+        return "ProxyIPDTO{" +
+                "ip='" + ip + '\'' +
+                ", port='" + port + '\'' +
+                ", location='" + location + '\'' +
+                ", responseTime=" + responseTime +
+                ", type='" + type + '\'' +
+                ", anonymnousLevel='" + anonymnousLevel + '\'' +
+                '}';
+    }
 }

@@ -236,4 +236,33 @@ public class DataSourceDO implements Serializable {
     public void setState(String state) {
         this.state = state;
     }
+
+    @Override
+    public String toString() {
+        return "DataSourceDO{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", state='" + state + '\'' +
+                ", sourceType='" + sourceType + '\'' +
+                ", driverClassName='" + driverClassName + '\'' +
+                ", url='" + url + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", maxActive=" + maxActive +
+                ", initialSize=" + initialSize +
+                ", maxWait=" + maxWait +
+                ", minIdle=" + minIdle +
+                ", timeBetweenEvictionRunMills=" + timeBetweenEvictionRunMills +
+                ", minEvictableIdleTimeMills=" + minEvictableIdleTimeMills +
+                ", testOnBorrow='" + testOnBorrow + '\'' +
+                ", testOnReturn='" + testOnReturn + '\'' +
+                ", testWhileIdle='" + testWhileIdle + '\'' +
+                ", validationQuery='" + validationQuery + '\'' +
+                ", poolPreparedStatements='" + poolPreparedStatements + '\'' +
+                ", maxOpenPreparedStatements=" + maxOpenPreparedStatements +
+                ", logAbandoned='" + logAbandoned + '\'' +
+                ", removeAbandoned='" + removeAbandoned + '\'' +
+                ", removeAbandonedTimeout=" + removeAbandonedTimeout +
+                '}';
+    }
 }

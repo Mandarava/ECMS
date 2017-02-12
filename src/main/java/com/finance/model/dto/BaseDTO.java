@@ -23,4 +23,11 @@ public class BaseDTO implements Serializable {
     public void setPageDTO(PageDTO pageDTO) {
         this.pageDTO = pageDTO;
     }
+
+    @Override
+    public String toString() {
+        return "BaseDTO{" +
+                "pageDTO=" + pageDTO +
+                '}';
+    }
 }

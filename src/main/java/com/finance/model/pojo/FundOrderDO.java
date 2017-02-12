@@ -120,4 +120,21 @@ public class FundOrderDO implements Serializable {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    @Override
+    public String toString() {
+        return "FundOrderDO{" +
+                "id=" + id +
+                ", code='" + code + '\'' +
+                ", name='" + name + '\'' +
+                ", buyDate=" + buyDate +
+                ", buyAmount=" + buyAmount +
+                ", buyNetValue=" + buyNetValue +
+                ", share=" + share +
+                ", fee=" + fee +
+                ", orderType='" + orderType + '\'' +
+                ", userId='" + userId + '\'' +
+                ", updateTime=" + updateTime +
+                '}';
+    }
 }

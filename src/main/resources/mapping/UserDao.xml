@@ -4,7 +4,7 @@
 <mapper namespace="com.finance.dao.UserDao">
     
     <select id="validLogin" parameterType="map" resultType="int">
-        SELECT COUNT(1) FROM USER WHERE USER_ID = #{userId} AND PASSWORD = #{pwd}
+        SELECT COUNT(*) FROM USER WHERE USER_ID = #{userId} AND PASSWORD = #{pwd}
     </select>
 
 </mapper>

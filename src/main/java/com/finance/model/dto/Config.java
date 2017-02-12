@@ -25,4 +25,10 @@ public class Config {
         filePath = filePathTemp;
     }
 
+    @Override
+    public String toString() {
+        return "Config{" +
+                "filePathTemp='" + filePathTemp + '\'' +
+                '}';
+    }
 }
