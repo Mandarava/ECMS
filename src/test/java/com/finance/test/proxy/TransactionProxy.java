@@ -2,6 +2,7 @@ package com.finance.test.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
 /**
  * Created by zt on 2017/2/14.
@@ -15,7 +16,7 @@ public class TransactionProxy implements InvocationHandler {
     }
 
     public static Object newInstance(Object obj) {
-        return java.lang.reflect.Proxy.newProxyInstance(
+        return Proxy.newProxyInstance(
                 obj.getClass().getClassLoader(),
                 obj.getClass().getInterfaces(),
                 new TransactionProxy(obj));
