@@ -1,4 +1,4 @@
-package com.finance.test.proxy;
+package com.finance.proxy;
 
 import org.junit.Test;
 

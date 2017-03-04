@@ -1,4 +1,4 @@
-package com.finance.test.proxy;
+package com.finance.proxy;
 
 /**
  * Created by zt on 2017/2/14.

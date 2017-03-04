@@ -2,7 +2,6 @@ package com.finance.datasource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +30,7 @@ public class DynamicDataSourceContextHolder {
     public static void setCustomerType(String customerType) {
         // TODO 多数据源事务问题
         logger.debug("==============切换数据源，类型：" + customerType + "================");
-        Assert.notNull(customerType, "customerType cannot be null");
+//        Assert.notNull(customerType, "customerType cannot be null");
         contextHolder.set(customerType);
     }
 
