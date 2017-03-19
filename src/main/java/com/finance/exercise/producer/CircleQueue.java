@@ -2,6 +2,7 @@ package com.finance.exercise.producer;
 
 /**
  * Created by zt on 2017/3/16.
+ * 用java int[] 实现一个环形(Circle) 数据结构，环的容量固定（环满后再追加会覆盖旧数据）
  */
 public class CircleQueue<T> {
 

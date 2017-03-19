@@ -10,6 +10,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  * Created by zt on 2017/3/16.
+ * 有一台设备在不停地产生数据，需要在web界面上实时展示这些数据 - 会有多人在各自的浏览器里查看
  */
 @Controller
 @RequestMapping(value = "/produce")

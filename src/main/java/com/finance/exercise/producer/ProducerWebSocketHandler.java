@@ -43,7 +43,7 @@ public class ProducerWebSocketHandler implements WebSocketHandler {
                     sendMessage();
                 }
             }
-        }, 0, 5 * 10);
+        }, 0, 5 * 1000);
     }
 
     @Override
