@@ -13,6 +13,7 @@
     <!-- 自动扫描该包，使SpringMVC认为包下用了@controller注解的类是控制器 -->
     <context:component-scan base-package="com.finance.controller"/>
     <context:component-scan base-package="com.finance.websocket"/>
+    <context:component-scan base-package="com.finance.exercise"/>
     
     <mvc:annotation-driven>
         <mvc:argument-resolvers>

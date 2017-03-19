@@ -16,7 +16,7 @@ targetCompatibility = 1.8
 
 ext {
     jvmVersion = "1.8"
-    springVersion = "4.3.6.RELEASE"
+    springVersion = "4.3.7.RELEASE"
     sl4jVersion = "1.7.21"
 
     if (!project.hasProperty("env")) {
@@ -73,23 +73,23 @@ dependencies {
             'com.fasterxml.jackson.core:jackson-annotations:2.8.2',
             'com.fasterxml.jackson.core:jackson-core:2.8.2',
             'com.google.code.gson:gson:2.7',
-            'com.alibaba:fastjson:1.2.16')
-    compile('org.springframework:spring-core:4.3.6.RELEASE',
-            'org.springframework:spring-context:4.3.6.RELEASE',
-            'org.springframework:spring-context-support:4.3.6.RELEASE',
-            'org.springframework:spring-beans:4.3.6.RELEASE',
-            'org.springframework:spring-tx:4.3.6.RELEASE',
-            'org.springframework:spring-jdbc:4.3.6.RELEASE',
-            'org.springframework:spring-web:4.3.6.RELEASE',
-            'org.springframework:spring-webmvc:4.3.6.RELEASE',
-            'org.springframework:spring-aop:4.3.6.RELEASE',
-            'org.springframework:spring-oxm:4.3.6.RELEASE',
-            'org.springframework:spring-test:4.3.6.RELEASE',
-            'org.springframework:spring-orm:4.3.6.RELEASE',
-            'org.springframework:spring-websocket:4.3.6.RELEASE',
-            'org.springframework:spring-messaging:4.3.6.RELEASE',
+            'com.alibaba:fastjson:1.2.28')
+    compile('org.springframework:spring-core:4.3.7.RELEASE',
+            'org.springframework:spring-context:4.3.7.RELEASE',
+            'org.springframework:spring-context-support:4.3.7.RELEASE',
+            'org.springframework:spring-beans:4.3.7.RELEASE',
+            'org.springframework:spring-tx:4.3.7.RELEASE',
+            'org.springframework:spring-jdbc:4.3.7.RELEASE',
+            'org.springframework:spring-web:4.3.7.RELEASE',
+            'org.springframework:spring-webmvc:4.3.7.RELEASE',
+            'org.springframework:spring-aop:4.3.7.RELEASE',
+            'org.springframework:spring-oxm:4.3.7.RELEASE',
+            'org.springframework:spring-test:4.3.7.RELEASE',
+            'org.springframework:spring-orm:4.3.7.RELEASE',
+            'org.springframework:spring-websocket:4.3.7.RELEASE',
+            'org.springframework:spring-messaging:4.3.7.RELEASE',
             'org.springframework.security:spring-security-core:4.2.1.RELEASE',
-            'org.springframework:spring-jms:4.3.6.RELEASE')
+            'org.springframework:spring-jms:4.3.7.RELEASE')
     compile 'org.springframework.data:spring-data-redis:1.8.0.RELEASE'
     compile('redis.clients:jedis:2.9.0',
             'com.dyuproject.protostuff:protostuff-core:1.0.10',
@@ -146,6 +146,10 @@ dependencies {
 
 sourceSets {
     main {
+        java {
+            srcDir 'src/main/java'
+        }
+
         resources {
             srcDir("src/main/resources")
             if (project['env'] == 'dev') {

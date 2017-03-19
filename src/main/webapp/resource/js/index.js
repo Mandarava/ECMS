@@ -71,10 +71,10 @@ $(document).ready(function () {
                })
     });
 
-    $('#test').click(function () {
+    $('#producer').click(function () {
         $.ajax({
                    type: "GET",
-                   url: "fund/net/test",
+                   url: "fund/net/producer",
                    async: true,
                    cache: false,
                    success: function (data) {
@@ -92,6 +92,10 @@ $(document).ready(function () {
 
     $('#gotoFundOrder').on('click', function () {
         $('#formFundOrder').submit();
+    })
+
+    $('#gotoProducer').on('click', function () {
+        $('#formProducer').submit();
     })
 
 });
