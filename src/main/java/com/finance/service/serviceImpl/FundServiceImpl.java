@@ -11,6 +11,7 @@ import com.finance.model.pojo.FundDO;
 import com.finance.service.FundService;
 import com.finance.util.myutil.HttpConnectionManager;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
@@ -54,102 +55,20 @@ public class FundServiceImpl implements FundService {
     @Override
     public void insertOrUpdateFundData() throws BusinessException {
         List<SinaFinanceFundDTO> sinaFundList = this.fetchFundData();
-        if (sinaFundList == null || sinaFundList.size() == 0) {
+        if (CollectionUtils.isEmpty(sinaFundList)) {
             return;
         }
         List<FundDO> fundList = new ArrayList<>();
         for (SinaFinanceFundDTO sinaFund : sinaFundList) {
-            FundDO fund = new FundDO();
-            fund.setCode(sinaFund.getSymbol());
-            fund.setName(sinaFund.getName());
-            fund.setCompanyName(sinaFund.getCompanyName());
-            fund.setSubjectName(sinaFund.getSubjectName());
-            fund.setEstablishDate(sinaFund.getClrq());
-            fund.setFundScale(sinaFund.getJjgm());
-            fund.setCxpj(sinaFund.getCxpj());
-            fund.setYhpj(sinaFund.getYhpj3());
-            fund.setHtpj(sinaFund.getHtpj());
-            fund.setJajxpj(sinaFund.getJajxpj());
-            fund.setZspj(sinaFund.getZspj());
-            String type2Id = sinaFund.getType2Id();
-            String type3Id = sinaFund.getType3Id();
-            if (type2Id.equals("x2001")) {
-                if ("x3006".equals(type3Id)) {
-                    fund.setType1("激进混合型");
-                } else if ("x3004".equals(type3Id)) {
-                    fund.setType1("稳健混合型");
-                } else if ("x3009".equals(type3Id)) {
-                    fund.setType1("保本型");
-                } else if ("x3008".equals(type3Id)) {
-                    fund.setType1("指数型");
-                } else if ("x3003".equals(type3Id)) {
-                    fund.setType1("稳健债券型");
-                } else if ("x3017".equals(type3Id)) {
-                    fund.setType1("分级-激进债券型");
-                } else if ("x3019".equals(type3Id)) {
-                    fund.setType1("货币A");
-                }
-                fund.setType("混合型");
-            } else if (type2Id.equals("x2003")) {
-                if ("x3005".equals(type3Id)) {
-                    fund.setType1("激进债券型");
-                } else if ("x3012".equals(type3Id)) {
-                    fund.setType1("纯债债券型");
-                } else if ("x3003".equals(type3Id)) {
-                    fund.setType1("稳健债券型");
-                } else if ("x3021".equals(type3Id)) {
-                    fund.setType1("短期理财");
-                } else if ("x3006".equals(type3Id)) {
-                    fund.setType1("激进混合型");
-                }
-                fund.setType("债券型");
-            } else if (type2Id.equals("x2002")) {
-                if ("x3008".equals(type3Id)) {
-                    fund.setType1("指数型");
-                } else if ("x3007".equals(type3Id)) {
-                    fund.setType1("一般股票型");
-                } else if ("x3014".equals(type3Id)) {
-                    fund.setType1("分级-一般股票型");
-                } else if ("x3006".equals(type3Id)) {
-                    fund.setType1("激进混合型");
-                }
-                fund.setType("股票型");
-            } else if (type2Id.equals("x2005")) {
-                if ("x3019".equals(type3Id)) {
-                    fund.setType1("货币A");
-                } else if ("x3020".equals(type3Id)) {
-                    fund.setType1("货币B");
-                }
-                fund.setType("货币型");
-            } else if (type2Id.equals("x2006")) {
-                if ("x3002".equals(type3Id)) {
-                    fund.setType1("权益类");
-                } else if ("x3018".equals(type3Id)) {
-                    fund.setType1("固定收益类");
-                } else if ("x3001".equals(type3Id)) {
-                    fund.setType1("其他");
-                } else if ("x3008".equals(type3Id)) {
-                    fund.setType1("指数型");
-                }
-                fund.setType("QDII");
-            } else if (type2Id.equals("x2010")) {
-                if ("x3022".equals(type3Id)) {
-                    fund.setType1("商品类");
-                } else if ("x3023".equals(type3Id)) {
-                    fund.setType1("其它资产");
-                }
-                fund.setType("另类资产");
-            }
-            fundList.add(fund);
+            fundList.add(convertToFund(sinaFund));
         }
-
         List<FundDO> existsFund = this.findFunds();
         List<FundDO> fundToUpdate = new ArrayList<>();
         Iterator<FundDO> fundIterator = fundList.iterator();
         while (fundIterator.hasNext()) {
             FundDO newFund = fundIterator.next();
             for (FundDO oldFund : existsFund) {
-                if (newFund.getCode().equals(oldFund.getCode())) {
+                if (newFund.getCode().trim().equals(oldFund.getCode().trim())) {
                     fundToUpdate.add(newFund);
                     fundIterator.remove();
                 }
@@ -163,6 +82,94 @@ public class FundServiceImpl implements FundService {
         if (fundToUpdate.size() > 0) {
             fundDao.batchUpdateFund(fundToUpdate);
         }
+    }
+
+    /**
+     * convert sinaFinanceFundDto to funddo
+     */
+    private FundDO convertToFund(SinaFinanceFundDTO sinaFund) {
+        FundDO fund = new FundDO();
+        fund.setCode(sinaFund.getSymbol());
+        fund.setName(sinaFund.getName());
+        fund.setCompanyName(sinaFund.getCompanyName());
+        fund.setSubjectName(sinaFund.getSubjectName());
+        fund.setEstablishDate(sinaFund.getClrq());
+        fund.setFundScale(sinaFund.getJjgm());
+        fund.setCxpj(sinaFund.getCxpj());
+        fund.setYhpj(sinaFund.getYhpj3());
+        fund.setHtpj(sinaFund.getHtpj());
+        fund.setJajxpj(sinaFund.getJajxpj());
+        fund.setZspj(sinaFund.getZspj());
+        String type2Id = sinaFund.getType2Id();
+        String type3Id = sinaFund.getType3Id();
+        if (type2Id.equals("x2001")) {
+            if ("x3006".equals(type3Id)) {
+                fund.setType1("激进混合型");
+            } else if ("x3004".equals(type3Id)) {
+                fund.setType1("稳健混合型");
+            } else if ("x3009".equals(type3Id)) {
+                fund.setType1("保本型");
+            } else if ("x3008".equals(type3Id)) {
+                fund.setType1("指数型");
+            } else if ("x3003".equals(type3Id)) {
+                fund.setType1("稳健债券型");
+            } else if ("x3017".equals(type3Id)) {
+                fund.setType1("分级-激进债券型");
+            } else if ("x3019".equals(type3Id)) {
+                fund.setType1("货币A");
+            }
+            fund.setType("混合型");
+        } else if (type2Id.equals("x2003")) {
+            if ("x3005".equals(type3Id)) {
+                fund.setType1("激进债券型");
+            } else if ("x3012".equals(type3Id)) {
+                fund.setType1("纯债债券型");
+            } else if ("x3003".equals(type3Id)) {
+                fund.setType1("稳健债券型");
+            } else if ("x3021".equals(type3Id)) {
+                fund.setType1("短期理财");
+            } else if ("x3006".equals(type3Id)) {
+                fund.setType1("激进混合型");
+            }
+            fund.setType("债券型");
+        } else if (type2Id.equals("x2002")) {
+            if ("x3008".equals(type3Id)) {
+                fund.setType1("指数型");
+            } else if ("x3007".equals(type3Id)) {
+                fund.setType1("一般股票型");
+            } else if ("x3014".equals(type3Id)) {
+                fund.setType1("分级-一般股票型");
+            } else if ("x3006".equals(type3Id)) {
+                fund.setType1("激进混合型");
+            }
+            fund.setType("股票型");
+        } else if (type2Id.equals("x2005")) {
+            if ("x3019".equals(type3Id)) {
+                fund.setType1("货币A");
+            } else if ("x3020".equals(type3Id)) {
+                fund.setType1("货币B");
+            }
+            fund.setType("货币型");
+        } else if (type2Id.equals("x2006")) {
+            if ("x3002".equals(type3Id)) {
+                fund.setType1("权益类");
+            } else if ("x3018".equals(type3Id)) {
+                fund.setType1("固定收益类");
+            } else if ("x3001".equals(type3Id)) {
+                fund.setType1("其他");
+            } else if ("x3008".equals(type3Id)) {
+                fund.setType1("指数型");
+            }
+            fund.setType("QDII");
+        } else if (type2Id.equals("x2010")) {
+            if ("x3022".equals(type3Id)) {
+                fund.setType1("商品类");
+            } else if ("x3023".equals(type3Id)) {
+                fund.setType1("其它资产");
+            }
+            fund.setType("另类资产");
+        }
+        return fund;
     }
 
     /**

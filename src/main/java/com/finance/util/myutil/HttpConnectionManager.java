@@ -88,7 +88,8 @@ public class HttpConnectionManager {
                         response.getStatusLine().getReasonPhrase());
             }
         } catch (Exception e) {
-            LOGGER.debug(e.getMessage(), e);
+            LOGGER.debug("Http request failed!");
+//            LOGGER.debug(e.getMessage(), e);
         } finally {
             try {
                 httpget.releaseConnection();
