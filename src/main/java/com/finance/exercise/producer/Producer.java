@@ -79,4 +79,8 @@ public class Producer extends AbstractProducer {
         }
     }
 
+    private void removeInvalidInstance() {
+        // TODO
+    }
+
 }

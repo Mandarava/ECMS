@@ -51,7 +51,7 @@ dependencies {
 
     //2.3.11
     compile 'org.codehaus.groovy:groovy-all:2.4.8'
-    compile 'mysql:mysql-connector-java:5.1.38'
+    compile 'mysql:mysql-connector-java:5.1.41'
     compile 'com.alibaba:druid:1.0.25'
     compile 'org.javassist:javassist:3.20.0-GA'
     compile 'javax:javaee-api:7.0'

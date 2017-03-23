@@ -13,7 +13,7 @@ $(document).ready(function () {
                        $("#numbers").append("<tr><td>" + data[i] + "</td></tr>");
                    }
                    scorllBottom();
-                   timer = window.setInterval(getData, 3000);
+                   timer = window.setInterval(getData, 5000);
                },
                error: function (e) {
                    alert("error!");
