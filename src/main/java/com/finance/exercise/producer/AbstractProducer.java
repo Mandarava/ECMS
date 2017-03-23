@@ -10,31 +10,26 @@ import java.util.TimerTask;
 public abstract class AbstractProducer {
 
     private static CircleQueue circleQueue = new CircleQueue(20);
-    private Timer timer;
 
-    public CircleQueue getCircleQueue() {
+    public CircleQueue getCircleQueueInstance() {
         return circleQueue;
     }
 
     public void startTimer() {
-        if (timer == null) {
-            timer = new Timer();
-        } else {
-            return;
-        }
-        timer.schedule(new TimerTask() {
+        new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
                 int times = new Random().nextInt(5) + 1;
                 for (int i = 0; i < times; i++) {
                     int number = new Random().nextInt(1000);
                     circleQueue.add(number);
+                    System.out.println(Thread.currentThread().getName() + " produce number : " + number);
                     setCache(number);
                 }
             }
         }, 0, 5 * 1000);
     }
 
-    public abstract void setCache(int number);
+    protected abstract void setCache(int number);
 
 }

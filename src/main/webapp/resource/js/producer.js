@@ -5,17 +5,18 @@ var timer;
 $(document).ready(function () {
     $.ajax({
                type: "GET",
-               url: "produce/start",
+               url: "../produce/data",
                cache: false,
-               async: false,
+               async: true,
                success: function (data) {
-                   if (data === 'success') {
-                       getData();
-                       timer = window.setInterval(getData, 100);
+                   for (var i = 0; i < data.length; i++) {
+                       $("#numbers").append("<tr><td>" + data[i] + "</td></tr>");
                    }
+                   scorllBottom();
+                   timer = window.setInterval(getData, 3000);
                },
                error: function (e) {
-                   alert("start producer failed!");
+                   alert("error!");
                }
            });
 });
@@ -23,7 +24,7 @@ $(document).ready(function () {
 function getData() {
     $.ajax({
                type: "GET",
-               url: "produce/data",
+               url: "../produce/data",
                cache: false,
                async: true,
                success: function (data) {

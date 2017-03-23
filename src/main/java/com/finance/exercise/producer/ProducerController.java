@@ -16,19 +16,10 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/produce")
 public class ProducerController {
 
-    @GetMapping("/start")
-    @ResponseBody
-    public String start(HttpSession session) {
-        Producer producer = new Producer(session);
-        producer.startTimer();
-        return "success";
-    }
-
     @GetMapping("/data")
     @ResponseBody
     public int[] getDataProduced(HttpSession session) {
-        Producer producer = new Producer(session);
-        producer.startTimer();
+        Producer producer = Producer.getInstance(session.getId());
         return producer.getIncrementalData();
     }
 

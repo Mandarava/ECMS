@@ -3,7 +3,7 @@
  */
 var pathName = window.document.location.pathname;
 var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-var host = window.document.location.host
+var host = window.document.location.host;
 
 var websocket;
 if ('WebSocket' in window) {
