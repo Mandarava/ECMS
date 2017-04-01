@@ -82,7 +82,7 @@ public class FundNetServiceImpl implements FundNetService {
             }
             for (int i = 0; i < futures.size(); i++) {
                 Future<List<FundNetDO>> future = futures.get(i);
-                if (null != future && null != future.get()) {
+                if (null != future.get()) {
                     fetchedNetList.addAll(future.get());
                 }
             }
@@ -240,11 +240,11 @@ public class FundNetServiceImpl implements FundNetService {
         @Override
         public List<FundNetDO> call() {
             String currency = getFundType();
+            List<FundNetDO> result = new ArrayList<>();
             // 万份收益
             if (currency.equals("1")) {
                 return null;
             }
-            List<FundNetDO> result = null;
             URI uri = null;
             // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav?callback=fundnetcallback&symbol=160706&page=1
             // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNavcur"  // 万份收益
@@ -297,7 +297,6 @@ public class FundNetServiceImpl implements FundNetService {
                         fundNet.setDailyGrowthRate(0);
                         logger.info(fundCode + "has null values!");
                     }
-
                     result.add(fundNet);
                 }
             }
