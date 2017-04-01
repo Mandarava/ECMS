@@ -82,7 +82,7 @@ public class FundNetServiceImpl implements FundNetService {
             }
             for (int i = 0; i < futures.size(); i++) {
                 Future<List<FundNetDO>> future = futures.get(i);
-                if (future.get() != null) {
+                if (null != future && null != future.get()) {
                     fetchedNetList.addAll(future.get());
                 }
             }
