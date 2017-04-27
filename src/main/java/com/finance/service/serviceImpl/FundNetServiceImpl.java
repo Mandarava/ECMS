@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,10 +51,15 @@ import static com.finance.util.myutil.BaseConstants.RECORDS_PER_INSERT;
 @Service
 public class FundNetServiceImpl implements FundNetService {
 
+    public static final ThreadLocal<DateFormat> sdf = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat("yyyy-MM-dd");
+        }
+    };
     private static final int FUND_NET_PER_SELECT = 300;
     private static final int THREAD_POOL_SIZE = 10;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
-
     @Resource
     private FundNetService fundNetService;
 
@@ -164,11 +170,10 @@ public class FundNetServiceImpl implements FundNetService {
             Elements trs = doc.select("tbody").select("tr");
             for (Element tr : trs) {
                 Elements tds = tr.select("td");
-                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
                 if (tds.size() == 7) {
                     FundNetDO fundNet = new FundNetDO();
                     fundNet.setCode(fundCode);
-                    fundNet.setNetDate(df.parse(tds.get(0).text()));
+                    fundNet.setNetDate(sdf.get().parse(tds.get(0).text()));
                     fundNet.setUnitNetValue(StringUtils.isEmpty(tds.get(1).text()) ? 0 : Double.valueOf(tds.get(1).text()));
                     double accumulatedNetValue = Double.valueOf((StringUtils.isEmpty(tds.get(2).text().replace("%", "")) ? "0" : tds.get(2).text().replace("%", "")));
                     fundNet.setAccumulatedNetValue(accumulatedNetValue);

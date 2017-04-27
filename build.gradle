@@ -95,8 +95,8 @@ dependencies {
             'com.dyuproject.protostuff:protostuff-core:1.0.10',
             'com.dyuproject.protostuff:protostuff-runtime:1.0.10')
     compile('log4j:log4j:1.2.17',
-            'org.slf4j:slf4j-api:1.7.21',
-            'org.slf4j:slf4j-log4j12:1.7.21')
+            'org.slf4j:slf4j-api:1.7.25',
+            'org.slf4j:slf4j-log4j12:1.7.25')
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile 'com.google.guava:guava:19.0'
