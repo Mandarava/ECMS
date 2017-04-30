@@ -1,6 +1,5 @@
 package com.finance.service;
 
-import com.finance.exception.BusinessException;
 import com.finance.model.pojo.FundOrderDO;
 
 /**
@@ -8,5 +7,5 @@ import com.finance.model.pojo.FundOrderDO;
  */
 public interface FundOrderService {
 
-    void insertFundOrder(FundOrderDO fundOrder) throws BusinessException;
+    void insertFundOrder(FundOrderDO fundOrder);
 }

@@ -3,7 +3,7 @@ package com.finance.exception;
 /**
  * Created by zt on 2016/10/3.
  */
-public class BusinessException extends Exception {
+public class BusinessException extends RuntimeException {
 
     private static final long serialVersionUID = 1L;
 

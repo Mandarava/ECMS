@@ -23,7 +23,7 @@ public class FundProfitServiceImpl implements FundProfitService {
     private ProfitDao profitDao;
 
     @Override
-    public void insertFundProfit(ProfitDO profit) throws BusinessException {
+    public void insertFundProfit(ProfitDO profit) {
         int i = profitDao.insertDailyProfit(profit);
         if (i == 0) {
             throw new BusinessException("insertFundProfit failed!");

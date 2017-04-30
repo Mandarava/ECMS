@@ -7,5 +7,5 @@ import com.finance.model.pojo.ProfitDO;
  */
 public interface FundProfitService {
 
-    void insertFundProfit(ProfitDO profit) throws Exception;
+    void insertFundProfit(ProfitDO profit);
 }

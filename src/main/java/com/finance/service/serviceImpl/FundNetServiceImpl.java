@@ -14,6 +14,7 @@ import com.finance.service.FundNetService;
 import com.finance.service.FundService;
 import com.finance.util.myutil.HttpConnectionManager;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
@@ -38,6 +39,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -73,58 +75,63 @@ public class FundNetServiceImpl implements FundNetService {
      * 更新基金净值数据
      */
     @Override
-    public void insertOrUpdateFundNetData() throws Exception {
-        List<FundDO> fundList = fundService.findFunds();
-        ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-        while (fundList.size() > 0) {
-            List<FundDO> funds = fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size());
-            List<Future<List<FundNetDO>>> futures = new ArrayList<>();
-            // 获得到的净值数据
-            List<FundNetDO> fetchedNetList = new ArrayList<>();
-            for (FundDO fund : funds) {
-                Callable<List<FundNetDO>> callable = new FetchFundNetDataFromSinaThread(fund.getCode());
-                Future<List<FundNetDO>> future = pool.submit(callable);
-                futures.add(future);
-            }
-            for (int i = 0; i < futures.size(); i++) {
-                Future<List<FundNetDO>> future = futures.get(i);
-                if (null != future.get()) {
-                    fetchedNetList.addAll(future.get());
+    public void insertOrUpdateFundNetData() {
+        try {
+            List<FundDO> fundList = fundService.findFunds();
+            ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+            while (fundList.size() > 0) {
+                List<FundDO> funds = fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size());
+                List<Future<List<FundNetDO>>> futures = new ArrayList<>();
+                // 获得到的净值数据
+                List<FundNetDO> fetchedNetList = new ArrayList<>();
+                for (FundDO fund : funds) {
+                    Callable<List<FundNetDO>> callable = new FetchFundNetDataFromSinaThread(fund.getCode());
+                    Future<List<FundNetDO>> future = pool.submit(callable);
+                    futures.add(future);
                 }
-            }
-            if (fetchedNetList == null || fetchedNetList.size() == 0) {
-                return;
-            }
-            // 当前数据库中存在的净值数据
-            List<FundNetDO> result = fundNetDao.findFundNetDateByCodes(funds);
-            Set<FundNetDO> fundNets = new HashSet<>(fetchedNetList);
-            for (int i = 0; i < result.size(); i++) {
-                FundNetDO temp = result.get(i);
-                if (fundNets.contains(temp)) {
-                    fundNets.remove(temp);
+                for (int i = 0; i < futures.size(); i++) {
+                    Future<List<FundNetDO>> future = futures.get(i);
+                    if (null != future.get()) {
+                        fetchedNetList.addAll(future.get());
+                    }
                 }
-            }
-            List<FundNetDO> fundNetList = new ArrayList<>(fundNets);
-            fundNetList.sort(Comparator.comparing(FundNetDO::getNetDate));
-            if (fundNetList.size() > 0) {
-                while (fundNetList.size() > 0) {
-                    List<FundNetDO> subFundNetList = fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size());
-                    /* 自己注给自己，否则嵌套事务无法执行*/
-                    fundNetService.batchInsertFundNetData(subFundNetList);
-                    fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size()).clear();
+                if (CollectionUtils.isEmpty(fetchedNetList)) {
+                    return;
                 }
+                // 当前数据库中存在的净值数据
+                List<FundNetDO> result = fundNetDao.findFundNetDateByCodes(funds);
+                Set<FundNetDO> fundNets = new HashSet<>(fetchedNetList);
+                for (int i = 0; i < result.size(); i++) {
+                    FundNetDO temp = result.get(i);
+                    if (fundNets.contains(temp)) {
+                        fundNets.remove(temp);
+                    }
+                }
+                List<FundNetDO> fundNetList = new ArrayList<>(fundNets);
+                fundNetList.sort(Comparator.comparing(FundNetDO::getNetDate));
+                if (fundNetList.size() > 0) {
+                    while (fundNetList.size() > 0) {
+                        List<FundNetDO> subFundNetList = fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size());
+                        /* 自己注给自己，否则嵌套事务无法执行*/
+                        fundNetService.batchInsertFundNetData(subFundNetList);
+                        fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size()).clear();
+                    }
+                }
+                fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size()).clear();
             }
-            fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size()).clear();
+            pool.shutdown();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
         }
-
-        pool.shutdown();
     }
 
     /**
      * 分批插入基金净值数据
      */
     @Override
-    public void batchInsertFundNetData(List<FundNetDO> fundNetList) throws BusinessException {
+    public void batchInsertFundNetData(List<FundNetDO> fundNetList) {
         int i = fundNetDao.batchInsertFundNetData(fundNetList);
         if (i != fundNetList.size()) {
             throw new BusinessException("更新或插入基金净值数据失败！");

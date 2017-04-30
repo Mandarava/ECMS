@@ -19,7 +19,7 @@ public class FundOrderServiceImpl implements FundOrderService {
     private FundOrderDao fundOrderDao;
 
     @Override
-    public void insertFundOrder(FundOrderDO fundOrder) throws BusinessException {
+    public void insertFundOrder(FundOrderDO fundOrder) {
         int i = fundOrderDao.insertFundOrder(fundOrder);
         if (i == 0) {
             throw new BusinessException("insertFundOrder failed!");
