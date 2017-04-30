@@ -223,6 +223,48 @@
         </if>
     </insert>
     
+    <insert id="batchInsertOrUpdateFundData" parameterType="FundDO">
+        INSERT INTO
+        FUND
+        (CODE,NAME,TYPE,TYPE1,COMPANY_NAME,SUBJECT_NAME,FUND_SCALE,ESTABLISH_DATE,CXPJ,YHPJ,HTPJ,JAJXPJ,ZSPJ,UPDATERID,UPDATETIME)
+        VALUES
+        <foreach collection="list" item="fund" separator=",">
+            (
+            #{fund.code,jdbcType=VARCHAR},
+            #{fund.name,jdbcType=VARCHAR},
+            #{fund.type,jdbcType=VARCHAR},
+            #{fund.type1,jdbcType=VARCHAR},
+            #{fund.companyName,jdbcType=VARCHAR},
+            #{fund.subjectName,jdbcType=VARCHAR},
+            #{fund.fundScale,jdbcType=VARCHAR},
+            #{fund.establishDate,jdbcType=TIMESTAMP },
+            #{fund.cxpj,jdbcType=INTEGER},
+            #{fund.yhpj,jdbcType=INTEGER},
+            #{fund.htpj,jdbcType=INTEGER},
+            #{fund.jajxpj,jdbcType=INTEGER},
+            #{fund.zspj,jdbcType=INTEGER},
+            'admin',
+            NOW()
+            )
+        </foreach>
+        ON DUPLICATE KEY
+        UPDATE
+        NAME = values(NAME),
+        TYPE = values(TYPE),
+        TYPE1 = values(TYPE1),
+        COMPANY_NAME = values(COMPANY_NAME),
+        SUBJECT_NAME = values(SUBJECT_NAME),
+        FUND_SCALE = values(FUND_SCALE),
+        ESTABLISH_DATE = values(ESTABLISH_DATE),
+        CXPJ = values(CXPJ),
+        YHPJ = values(YHPJ),
+        HTPJ = values(HTPJ),
+        JAJXPJ = values(JAJXPJ),
+        ZSPJ = values(ZSPJ),
+        UPDATERID = 'admin',
+        UPDATETIME = NOW()
+    </insert>
+    
     <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
         delete from fund
         where CODE = #{code,jdbcType=VARCHAR}

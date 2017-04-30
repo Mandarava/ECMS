@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import com.finance.dao.FundDao;
-import com.finance.exception.BusinessException;
 import com.finance.model.dto.SinaFinanceFundDTO;
 import com.finance.model.pojo.FundDO;
 import com.finance.service.FundService;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,7 +51,7 @@ public class FundServiceImpl implements FundService {
      * 更新或插入基金数据
      */
     @Override
-    public void insertOrUpdateFundData() throws BusinessException {
+    public void insertOrUpdateFundData() {
         List<SinaFinanceFundDTO> sinaFundList = this.fetchFundData();
         if (CollectionUtils.isEmpty(sinaFundList)) {
             return;
@@ -62,26 +60,8 @@ public class FundServiceImpl implements FundService {
         for (SinaFinanceFundDTO sinaFund : sinaFundList) {
             fundList.add(convertToFund(sinaFund));
         }
-        List<FundDO> existsFund = this.findFunds();
-        List<FundDO> fundToUpdate = new ArrayList<>();
-        Iterator<FundDO> fundIterator = fundList.iterator();
-        while (fundIterator.hasNext()) {
-            FundDO newFund = fundIterator.next();
-            for (FundDO oldFund : existsFund) {
-                if (newFund.getCode().trim().equals(oldFund.getCode().trim())) {
-                    fundToUpdate.add(newFund);
-                    fundIterator.remove();
-                }
-            }
-        }
-        // do  batch insert
-        if (fundList.size() > 0) {
-            fundDao.batchInsertFund(fundList);
-        }
-        // do batch update
-        if (fundToUpdate.size() > 0) {
-            fundDao.batchUpdateFund(fundToUpdate);
-        }
+        // fund code should be unique index or primary key
+        fundDao.batchInsertOrUpdateFundData(fundList);
     }
 
     /**

@@ -22,6 +22,9 @@ public interface FundDao {
     List<FundDO> findFunds();
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
+    int batchInsertOrUpdateFundData(List<FundDO> fund);
+
+    @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
     int insertOrUpdateFundData(FundDO fund);
 
     @TriggersRemove(cacheName = "baseCache", when = When.AFTER_METHOD_INVOCATION, removeAll = true)
