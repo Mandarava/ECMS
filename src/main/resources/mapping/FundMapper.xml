@@ -66,7 +66,7 @@
         #{htpj,jdbcType=INTEGER},
         #{jajxpj,jdbcType=INTEGER},
         #{zspj,jdbcType=INTEGER},
-        'admin',
+        #{updaterId,jdbcType=VARCHAR},
         NOW()
         )
     </insert>
@@ -87,7 +87,7 @@
         HTPJ = #{htpj,jdbcType=INTEGER},
         JAJXPJ = #{jajxpj,jdbcType=INTEGER},
         ZSPJ = #{zspj,jdbcType=INTEGER},
-        UPDATERID = 'admin',
+        UPDATERID = #{updaterId,jdbcType=VARCHAR},
         UPDATETIME = NOW()
         where CODE = #{code,jdbcType=VARCHAR}
     </update>
@@ -128,7 +128,7 @@
             #{fund.htpj,jdbcType=INTEGER},
             #{fund.jajxpj,jdbcType=INTEGER},
             #{fund.zspj,jdbcType=INTEGER},
-            'admin',
+            #{fund.updaterId,jdbcType=VARCHAR},
             NOW()
             )
         </foreach>
@@ -151,7 +151,7 @@
             HTPJ = #{item.htpj,jdbcType=INTEGER},
             JAJXPJ = #{item.jajxpj,jdbcType=INTEGER},
             ZSPJ = #{item.zspj,jdbcType=INTEGER},
-            UPDATERID = 'admin',
+            UPDATERID = #{item.updaterId,jdbcType=VARCHAR},
             UPDATETIME = NOW()
             where CODE = #{item.code,jdbcType=VARCHAR}
         </foreach>
@@ -177,7 +177,7 @@
             HTPJ = #{htpj,jdbcType=INTEGER},
             JAJXPJ = #{jajxpj,jdbcType=INTEGER},
             ZSPJ = #{zspj,jdbcType=INTEGER},
-            UPDATERID = 'admin',
+            UPDATERID = #{updaterId,jdbcType=VARCHAR},
             UPDATETIME = NOW()
             WHERE
             CODE = #{code,jdbcType=VARCHAR}
@@ -217,7 +217,7 @@
             #{htpj,jdbcType=INTEGER},
             #{jajxpj,jdbcType=INTEGER},
             #{zspj,jdbcType=INTEGER},
-            'admin',
+            #{updaterId,jdbcType=VARCHAR},
             NOW()
             )
         </if>
@@ -243,7 +243,7 @@
             #{fund.htpj,jdbcType=INTEGER},
             #{fund.jajxpj,jdbcType=INTEGER},
             #{fund.zspj,jdbcType=INTEGER},
-            'admin',
+            #{fund.updaterId,jdbcType=VARCHAR},
             NOW()
             )
         </foreach>
@@ -261,7 +261,7 @@
         HTPJ = values(HTPJ),
         JAJXPJ = values(JAJXPJ),
         ZSPJ = values(ZSPJ),
-        UPDATERID = 'admin',
+        UPDATERID = values(UPDATERID),
         UPDATETIME = NOW()
     </insert>
     

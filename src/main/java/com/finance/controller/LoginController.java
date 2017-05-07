@@ -1,7 +1,6 @@
 package com.finance.controller;
 
 import com.finance.service.UserService;
-import com.finance.util.myutil.RequestContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,17 +31,22 @@ public class LoginController {
         boolean isSuccess = userService.userLogin(userId, password);
         if (isSuccess) {
             httpSession.setAttribute("userId", userId);
-            RequestContext.setCurrentUserId(userId);
-            returnPage = "redirect:/index" ;
+            returnPage = "redirect:/index";
         } else {
-            returnPage = "login" ;
+            returnPage = "login";
         }
         return returnPage;
     }
 
+    @PostMapping(value = "logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "login";
+    }
+
     @RequestMapping(value = "/index")
     public String showHomePage() {
-        return "index" ;
+        return "index";
     }
 
 }

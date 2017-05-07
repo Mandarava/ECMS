@@ -32,8 +32,6 @@ public class FundNetDO implements Serializable {
      */
     private double dailyGrowthRate;
 
-    private String updaterId;
-
     private Date updateTime;
 
     public int getId() {
@@ -84,14 +82,6 @@ public class FundNetDO implements Serializable {
         this.dailyGrowthRate = dailyGrowthRate;
     }
 
-    public String getUpdaterId() {
-        return updaterId;
-    }
-
-    public void setUpdaterId(String updaterId) {
-        this.updaterId = updaterId;
-    }
-
     public Date getUpdateTime() {
         return updateTime;
     }
@@ -102,14 +92,13 @@ public class FundNetDO implements Serializable {
 
     @Override
     public String toString() {
-        return "FundNet{" +
+        return "FundNetDO{" +
                 "id=" + id +
                 ", code='" + code + '\'' +
                 ", netDate=" + netDate +
                 ", unitNetValue=" + unitNetValue +
                 ", accumulatedNetValue=" + accumulatedNetValue +
                 ", dailyGrowthRate=" + dailyGrowthRate +
-                ", updaterId='" + updaterId + '\'' +
                 ", updateTime=" + updateTime +
                 '}';
     }

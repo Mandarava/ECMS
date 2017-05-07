@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.finance.dao.FundNetDao">
+    
     <resultMap id="BaseResultMap" type="com.finance.model.pojo.FundNetDO">
         <id column="ID" jdbcType="INTEGER" property="id"/>
         <result column="CODE" jdbcType="VARCHAR" property="code"/>
@@ -9,17 +10,17 @@
         <result column="UNIT_NET_VALUE" jdbcType="DECIMAL" property="unitNetValue"/>
         <result column="ACCUMULATED_NET_VALUE" jdbcType="DECIMAL" property="accumulatedNetValue"/>
         <result column="DAILY_GROWTH_RATE" jdbcType="DECIMAL" property="dailyGrowthRate"/>
-        <result column="UPDATERID" jdbcType="VARCHAR" property="updaterId"/>
         <result column="UPDATETIME" jdbcType="TIMESTAMP" property="updateTime"/>
     </resultMap>
+    
     <sql id="Base_Column_List">
-        ID, CODE, NET_DATE, UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE, UPDATERID,
+        ID, CODE, NET_DATE, UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,
         UPDATETIME
     </sql>
     
     <insert id="batchInsertFundNetData" parameterType="FundNetDO">
         INSERT INTO
-        FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATERID,UPDATETIME)
+        FUND_NET(CODE,NET_DATE,UNIT_NET_VALUE,ACCUMULATED_NET_VALUE,DAILY_GROWTH_RATE,UPDATETIME)
         VALUES
         <foreach collection="list" item="fundNet" separator=",">
             (
@@ -28,7 +29,6 @@
             #{fundNet.unitNetValue,jdbcType=DECIMAL},
             #{fundNet.accumulatedNetValue,jdbcType=DECIMAL},
             #{fundNet.dailyGrowthRate,jdbcType=DECIMAL},
-            'admin',
             NOW()
             )
         </foreach>
@@ -59,13 +59,12 @@
     
     <insert id="insert" parameterType="FundNetDO">
         insert into fund_net (ID, CODE, NET_DATE,
-        UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,
-        UPDATERID, UPDATETIME)
+        UNIT_NET_VALUE, ACCUMULATED_NET_VALUE, DAILY_GROWTH_RATE,UPDATETIME)
         values (#{id,jdbcType=INTEGER}, #{code,jdbcType=VARCHAR}, #{netDate,jdbcType=TIMESTAMP},
         #{unitNetValue,jdbcType=DECIMAL}, #{accumulatedNetValue,jdbcType=DECIMAL},
-        #{dailyGrowthRate,jdbcType=DECIMAL},
-        #{updaterid,jdbcType=VARCHAR}, #{updatetime,jdbcType=TIMESTAMP})
+        #{dailyGrowthRate,jdbcType=DECIMAL},#{updatetime,jdbcType=TIMESTAMP})
     </insert>
+    
     <insert id="insertSelective" parameterType="FundNetDO">
         insert into fund_net
         <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -86,9 +85,6 @@
             </if>
             <if test="dailyGrowthRate != null">
                 DAILY_GROWTH_RATE,
-            </if>
-            <if test="updaterid != null">
-                UPDATERID,
             </if>
             <if test="updatetime != null">
                 UPDATETIME,
@@ -113,14 +109,12 @@
             <if test="dailyGrowthRate != null">
                 #{dailyGrowthRate,jdbcType=DECIMAL},
             </if>
-            <if test="updaterid != null">
-                #{updaterid,jdbcType=VARCHAR},
-            </if>
             <if test="updatetime != null">
                 #{updatetime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
+    
     <update id="updateByPrimaryKeySelective" parameterType="FundNetDO">
         update fund_net
         <set>
@@ -139,15 +133,13 @@
             <if test="dailyGrowthRate != null">
                 DAILY_GROWTH_RATE = #{dailyGrowthRate,jdbcType=DECIMAL},
             </if>
-            <if test="updaterid != null">
-                UPDATERID = #{updaterid,jdbcType=VARCHAR},
-            </if>
             <if test="updatetime != null">
                 UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
             </if>
         </set>
         where ID = #{id,jdbcType=INTEGER}
     </update>
+    
     <update id="updateByPrimaryKey" parameterType="FundNetDO">
         update fund_net
         set CODE = #{code,jdbcType=VARCHAR},
@@ -155,7 +147,6 @@
         UNIT_NET_VALUE = #{unitNetValue,jdbcType=DECIMAL},
         ACCUMULATED_NET_VALUE = #{accumulatedNetValue,jdbcType=DECIMAL},
         DAILY_GROWTH_RATE = #{dailyGrowthRate,jdbcType=DECIMAL},
-        UPDATERID = #{updaterid,jdbcType=VARCHAR},
         UPDATETIME = #{updatetime,jdbcType=TIMESTAMP}
         where ID = #{id,jdbcType=INTEGER}
     </update>

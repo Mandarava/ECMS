@@ -12,12 +12,7 @@
     </resultMap> -->
     
     <insert id="insertDailyProfit" parameterType="ProfitDO">
-        INSERT INTO profit (
-        CODE,
-        time,
-        profit
-        )
-        VALUES(#{code,jdbcType=VARCHAR},DATE_SUB(NOW(),INTERVAL 1 DAY),#{profit})
-    
+        INSERT INTO profit (CODE,time,profit,user_id)
+        VALUES(#{code,jdbcType=VARCHAR},#{time,jdbcType=TIMESTAMP},#{profit},#{userId})
     </insert>
 </mapper>

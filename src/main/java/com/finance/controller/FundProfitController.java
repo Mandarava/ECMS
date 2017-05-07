@@ -2,6 +2,7 @@ package com.finance.controller;
 
 import com.finance.model.pojo.ProfitDO;
 import com.finance.service.FundProfitService;
+import com.finance.util.myutil.RequestContext;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +33,7 @@ public class FundProfitController {
     public Map addProfit(ProfitDO profit) {
         Map<String, Object> map = new HashMap<>();
         try {
+            profit.setUserId(RequestContext.getCurrentUserId());
             fundProfitService.insertFundProfit(profit);
             map.put("flag", 1);
             return map;

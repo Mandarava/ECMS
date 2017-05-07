@@ -9,6 +9,7 @@ import com.finance.model.dto.SinaFinanceFundDTO;
 import com.finance.model.pojo.FundDO;
 import com.finance.service.FundService;
 import com.finance.util.myutil.HttpConnectionManager;
+import com.finance.util.myutil.RequestContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -69,6 +70,7 @@ public class FundServiceImpl implements FundService {
      */
     private FundDO convertToFund(SinaFinanceFundDTO sinaFund) {
         FundDO fund = new FundDO();
+        fund.setUpdaterId(RequestContext.getCurrentUserId());
         fund.setCode(sinaFund.getSymbol());
         fund.setName(sinaFund.getName());
         fund.setCompanyName(sinaFund.getCompanyName());
@@ -174,7 +176,7 @@ public class FundServiceImpl implements FundService {
                     .setPath("fundfilter/api/openapi.php/MoneyFinanceFundFilterService.getFundFilterAll")
                     .setParameter("callback", "makeFilterData")
                     .setParameter("page", "1")
-                    .setParameter("num", "200000")
+                    .setParameter("num", "6056")
                     .setParameter("dpc", "1")
                     .build();
         } catch (URISyntaxException e) {
