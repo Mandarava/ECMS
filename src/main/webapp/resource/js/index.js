@@ -6,9 +6,8 @@ $(document).ready(function () {
     $("#button_submit").click(function () {
         var fundId = $("#fundId option:selected").attr('id');
         var profit = $("#profit").val();
-
-        var profit = {code: fundId, profit: profit};//拼装成json格式
-
+        var time = $('#profit_date').val();
+        var profit = {code: fundId, profit: profit, time: time};//拼装成json格式
         $.ajax({
                    type: "POST",
                    url: "fund/profit/addProfit",

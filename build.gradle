@@ -182,7 +182,7 @@ buildscript {
 task deploy(dependsOn: war) {
     copy {
         from "build/libs"
-        into "G:/Program Files/apache-tomcat-9.0.0.M17/webapps"
+        into "G:/Program Files/apache-tomcat-9.0.0.M19/webapps"
         include "*.war"
     }
 }

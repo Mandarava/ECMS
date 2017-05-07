@@ -9,20 +9,25 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
+    <link rel="import" href="/ECMS/resource/html/header.html">
 </head>
 <body>
+<header-nav></header-nav>
 <div id="main-content" class="container-fluid">
     <div class="row">
         <div class="col-md-2">
             <form id="form">
                 <br>
-                <select id="fundId" class="form-control">
+                <select id="fundId" class="form-control" required="true">
                     <option id="160706">嘉实沪深300ETF联接</option>
                     <option id="210009">金鹰核心资源混合</option>
                     <option id="502003">易方达军工指数</option>
                     <option id="502053">长盛中证全指证券公司指数分级</option>
                 </select><br>
-                <input id="profit" type="text" placeholder="昨日收益(元)" class="form-control"><br>
+                <input id="profit_date" type="date" placeholder="收益日期" class="form-control"
+                       required="true"><br>
+                <input id="profit" type="text" placeholder="昨日收益(元)" class="form-control"
+                       required="true"><br>
                 <input type="button" id="button_submit" placeholder="提交" value="提交"
                        class="btn btn-default"><br><br>
                 <input type="button" id="insertOrUpdateFundNetValue" value="更新基金净值数据"
