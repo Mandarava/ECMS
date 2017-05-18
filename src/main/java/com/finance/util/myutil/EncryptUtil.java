@@ -21,8 +21,12 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class EncryptUtil {
 
-    public static final String SHA_1 = "SHA-1" ;
-    public static final String MD5 = "MD5" ;
+    public static final String SHA_1 = "SHA-1";
+    public static final String MD5 = "MD5";
+
+    private static final String DES_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIwW4w/aTmRwOfUcFVmNsABofxJhhi2I28eXYEtCVVo92BvookXQot3RgdL1o9AZkLdS4wJwPyoRIDZXvi+ALMCAwEAAQ==";
+    private static final String ENCRYPT_ALGORITHM = "DES";
+    private static final String PADDING_MODE = "DES/ECB/PKCS5Padding";
 
     public static String encodeMD5(String plaintext) {
         MessageDigest md = null;
@@ -310,6 +314,72 @@ public final class EncryptUtil {
         String ciphertext = null;
         ciphertext = BCrypt.hashpw(plaintext, BCrypt.gensalt());
         return ciphertext;
+    }
+
+    private String desEncrypt(String strDataToEncrypt) {
+        String strCipherText = null;
+        try {
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            SecretKey secretKey = keyFactory.generateSecret(new DESKeySpec(DES_KEY.getBytes("UTF-8")));
+
+            Cipher desCipher = Cipher.getInstance(PADDING_MODE);
+            desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
+
+            byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
+            byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
+            strCipherText = new BASE64Encoder().encode(byteCipherText);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return strCipherText;
+    }
+
+    private String desDecrypt(String strCipherText) {
+        String strDecryptedText = null;
+        try {
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            SecretKey secretKey = keyFactory.generateSecret(new DESKeySpec(DES_KEY.getBytes("UTF-8")));
+
+            Cipher desCipher = Cipher.getInstance(PADDING_MODE);
+
+            desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
+
+            byte[] byteCipherText = new BASE64Decoder().decodeBuffer(strCipherText);
+            byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
+
+            strDecryptedText = new String(byteDecryptedText);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (InvalidKeySpecException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return strDecryptedText;
     }
 
 }
