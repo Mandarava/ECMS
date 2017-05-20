@@ -2,16 +2,29 @@ package com.finance.util.myutil;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -21,12 +34,9 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class EncryptUtil {
 
-    public static final String SHA_1 = "SHA-1";
-    public static final String MD5 = "MD5";
-
-    private static final String DES_KEY = "MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBAMIwW4w/aTmRwOfUcFVmNsABofxJhhi2I28eXYEtCVVo92BvookXQot3RgdL1o9AZkLdS4wJwPyoRIDZXvi+ALMCAwEAAQ==";
-    private static final String ENCRYPT_ALGORITHM = "DES";
-    private static final String PADDING_MODE = "DES/ECB/PKCS5Padding";
+    private static final String DES_KEY = "nU+1kWLyGfc7BxAWp1JGwoB5tkWPStpK";
+    private static final String ENCRYPT_ALGORITHM = "DESede";
+    private static final String PADDING_MODE = "DESede/ECB/PKCS5Padding";
 
     public static String encodeMD5(String plaintext) {
         MessageDigest md = null;
@@ -316,11 +326,11 @@ public final class EncryptUtil {
         return ciphertext;
     }
 
-    private String desEncrypt(String strDataToEncrypt) {
+    public static String desedeEncrypt(String strDataToEncrypt) {
         String strCipherText = null;
         try {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
-            SecretKey secretKey = keyFactory.generateSecret(new DESKeySpec(DES_KEY.getBytes("UTF-8")));
+            SecretKey secretKey = keyFactory.generateSecret(new DESedeKeySpec(DES_KEY.getBytes("UTF-8")));
 
             Cipher desCipher = Cipher.getInstance(PADDING_MODE);
             desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
@@ -346,11 +356,11 @@ public final class EncryptUtil {
         return strCipherText;
     }
 
-    private String desDecrypt(String strCipherText) {
+    public static String desedeDecrypt(String strCipherText) {
         String strDecryptedText = null;
         try {
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
-            SecretKey secretKey = keyFactory.generateSecret(new DESKeySpec(DES_KEY.getBytes("UTF-8")));
+            SecretKey secretKey = keyFactory.generateSecret(new DESedeKeySpec(DES_KEY.getBytes("UTF-8")));
 
             Cipher desCipher = Cipher.getInstance(PADDING_MODE);
 
@@ -380,6 +390,19 @@ public final class EncryptUtil {
             e.printStackTrace();
         }
         return strDecryptedText;
+    }
+
+    public static String generateDESedeKey() {
+        try {
+            KeyGenerator kgen = KeyGenerator.getInstance("DESede");
+            kgen.init(168);
+            SecretKey desKey = kgen.generateKey();
+            String key = new BASE64Encoder().encode(desKey.getEncoded());
+            return key;
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
