@@ -34,9 +34,26 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class EncryptUtil {
 
-    private static final String DES_KEY = "nU+1kWLyGfc7BxAWp1JGwoB5tkWPStpK";
-    private static final String ENCRYPT_ALGORITHM = "DESede";
-    private static final String PADDING_MODE = "DESede/ECB/PKCS5Padding";
+    public static final String DESEDE = "DESede";
+    public static final String DES = "DES";
+    public static final String AES = "AES";
+    public static final String RSA = "RSA";
+    public static final String AES_CBC_NOPADDING = "AES/CBC/NoPadding"; // 128
+    public static final String AES_CBC_PKCS5 = "AES/CBC/PKCS5Padding"; // 128
+    public static final String AES_ECB_NOPADDING = "AES/ECB/NoPadding"; // 128
+    public static final String AES_ECB_PKCS5 = "AES/ECB/PKCS5Padding"; // 128
+    public static final String DES_CBC_NOPADDING = "DES/CBC/NoPadding"; // 56
+    public static final String DES_CBC_PKCS5 = "DES/CBC/PKCS5Padding"; // 56
+    public static final String DES_ECB_NOPADDING = "DES/ECB/NoPadding"; // 56
+    public static final String DES_ECB_PKCS5 = "DES/ECB/PKCS5Padding"; // 56
+    public static final String DESEDE_CBC_NOPADDING = "DESede/CBC/NoPadding"; // 168
+    public static final String DESEDE_CBC_PKCS5 = "DESede/CBC/PKCS5Padding"; // 168
+    public static final String DESEDE_ECB_NOPADDING = "DESede/ECB/NoPadding"; // 168
+    public static final String DESEDE_ECB_PKCS5 = "DESede/ECB/PKCS5Padding"; // 168
+    public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding"; // 1024/2048
+    public static final String RSA_ECB_OAEPWithSHA1 = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"; // 1024/2048
+    public static final String DESEDE_OAEPWithSHA256 = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"; // 1024/2048
+    private static final String DES_KEY = "+9XB+8tAyFuKhVJwrs6kdmhuBEm/y7AV";
 
     public static String encodeMD5(String plaintext) {
         MessageDigest md = null;
@@ -321,18 +338,76 @@ public final class EncryptUtil {
     }
 
     public static String bcrypt(String plaintext) {
-        String ciphertext = null;
-        ciphertext = BCrypt.hashpw(plaintext, BCrypt.gensalt());
-        return ciphertext;
+        return BCrypt.hashpw(plaintext, BCrypt.gensalt());
+    }
+
+    public static String xesEncrypt(SecretKey secretKey, String algorithm, String paddingMode, String strDataToEncrypt) {
+        String strCipherText = null;
+        try {
+//            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), algorithm);
+
+            Cipher desCipher = Cipher.getInstance(paddingMode);
+            desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
+
+            byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
+            byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
+            strCipherText = new BASE64Encoder().encode(byteCipherText);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return strCipherText;
+    }
+
+    public static String xesDecrypt(SecretKey secretKey, String algorithm, String paddingMode, String strCipherText) {
+        String strDecryptedText = null;
+        try {
+//            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), algorithm);
+
+            Cipher desCipher = Cipher.getInstance(paddingMode);
+
+            desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
+
+            byte[] byteCipherText = new BASE64Decoder().decodeBuffer(strCipherText);
+            byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
+
+            strDecryptedText = new String(byteDecryptedText);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        } catch (InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return strDecryptedText;
     }
 
     public static String desedeEncrypt(String strDataToEncrypt) {
         String strCipherText = null;
         try {
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DESEDE);
             SecretKey secretKey = keyFactory.generateSecret(new DESedeKeySpec(DES_KEY.getBytes("UTF-8")));
 
-            Cipher desCipher = Cipher.getInstance(PADDING_MODE);
+            Cipher desCipher = Cipher.getInstance(DESEDE_ECB_PKCS5);
             desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
 
             byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
@@ -359,10 +434,10 @@ public final class EncryptUtil {
     public static String desedeDecrypt(String strCipherText) {
         String strDecryptedText = null;
         try {
-            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(ENCRYPT_ALGORITHM);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(DESEDE);
             SecretKey secretKey = keyFactory.generateSecret(new DESedeKeySpec(DES_KEY.getBytes("UTF-8")));
 
-            Cipher desCipher = Cipher.getInstance(PADDING_MODE);
+            Cipher desCipher = Cipher.getInstance(DESEDE_ECB_PKCS5);
 
             desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
 
@@ -392,17 +467,30 @@ public final class EncryptUtil {
         return strDecryptedText;
     }
 
-    public static String generateDESedeKey() {
+    public static String generateKeyBASE64Encoded(String algorithm) {
+        SecretKey secretKey = generateSecrectKey(algorithm);
+        return new BASE64Encoder().encode(secretKey.getEncoded());
+    }
+
+    public static SecretKey generateSecrectKey(String algorithm) {
         try {
-            KeyGenerator kgen = KeyGenerator.getInstance("DESede");
-            kgen.init(168);
-            SecretKey desKey = kgen.generateKey();
-            String key = new BASE64Encoder().encode(desKey.getEncoded());
-            return key;
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(algorithm);
+            SecretKey secretKey = keyGenerator.generateKey();
+            return secretKey;
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void main(String[] args) throws NoSuchAlgorithmException {
+        String algorithm = DESEDE;
+        String paddingMode = DESEDE_ECB_PKCS5;
+        SecretKey key = generateSecrectKey(algorithm);
+        System.out.println(xesEncrypt(key, algorithm, paddingMode, "123456"));
+        System.out.println(xesDecrypt(key, algorithm, paddingMode, xesEncrypt(key, algorithm, paddingMode, "123456")));
+        System.out.println(desedeEncrypt("123456"));
+        System.out.println(desedeDecrypt(desedeEncrypt("123456")));
     }
 
 }
