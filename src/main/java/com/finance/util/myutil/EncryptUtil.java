@@ -56,8 +56,8 @@ public final class EncryptUtil {
     private static final String DES_KEY = "+9XB+8tAyFuKhVJwrs6kdmhuBEm/y7AV";
 
     public static String encodeMD5(String plaintext) {
-        MessageDigest md = null;
-        String ciphertext = null;
+        MessageDigest md;
+        String ciphertext;
         byte bt[] = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("MD5");
@@ -70,8 +70,8 @@ public final class EncryptUtil {
     }
 
     public static String encodeSHA1(String plaintext) {
-        MessageDigest md = null;
-        String ciphertext = null;
+        MessageDigest md;
+        String ciphertext;
         byte bt[] = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-1");
@@ -84,8 +84,8 @@ public final class EncryptUtil {
     }
 
     public static String encodeSHA256(String plaintext) {
-        MessageDigest md = null;
-        String ciphertext = null;
+        MessageDigest md;
+        String ciphertext;
         byte bt[] = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-256");
@@ -98,8 +98,8 @@ public final class EncryptUtil {
     }
 
     public static String encodeSHA512(String plaintext) {
-        MessageDigest md = null;
-        String ciphertext = null;
+        MessageDigest md;
+        String ciphertext;
         byte bt[] = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-512");
@@ -144,7 +144,7 @@ public final class EncryptUtil {
      */
     private static String getHmacKey(String algorithm) {
         //初始化KeyGenerator
-        KeyGenerator keyGenerator = null;
+        KeyGenerator keyGenerator;
         try {
             keyGenerator = KeyGenerator.getInstance(algorithm);
         } catch (NoSuchAlgorithmException e) {
@@ -205,7 +205,7 @@ public final class EncryptUtil {
      * @return 消息摘要（长度为16的字节数组）
      */
     public static String encodeHmacMD5(String data, String key) {
-        Mac mac = null;
+        Mac mac;
         String ciphertext = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacMD5");
@@ -229,7 +229,7 @@ public final class EncryptUtil {
      * @return 消息摘要（长度为16的字节数组）
      */
     public static String encodeHmacSHA1(String data, String key) {
-        Mac mac = null;
+        Mac mac;
         String ciphertext = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
@@ -252,7 +252,7 @@ public final class EncryptUtil {
      * @return 消息摘要（长度为16的字节数组）
      */
     public static String encodeHmacSHA256(String data, String key) {
-        Mac mac = null;
+        Mac mac;
         String ciphertext = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256");
@@ -275,7 +275,7 @@ public final class EncryptUtil {
      * @return 消息摘要（长度为16的字节数组）
      */
     public static String encodeHmacSHA512(String data, String key) {
-        Mac mac = null;
+        Mac mac;
         String ciphertext = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA512");
@@ -290,7 +290,7 @@ public final class EncryptUtil {
     }
 
     public static String bytes2Hex(byte bytes[]) {
-        String hex = null;
+        String hex;
         StringBuffer hash = new StringBuffer();
         for (int i = 0; i < bytes.length; i++) {
             hex = Integer.toHexString(bytes[i] & 0xff);
@@ -341,11 +341,9 @@ public final class EncryptUtil {
         return BCrypt.hashpw(plaintext, BCrypt.gensalt());
     }
 
-    public static String xesEncrypt(SecretKey secretKey, String algorithm, String paddingMode, String strDataToEncrypt) {
+    public static String xesEncrypt(SecretKey secretKey, String paddingMode, String strDataToEncrypt) {
         String strCipherText = null;
         try {
-//            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), algorithm);
-
             Cipher desCipher = Cipher.getInstance(paddingMode);
             desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
 
@@ -368,11 +366,9 @@ public final class EncryptUtil {
         return strCipherText;
     }
 
-    public static String xesDecrypt(SecretKey secretKey, String algorithm, String paddingMode, String strCipherText) {
+    public static String xesDecrypt(SecretKey secretKey, String paddingMode, String strCipherText) {
         String strDecryptedText = null;
         try {
-//            SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes("UTF-8"), algorithm);
-
             Cipher desCipher = Cipher.getInstance(paddingMode);
 
             desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
@@ -401,6 +397,27 @@ public final class EncryptUtil {
         return strDecryptedText;
     }
 
+    public static String xesEncrypt(String key, String algorithm, String paddingMode, String strDataToEncrypt) {
+        SecretKeySpec secretKeySpec = null;
+        try {
+            secretKeySpec = new SecretKeySpec(new BASE64Decoder().decodeBuffer(key), algorithm);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return xesEncrypt(secretKeySpec, paddingMode, strDataToEncrypt);
+    }
+
+    public static String xesDecrypt(String key, String algorithm, String paddingMode, String strCipherText) {
+        SecretKeySpec secretKeySpec = null;
+        try {
+            secretKeySpec = new SecretKeySpec(new BASE64Decoder().decodeBuffer(key), algorithm);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return xesDecrypt(secretKeySpec, paddingMode, strCipherText);
+    }
+
+    @Deprecated
     public static String desedeEncrypt(String strDataToEncrypt) {
         String strCipherText = null;
         try {
@@ -431,6 +448,7 @@ public final class EncryptUtil {
         return strCipherText;
     }
 
+    @Deprecated
     public static String desedeDecrypt(String strCipherText) {
         String strDecryptedText = null;
         try {
@@ -484,11 +502,17 @@ public final class EncryptUtil {
     }
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
-        String algorithm = DESEDE;
-        String paddingMode = DESEDE_ECB_PKCS5;
+        String algorithm = AES;
+        String paddingMode = AES_ECB_PKCS5;
+
         SecretKey key = generateSecrectKey(algorithm);
-        System.out.println(xesEncrypt(key, algorithm, paddingMode, "123456"));
-        System.out.println(xesDecrypt(key, algorithm, paddingMode, xesEncrypt(key, algorithm, paddingMode, "123456")));
+        System.out.println(xesEncrypt(key, paddingMode, "123456"));
+        System.out.println(xesDecrypt(key, paddingMode, xesEncrypt(key, paddingMode, "123456")));
+
+        String keyStr = generateKeyBASE64Encoded(algorithm);
+        System.out.println(xesEncrypt(keyStr, algorithm, paddingMode, "123456"));
+        System.out.println(xesDecrypt(keyStr, algorithm, paddingMode, xesEncrypt(keyStr, algorithm, paddingMode, "123456")));
+
         System.out.println(desedeEncrypt("123456"));
         System.out.println(desedeDecrypt(desedeEncrypt("123456")));
     }
