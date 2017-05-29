@@ -24,13 +24,23 @@
                 <input type="text" id="password" name="password" placeholder="密码"
                        class="form-control"
                        value="admin"/><br>
+                <!-- 验证码demo -->
+                <!-- demo1-->
                 <input type="text" name="captcha" placeholder="请输入验证码"
                        class="form-control"/><br>
-                <img id="captchaImg" src="/ECMS/image/captcha" alt="验证码">
-                <a href="javascript:reloadCaptcha()">看不清楚</a><br><br>
+                <img id="captchaImg" alt="验证码">
+                <a href="javascript:load_captcha_image()">看不清楚</a><br><br>
+                <input type="hidden" id="imgCode" name="imgCode"/>
+                <!-- demo2 -->
+                <!--
+               <input type="text" name="captcha" placeholder="请输入验证码"
+                      class="form-control"/><br>
+               <img id="captchaImg" src="/ECMS/captcha/image" alt="验证码">
+               <a href="javascript:reloadCaptcha()">看不清楚</a><br><br>
+               -->
+                <!-- demo3 Google reCaptcha for test domain:localhost-->
                 <div class="g-recaptcha"
                      data-sitekey="6Le_SiMUAAAAAAtH_Y7JXN_XvK5z1Q-kNPfWMm1p"></div>
-                <!-- for test domain:localhost -->
                 <br>
                 <input type="button" id="login" value="login" class="btn btn-default">
             </form>
@@ -41,8 +51,35 @@
 <script src="resource/js/login.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="text/javascript">
+    $(document).ready(function () {
+        // request captcha image
+        load_captcha_image();
+    });
+
     function reloadCaptcha() {
-        captchaImg.src = "/ECMS/image/captcha?time=" + new Date().getTime();
+        captchaImg.src = "/ECMS/captcha/image?time=" + new Date().getTime();
+    }
+
+    /**
+     * 请求验证码图片
+     */
+    function load_captcha_image() {
+        $.ajax({
+                   type: "GET",
+                   url: "/ECMS/captcha/code",
+                   cache: false,
+                   async: true,
+                   success: function (data) {
+                       if (data.hasOwnProperty('code')) {
+                           $('#imgCode').val(data.code);
+                           captchaImg.src =
+                               "/ECMS/captcha/image/" + data.code + "?time=" + new Date().getTime();
+                       }
+                   },
+                   error: function (e) {
+                       alert("error!");
+                   }
+               });
     }
 </script>
 </body>

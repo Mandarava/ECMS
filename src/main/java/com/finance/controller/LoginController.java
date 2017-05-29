@@ -41,14 +41,25 @@ public class LoginController {
     @PostMapping(value = "/login")
     public String login(@RequestParam String userId,
                         @RequestParam String password,
-                        @RequestParam("g-recaptcha-response") String gRecaptchaResponse,
+                        @RequestParam(value = "captcha", required = false) String captcha,
+                        @RequestParam(value = "imgCode", required = false) String captchaImageCode,
+                        @RequestParam(value = "g-recaptcha-response", required = false) String gRecaptchaResponse,
                         HttpSession httpSession,
                         HttpServletRequest request) {
+        // Google reCaptcha
         try {
             validateReCaptcha(gRecaptchaResponse, request.getRemoteAddr());
         } catch (IOException e) {
             logger.debug(e.getMessage(), e);
         }
+        // common captcha
+        String captchaText = (String) httpSession.getAttribute(captchaImageCode);
+        if (captchaText.equalsIgnoreCase(captcha)) {
+            logger.debug("captcha input valid");
+        } else {
+            logger.debug("captcha input invalid");
+        }
+
         String returnPage;
         boolean isSuccess = userService.userLogin(userId, password);
         if (isSuccess) {

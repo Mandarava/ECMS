@@ -2,6 +2,7 @@ package com.finance.controller;
 
 import com.finance.util.myutil.ImageUtil;
 
+import org.apache.commons.io.IOUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -27,9 +28,10 @@ public class ImageController {
         BufferedImage bufferedImage = (BufferedImage) object[1];
 
         session.setAttribute("piccode", captcha);
-        response.setContentType("image/png");
+        response.setContentType("image/jpeg");
         OutputStream os = response.getOutputStream();
-        ImageIO.write(bufferedImage, "png", os);
+        ImageIO.write(bufferedImage, "jpg", os);
+        IOUtils.closeQuietly(os);
     }
 
 }

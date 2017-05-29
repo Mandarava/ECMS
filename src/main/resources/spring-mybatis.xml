@@ -20,6 +20,7 @@
     
     <import resource="classpath*:spring-ehcache.xml"/>
     <import resource="classpath*:spring-activemq.xml"/>
+    <import resource="classpath*:spring-kaptcha.xml"/>
     
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"

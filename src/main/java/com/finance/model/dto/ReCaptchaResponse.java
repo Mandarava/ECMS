@@ -19,7 +19,7 @@ public class ReCaptchaResponse implements Serializable {
     private String hostname;
 
     @SerializedName("error-codes")
-    private String errorCodes;
+    private String[] errorCodes;
 
     public boolean isSuccess() {
         return success;
@@ -45,11 +45,11 @@ public class ReCaptchaResponse implements Serializable {
         this.hostname = hostname;
     }
 
-    public String getErrorCodes() {
+    public String[] getErrorCodes() {
         return errorCodes;
     }
 
-    public void setErrorCodes(String errorCodes) {
+    public void setErrorCodes(String[] errorCodes) {
         this.errorCodes = errorCodes;
     }
 }
