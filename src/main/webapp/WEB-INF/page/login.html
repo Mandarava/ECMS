@@ -28,6 +28,10 @@
                        class="form-control"/><br>
                 <img id="captchaImg" src="/ECMS/image/captcha" alt="验证码">
                 <a href="javascript:reloadCaptcha()">看不清楚</a><br><br>
+                <div class="g-recaptcha"
+                     data-sitekey="6Le_SiMUAAAAAAtH_Y7JXN_XvK5z1Q-kNPfWMm1p"></div>
+                <!-- for test domain:localhost -->
+                <br>
                 <input type="button" id="login" value="login" class="btn btn-default">
             </form>
         </div>
@@ -35,6 +39,7 @@
 </div>
 <script src="resource/static/jquery-3.1.1.min.js"></script>
 <script src="resource/js/login.js"></script>
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="text/javascript">
     function reloadCaptcha() {
         captchaImg.src = "/ECMS/image/captcha?time=" + new Date().getTime();
