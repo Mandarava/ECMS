@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.finance.model.dto.ReCaptchaResponse;
 import com.finance.service.UserService;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,8 +17,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
 
@@ -47,18 +51,19 @@ public class LoginController {
                         HttpSession httpSession,
                         HttpServletRequest request) {
         // Google reCaptcha
-        try {
-            validateReCaptcha(gRecaptchaResponse, request.getRemoteAddr());
-        } catch (IOException e) {
-            logger.debug(e.getMessage(), e);
+        boolean isCaptchaValid = validateReCaptcha(gRecaptchaResponse, request.getRemoteAddr());
+        if (!isCaptchaValid) {
+            logger.debug("input captacha is invalid");
         }
-        // common captcha
+        // captcha by session
         String captchaText = (String) httpSession.getAttribute(captchaImageCode);
-        if (captchaText.equalsIgnoreCase(captcha)) {
+        if (StringUtils.isNotEmpty(captcha) && captcha.equalsIgnoreCase(captchaText)) {
             logger.debug("captcha input valid");
         } else {
             logger.debug("captcha input invalid");
         }
+        // 及时销毁验证码
+        httpSession.removeAttribute(captchaImageCode);
 
         String returnPage;
         boolean isSuccess = userService.userLogin(userId, password);
@@ -82,24 +87,35 @@ public class LoginController {
         return "index";
     }
 
-    private boolean validateReCaptcha(String reCaptcha, String remoteAddress) throws IOException {
-        Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 1080));
-        String uri = String.format("%s?secret=%s&response=%s&remoteip=%s", RECAPTCHA_URL, RECAPTCHA_SECRET_KEY, reCaptcha, remoteAddress);
-        URL url = new URL(uri);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
-        conn.setRequestMethod("GET");
-        conn.setRequestProperty("charset", "UTF-8");
-        InputStream in = conn.getInputStream();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            sb.append(line);
+    private boolean validateReCaptcha(String reCaptcha, String remoteAddress) {
+        try {
+            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 1080));
+            String uri = String.format("%s?secret=%s&response=%s&remoteip=%s", RECAPTCHA_URL, RECAPTCHA_SECRET_KEY, reCaptcha, remoteAddress);
+            URL url = new URL(uri);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("charset", "UTF-8");
+            InputStream in = conn.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            reader.close();
+            in.close();
+            ReCaptchaResponse reCaptchaResponse = new Gson().fromJson(sb.toString(), ReCaptchaResponse.class);
+            return reCaptchaResponse.isSuccess();
+        } catch (MalformedURLException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (UnsupportedEncodingException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (ProtocolException e) {
+            logger.debug(e.getMessage(), e);
+        } catch (IOException e) {
+            logger.debug(e.getMessage(), e);
         }
-        reader.close();
-        in.close();
-        ReCaptchaResponse reCaptchaResponse = new Gson().fromJson(sb.toString(), ReCaptchaResponse.class);
-        return reCaptchaResponse.isSuccess();
+        return false;
     }
 
 }

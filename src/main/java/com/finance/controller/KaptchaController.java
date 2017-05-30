@@ -77,7 +77,7 @@ public class KaptchaController {
         String captchaText = captchaProducer.createText();
         // 生成验证码图片
         BufferedImage bufferedImage = captchaProducer.createImage(captchaText);
-        // here put it into session, or a Key-value database would be better.
+        // here put it into session, a better way is to put it into a Key-value database and set timeout.
         httpSession.setAttribute(uniqueCode, captchaText);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(bufferedImage, "jpg", out);
