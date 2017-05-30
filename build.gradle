@@ -139,6 +139,9 @@ dependencies {
     compile group: 'org.jdom', name: 'jdom', version: '2.0.2'
     compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
 
+    compile group: 'org.owasp.esapi', name: 'esapi', version: '2.1.0.1'
+
+
 //    compile group: 'com.google.code.kaptcha', name: 'kaptcha', version: '2.3'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'

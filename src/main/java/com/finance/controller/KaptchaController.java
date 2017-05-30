@@ -50,6 +50,8 @@ public class KaptchaController {
         Cookie cookie = new Cookie(Constants.KAPTCHA_SESSION_KEY, captchaText);
         // 300秒生存期
         cookie.setMaxAge(300);
+        // http only
+        cookie.setHttpOnly(true);
         // 将cookie加入response
         response.addCookie(cookie);
         // ------------
@@ -75,7 +77,7 @@ public class KaptchaController {
         String captchaText = captchaProducer.createText();
         // 生成验证码图片
         BufferedImage bufferedImage = captchaProducer.createImage(captchaText);
-        // here put it into session, or Key-value database else
+        // here put it into session, or a Key-value database would be better.
         httpSession.setAttribute(uniqueCode, captchaText);
         ServletOutputStream out = response.getOutputStream();
         ImageIO.write(bufferedImage, "jpg", out);
