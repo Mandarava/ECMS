@@ -69,9 +69,10 @@ public class HttpConnectionManager {
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setSocketTimeout(SOCKET_TIMEOUT)
-//                .setProxy(new HttpHost("183.128.240.179", 808)) // 高匿代理
+//                .setProxy(new HttpHost("127.0.0.1", 8888)).setAuthenticationEnabled(true) // for fiddler debug
+//                .setProxy(new HttpHost("221.229.45.124", 808)) // 高匿代理
                 .build();
-        httpget.setHeader("UserDO-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.96 Safari/537.36");
+        httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36");
         httpget.setConfig(requestConfig);
         try {
             response = httpClient.execute(httpget, context);
