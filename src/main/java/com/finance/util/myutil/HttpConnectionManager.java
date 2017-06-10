@@ -48,14 +48,14 @@ import javax.net.ssl.SSLException;
 @Singleton
 public class HttpConnectionManager {
 
-    private static final int MAX_TOTAL = 200;
-    private static final int DEFAULT_MAX_PER_ROUTE = 25;
-    private static final int CONNECTION_REQUEST_TIMEOUT = 2500;
+    private static final int MAX_TOTAL = 100;
+    private static final int DEFAULT_MAX_PER_ROUTE = 50;
+    private static final int CONNECTION_REQUEST_TIMEOUT = 2000; // 当连接池里没有可用连接时，等待的超时时间，这个值一定要设置，且不能太长，不然会出现大量请求等待。
     private static final int CONNECT_TIMEOUT = 2500;
-    private static final int SOCKET_TIMEOUT = 2500;
+    private static final int SOCKET_TIMEOUT = 2000;
     private static final long MAX_IDLE_TIME = 3L;
+    private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnectionManager.class);
     private static CloseableHttpClient httpClient;
-    private static Logger LOGGER = LoggerFactory.getLogger(HttpConnectionManager.class);
 
     public static String executeHttpGet(URI uri, HttpContext context) {
         if (context == null) {
@@ -89,12 +89,11 @@ public class HttpConnectionManager {
             }
         } catch (Exception e) {
             LOGGER.debug("Http request failed!");
-            throw new RuntimeException("Http request failed!");
-//            LOGGER.debug(e.getMessage(), e);
         } finally {
             try {
                 httpget.releaseConnection();
                 if (response != null) {
+                    EntityUtils.consume(response.getEntity());
                     response.close();
                 }
             } catch (IOException e) {
@@ -141,8 +140,7 @@ public class HttpConnectionManager {
             }
             HttpClientContext clientContext = HttpClientContext.adapt(context);
             HttpRequest request = clientContext.getRequest();
-            boolean idempotent = !(request instanceof HttpEntityEnclosingRequest);
-            return idempotent;
+            return !(request instanceof HttpEntityEnclosingRequest);
         };
 
         ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
@@ -169,7 +167,6 @@ public class HttpConnectionManager {
                 .setSocketTimeout(SOCKET_TIMEOUT)
                 .build();
 
-        /* CloseableHttpClient httpClient = HttpClients.createDefault();*/
         httpClient = HttpClients.custom()
                 .setConnectionManager(cm)
                 .setRetryHandler(httpRequestRetryHandler)
