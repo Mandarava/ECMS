@@ -4,14 +4,19 @@ import com.google.gson.Gson;
 
 import com.finance.model.dto.ReCaptchaResponse;
 import com.finance.service.UserService;
+import com.finance.util.myutil.RSAUtil;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -24,6 +29,8 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
+import java.security.KeyPair;
+import java.util.Base64;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +45,7 @@ public class LoginController {
     private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private static final String RECAPTCHA_SECRET_KEY = "6Le_SiMUAAAAAOVSFY5u6ld6yCJ2YX0Bo_FMIaC4"; // for test
     private static final String RECAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify";
+    private static final String RSA_KEY = "rsa_key";
 
     @Resource
     private UserService userService;
@@ -65,8 +73,11 @@ public class LoginController {
         // 及时销毁验证码
         httpSession.removeAttribute(captchaImageCode);
 
+        KeyPair keyPair = (KeyPair) httpSession.getAttribute(RSA_KEY);
+        String decryptedPassword = RSAUtil.decryptByPrivateKeySplit(Base64.getDecoder().decode(password), keyPair.getPrivate());
+
         String returnPage;
-        boolean isSuccess = userService.userLogin(userId, password);
+        boolean isSuccess = userService.userLogin(userId, decryptedPassword);
         if (isSuccess) {
             httpSession.setAttribute("userId", userId);
             returnPage = "redirect:/index";
@@ -85,6 +96,15 @@ public class LoginController {
     @RequestMapping(value = "/index")
     public String showHomePage() {
         return "index";
+    }
+
+    @GetMapping(value = "rsa/public_key")
+    @ResponseBody
+    public String getRsaPublicKey() {
+        KeyPair keyPair = RSAUtil.generateKeyPair();
+        String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
+        RequestContextHolder.getRequestAttributes().setAttribute(RSA_KEY, keyPair, RequestAttributes.SCOPE_SESSION);
+        return publicKey;
     }
 
     private boolean validateReCaptcha(String reCaptcha, String remoteAddress) {

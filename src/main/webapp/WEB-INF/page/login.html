@@ -18,6 +18,7 @@
         <div class="col-md-2">
             <form id="form" method="post" action="login">
                 <br>
+                <input type="hidden" id="rsa_public_key" name="rsa_public_key"/>
                 <input type="text" id="userId" name="userId" placeholder="用户名"
                        class="form-control"
                        value="admin"/><br>
@@ -49,11 +50,14 @@
 </div>
 <script src="resource/static/jquery-3.1.1.min.js"></script>
 <script src="resource/js/login.js"></script>
+<script src="resource/js/rsa/jsencrypt.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="text/javascript">
     $(document).ready(function () {
         // request captcha image
         load_captcha_image();
+        // request rsa public key
+        load_rsa_public_key();
     });
 
     function reloadCaptcha() {
@@ -75,6 +79,24 @@
                            captchaImg.src =
                                "/ECMS/captcha/image/" + data.code + "?time=" + new Date().getTime();
                        }
+                   },
+                   error: function (e) {
+                       alert("error!");
+                   }
+               });
+    }
+
+    /**
+     * 请求RSA公钥
+     */
+    function load_rsa_public_key() {
+        $.ajax({
+                   type: "GET",
+                   url: "/ECMS/rsa/public_key",
+                   cache: false,
+                   async: true,
+                   success: function (data) {
+                       $('#rsa_public_key').val(data);
                    },
                    error: function (e) {
                        alert("error!");
