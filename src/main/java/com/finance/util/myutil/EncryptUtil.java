@@ -1,5 +1,7 @@
 package com.finance.util.myutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import sun.misc.BASE64Decoder;
@@ -7,21 +9,16 @@ import sun.misc.BASE64Encoder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESedeKeySpec;
@@ -37,7 +34,6 @@ public final class EncryptUtil {
     public static final String DESEDE = "DESede";
     public static final String DES = "DES";
     public static final String AES = "AES";
-    public static final String RSA = "RSA";
     public static final String AES_CBC_NOPADDING = "AES/CBC/NoPadding"; // 128
     public static final String AES_CBC_PKCS5 = "AES/CBC/PKCS5Padding"; // 128
     public static final String AES_ECB_NOPADDING = "AES/ECB/NoPadding"; // 128
@@ -50,77 +46,72 @@ public final class EncryptUtil {
     public static final String DESEDE_CBC_PKCS5 = "DESede/CBC/PKCS5Padding"; // 168
     public static final String DESEDE_ECB_NOPADDING = "DESede/ECB/NoPadding"; // 168
     public static final String DESEDE_ECB_PKCS5 = "DESede/ECB/PKCS5Padding"; // 168
-    public static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding"; // 1024/2048
-    public static final String RSA_ECB_OAEPWithSHA1 = "RSA/ECB/OAEPWithSHA-1AndMGF1Padding"; // 1024/2048
-    public static final String DESEDE_OAEPWithSHA256 = "RSA/ECB/OAEPWithSHA-256AndMGF1Padding"; // 1024/2048
     private static final String DES_KEY = "+9XB+8tAyFuKhVJwrs6kdmhuBEm/y7AV";
+    private static final Logger logger = LoggerFactory.getLogger(EncryptUtil.class);
 
     public static String encodeMD5(String plaintext) {
         MessageDigest md;
-        String ciphertext;
-        byte bt[] = plaintext.getBytes();
+        String cipherText = null;
+        byte[] bytes = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("MD5");
-            md.update(bt);
-            ciphertext = bytes2Hex(md.digest());
+            md.update(bytes);
+            cipherText = bytes2Hex(md.digest());
         } catch (NoSuchAlgorithmException e) {
-            return plaintext;
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
 
     public static String encodeSHA1(String plaintext) {
         MessageDigest md;
-        String ciphertext;
-        byte bt[] = plaintext.getBytes();
+        String cipherText = null;
+        byte[] bytes = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-1");
-            md.update(bt);
-            ciphertext = bytes2Hex(md.digest());
+            md.update(bytes);
+            cipherText = bytes2Hex(md.digest());
         } catch (NoSuchAlgorithmException e) {
-            return plaintext;
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
 
     public static String encodeSHA256(String plaintext) {
         MessageDigest md;
-        String ciphertext;
-        byte bt[] = plaintext.getBytes();
+        String cipherText = null;
+        byte[] bytes = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-256");
-            md.update(bt);
-            ciphertext = bytes2Hex(md.digest());
+            md.update(bytes);
+            cipherText = bytes2Hex(md.digest());
         } catch (NoSuchAlgorithmException e) {
-            return plaintext;
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
 
     public static String encodeSHA512(String plaintext) {
         MessageDigest md;
-        String ciphertext;
-        byte bt[] = plaintext.getBytes();
+        String cipherText = null;
+        byte[] bytes = plaintext.getBytes();
         try {
             md = MessageDigest.getInstance("SHA-512");
-            md.update(bt);
-            ciphertext = bytes2Hex(md.digest());
+            md.update(bytes);
+            cipherText = bytes2Hex(md.digest());
         } catch (NoSuchAlgorithmException e) {
-            return plaintext;
+            logger.debug(e.getMessage(), e);
         }
-
-        return ciphertext;
+        return cipherText;
     }
-
 
     public static String encodeBASE64(String plaintext) {
         String base64 = null;
         try {
             base64 = Base64.getEncoder().encodeToString(plaintext.getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
-
         return base64;
     }
 
@@ -129,11 +120,10 @@ public final class EncryptUtil {
         try {
             plaintext = new String(Base64.getDecoder().decode(ciphertext), "utf-8");
         } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
         return plaintext;
     }
-
 
     /**
      * 根据给定密钥生成算法创建密钥
@@ -196,7 +186,6 @@ public final class EncryptUtil {
         return getHmacKey("HmacSHA512");
     }
 
-
     /**
      * 使用HmacMD5消息摘要算法计算消息摘要
      *
@@ -206,20 +195,18 @@ public final class EncryptUtil {
      */
     public static String encodeHmacMD5(String data, String key) {
         Mac mac;
-        String ciphertext = null;
+        String cipherText = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacMD5");
             mac = Mac.getInstance("HmacMD5");
             mac.init(k);
             byte[] bytes = mac.doFinal(data.getBytes("UTF-8"));
-            ciphertext = bytes2Hex(bytes);
+            cipherText = bytes2Hex(bytes);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
-
-        return ciphertext;
+        return cipherText;
     }
-
 
     /**
      * 使用HmacSHA消息摘要算法计算消息摘要
@@ -230,19 +217,18 @@ public final class EncryptUtil {
      */
     public static String encodeHmacSHA1(String data, String key) {
         Mac mac;
-        String ciphertext = null;
+        String cipherText = null;
         try {
             Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA1");
             mac = Mac.getInstance("HmacSHA1");
             mac.init(k);
             byte[] bytes = mac.doFinal(data.getBytes("UTF-8"));
-            ciphertext = bytes2Hex(bytes);
+            cipherText = bytes2Hex(bytes);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
-
 
     /**
      * 使用HmacSHA256消息摘要算法计算消息摘要
@@ -253,19 +239,18 @@ public final class EncryptUtil {
      */
     public static String encodeHmacSHA256(String data, String key) {
         Mac mac;
-        String ciphertext = null;
+        String cipherText = null;
         try {
-            Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256");
+            Key keySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA256");
             mac = Mac.getInstance("HmacSHA256");
-            mac.init(k);
+            mac.init(keySpec);
             byte[] bytes = mac.doFinal(data.getBytes("UTF-8"));
-            ciphertext = bytes2Hex(bytes);
+            cipherText = bytes2Hex(bytes);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
-
 
     /**
      * 使用HmacSHA512消息摘要算法计算消息摘要
@@ -276,22 +261,22 @@ public final class EncryptUtil {
      */
     public static String encodeHmacSHA512(String data, String key) {
         Mac mac;
-        String ciphertext = null;
+        String cipherText = null;
         try {
-            Key k = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA512");
+            Key keySpec = new SecretKeySpec(key.getBytes("UTF-8"), "HmacSHA512");
             mac = Mac.getInstance("HmacSHA512");
-            mac.init(k);
+            mac.init(keySpec);
             byte[] bytes = mac.doFinal(data.getBytes("UTF-8"));
-            ciphertext = bytes2Hex(bytes);
+            cipherText = bytes2Hex(bytes);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException | InvalidKeyException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
-        return ciphertext;
+        return cipherText;
     }
 
     public static String bytes2Hex(byte bytes[]) {
         String hex;
-        StringBuffer hash = new StringBuffer();
+        StringBuilder hash = new StringBuilder();
         for (int i = 0; i < bytes.length; i++) {
             hex = Integer.toHexString(bytes[i] & 0xff);
             if (hex.length() == 1) {
@@ -317,7 +302,6 @@ public final class EncryptUtil {
         try {
             MessageDigest mdTemp = MessageDigest.getInstance("SHA1");
             mdTemp.update(str.getBytes("UTF-8"));
-
             byte[] md = mdTemp.digest();
             int j = md.length;
             char[] buf = new char[j * 2];
@@ -328,10 +312,8 @@ public final class EncryptUtil {
                 buf[k++] = hexDigits[byte0 & 0xf];
             }
             generatedPassword = new String(buf).toUpperCase();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
         }
 
         return generatedPassword;
@@ -346,22 +328,11 @@ public final class EncryptUtil {
         try {
             Cipher desCipher = Cipher.getInstance(paddingMode);
             desCipher.init(Cipher.ENCRYPT_MODE, secretKey, new SecureRandom());
-
             byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
             byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
-            strCipherText = new BASE64Encoder().encode(byteCipherText);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+            strCipherText = Base64.getEncoder().encodeToString(byteCipherText);
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
         }
         return strCipherText;
     }
@@ -370,29 +341,12 @@ public final class EncryptUtil {
         String strDecryptedText = null;
         try {
             Cipher desCipher = Cipher.getInstance(paddingMode);
-
             desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
-
-            byte[] byteCipherText = new BASE64Decoder().decodeBuffer(strCipherText);
+            byte[] byteCipherText = Base64.getDecoder().decode(strCipherText);
             byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
-
             strDecryptedText = new String(byteDecryptedText);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
         }
         return strDecryptedText;
     }
@@ -402,18 +356,13 @@ public final class EncryptUtil {
         try {
             secretKeySpec = new SecretKeySpec(new BASE64Decoder().decodeBuffer(key), algorithm);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
         return xesEncrypt(secretKeySpec, paddingMode, strDataToEncrypt);
     }
 
     public static String xesDecrypt(String key, String algorithm, String paddingMode, String strCipherText) {
-        SecretKeySpec secretKeySpec = null;
-        try {
-            secretKeySpec = new SecretKeySpec(new BASE64Decoder().decodeBuffer(key), algorithm);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        SecretKeySpec secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(key), algorithm);
         return xesDecrypt(secretKeySpec, paddingMode, strCipherText);
     }
 
@@ -430,20 +379,8 @@ public final class EncryptUtil {
             byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
             byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
             strCipherText = new BASE64Encoder().encode(byteCipherText);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
         }
         return strCipherText;
     }
@@ -463,24 +400,8 @@ public final class EncryptUtil {
             byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
 
             strDecryptedText = new String(byteDecryptedText);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-        } catch (InvalidKeySpecException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
         }
         return strDecryptedText;
     }
@@ -515,6 +436,7 @@ public final class EncryptUtil {
 
         System.out.println(desedeEncrypt("123456"));
         System.out.println(desedeDecrypt(desedeEncrypt("123456")));
+
     }
 
 }
