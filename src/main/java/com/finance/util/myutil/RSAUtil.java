@@ -112,7 +112,7 @@ public class RSAUtil {
      * @param encryptedData 密文
      * @param privateKey    私钥
      */
-    public static byte[] decryptByPrivateKeySplit(byte[] encryptedData, PrivateKey privateKey) {
+    public static String decryptByPrivateKeySplit(byte[] encryptedData, PrivateKey privateKey) {
         int inputLength = encryptedData.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int offset = 0;
@@ -130,7 +130,7 @@ public class RSAUtil {
         }
         byte[] decryptedData = out.toByteArray();
         IOUtils.closeQuietly(out);
-        return decryptedData;
+        return new String(decryptedData);
     }
 
     /**
@@ -141,7 +141,7 @@ public class RSAUtil {
      * @param data      明文
      * @param publicKey 公钥
      */
-    public static byte[] encryptByPublicKeySplit(byte[] data, PublicKey publicKey) {
+    public static String encryptByPublicKeySplit(byte[] data, PublicKey publicKey) {
         int inputLength = data.length;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         int offset = 0;
@@ -159,7 +159,7 @@ public class RSAUtil {
         }
         byte[] encryptedData = out.toByteArray();
         IOUtils.closeQuietly(out);
-        return encryptedData;
+        return Base64.getEncoder().encodeToString(encryptedData);
     }
 
     public static void main(String[] args) {
@@ -172,9 +172,9 @@ public class RSAUtil {
         for (int i = 0; i < 100; i++) {
             list.add(new FundDO());
         }
-        String cipherText2 = Base64.getEncoder().encodeToString(encryptByPublicKeySplit(new Gson().toJson(list).getBytes(), publicKey));
+        String cipherText2 = encryptByPublicKeySplit(new Gson().toJson(list).getBytes(), publicKey);
         System.out.println(cipherText2);
-        System.out.println(new String(decryptByPrivateKeySplit(Base64.getDecoder().decode(cipherText2), privateKey)));
+        System.out.println(decryptByPrivateKeySplit(Base64.getDecoder().decode(cipherText2), privateKey));
     }
 
 }
