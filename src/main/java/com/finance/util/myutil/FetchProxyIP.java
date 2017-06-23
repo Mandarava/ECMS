@@ -1,9 +1,9 @@
 package com.finance.util.myutil;
 
+import com.finance.model.dto.HttpClientResponse;
 import com.finance.model.dto.ProxyIPDTO;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -37,7 +37,11 @@ public class FetchProxyIP {
             } catch (URISyntaxException e) {
                 logger.debug(e.getMessage(), e);
             }
-            String strResult = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+            HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri);
+            if (!httpClientResponse.isOk()) {
+                logger.info(httpClientResponse.getMessage());
+            }
+            String strResult = httpClientResponse.getData();
             if (!StringUtils.isEmpty(strResult)) {
                 Document
                         doc = Jsoup.parse(strResult);

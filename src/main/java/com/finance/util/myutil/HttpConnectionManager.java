@@ -1,5 +1,7 @@
 package com.finance.util.myutil;
 
+import com.finance.model.dto.HttpClientResponse;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpEntityEnclosingRequest;
 import org.apache.http.HttpRequest;
@@ -48,20 +50,25 @@ import javax.net.ssl.SSLException;
 @Singleton
 public class HttpConnectionManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(HttpConnectionManager.class);
     private static final int MAX_TOTAL = 100;
     private static final int DEFAULT_MAX_PER_ROUTE = 50;
     private static final int CONNECTION_REQUEST_TIMEOUT = 2000; // 当连接池里没有可用连接时，等待的超时时间，这个值一定要设置，且不能太长，不然会出现大量请求等待。
     private static final int CONNECT_TIMEOUT = 2500;
     private static final int SOCKET_TIMEOUT = 2000;
     private static final long MAX_IDLE_TIME = 3L;
-    private static final Logger LOGGER = LoggerFactory.getLogger(HttpConnectionManager.class);
+    private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36";
     private static CloseableHttpClient httpClient;
 
-    public static String executeHttpGet(URI uri, HttpContext context) {
+    public static HttpClientResponse executeHttpGet(URI uri) {
+        return executeHttpGet(uri, HttpClientContext.create());
+    }
+
+    public static HttpClientResponse executeHttpGet(URI uri, HttpContext context) {
+        HttpClientResponse httpClientResponse = new HttpClientResponse();
         if (context == null) {
             context = HttpClientContext.create();
         }
-        String result = null;
         CloseableHttpResponse response = null;
         HttpGet httpget = new HttpGet(uri);
         // 配置请求的超时设置
@@ -72,14 +79,17 @@ public class HttpConnectionManager {
 //                .setProxy(new HttpHost("127.0.0.1", 8888)).setAuthenticationEnabled(true) // for fiddler debug
 //                .setProxy(new HttpHost("221.229.45.124", 808)) // 高匿代理
                 .build();
-        httpget.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36");
+        httpget.setHeader("User-Agent", USER_AGENT);
         httpget.setConfig(requestConfig);
         try {
             response = httpClient.execute(httpget, context);
             if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                httpClientResponse.setCode(HttpStatus.SC_OK);
+                httpClientResponse.setMessage("请求成功！");
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
-                    result = EntityUtils.toString(entity, "UTF-8");
+                    String result = EntityUtils.toString(entity, "UTF-8");
+                    httpClientResponse.setData(result);
                     EntityUtils.consume(entity);
                 } else {
                     throw new ClientProtocolException("Response contains no content");
@@ -89,7 +99,8 @@ public class HttpConnectionManager {
                         response.getStatusLine().getReasonPhrase());
             }
         } catch (Exception e) {
-            LOGGER.debug("Http request failed!");
+            httpClientResponse.setCode(response.getStatusLine().getStatusCode());
+            httpClientResponse.setMessage("网络连接失败，请检查网络！");
         } finally {
             try {
                 httpget.releaseConnection();
@@ -98,10 +109,10 @@ public class HttpConnectionManager {
                     response.close();
                 }
             } catch (IOException e) {
-                LOGGER.debug(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
         }
-        return result;
+        return httpClientResponse;
     }
 
     @PostConstruct
@@ -119,7 +130,7 @@ public class HttpConnectionManager {
 
         // 请求重试处理
         HttpRequestRetryHandler httpRequestRetryHandler = (exception, executionCount, context) -> {
-            if (executionCount >= 5) {
+            if (executionCount >= 3) {
                 // Do not retry if over max retry count
                 return false;
             }
@@ -177,16 +188,16 @@ public class HttpConnectionManager {
                 .setKeepAliveStrategy(keepAliveStrategy)
                 .build();
 
-        LOGGER.info("httpclient 初始化完成！");
+        logger.info("httpclient 初始化完成！");
     }
 
     @PreDestroy
     public void destory() {
         try {
             httpClient.close();
-            LOGGER.info("httpclient 成功关闭！");
+            logger.info("httpclient 成功关闭！");
         } catch (IOException e) {
-            LOGGER.debug(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
     }
 

@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import com.finance.dao.FundDao;
+import com.finance.model.dto.HttpClientResponse;
 import com.finance.model.dto.SinaFinanceFundDTO;
 import com.finance.model.pojo.FundDO;
 import com.finance.service.FundService;
@@ -13,7 +14,6 @@ import com.finance.util.myutil.RequestContext;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,7 +182,11 @@ public class FundServiceImpl implements FundService {
         } catch (URISyntaxException e) {
             logger.debug(e.getMessage(), e);
         }
-        String strResult = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+        HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri);
+        if (!httpClientResponse.isOk()) {
+            logger.info(httpClientResponse.getMessage());
+        }
+        String strResult = httpClientResponse.getData();
         if (StringUtils.isEmpty(strResult)) {
             return null;
         }

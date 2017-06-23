@@ -7,6 +7,7 @@ import com.google.gson.reflect.TypeToken;
 import com.finance.dao.FundNetDao;
 import com.finance.datasource.DynamicDataSourceContextHolder;
 import com.finance.exception.BusinessException;
+import com.finance.model.dto.HttpClientResponse;
 import com.finance.model.dto.SinaFinanceFundNetDTO;
 import com.finance.model.pojo.FundDO;
 import com.finance.model.pojo.FundNetDO;
@@ -168,7 +169,11 @@ public class FundNetServiceImpl implements FundNetService {
                     .setParameter("page", "1")
                     .setParameter("per", "20000")
                     .build();
-            String strResult = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+            HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri, HttpClientContext.create());
+            if (!httpClientResponse.isOk()) {
+                logger.info(httpClientResponse.getMessage());
+            }
+            String strResult = httpClientResponse.getData();
             if (StringUtils.isEmpty(strResult)) {
                 return null;
             }
@@ -236,7 +241,11 @@ public class FundNetServiceImpl implements FundNetService {
             } catch (URISyntaxException e) {
                 logger.debug(e.getMessage(), e);
             }
-            String html = HttpConnectionManager.executeHttpGet(uri, context);
+            HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri, context);
+            if (!httpClientResponse.isOk()) {
+                logger.info(httpClientResponse.getMessage());
+            }
+            String html = httpClientResponse.getData();
             if (StringUtils.isEmpty(html)) {
                 return null;
             }
@@ -273,7 +282,11 @@ public class FundNetServiceImpl implements FundNetService {
             } catch (URISyntaxException e) {
                 logger.debug(e.getMessage(), e);
             }
-            String strResult = HttpConnectionManager.executeHttpGet(uri, context);
+            HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri, context);
+            if (!httpClientResponse.isOk()) {
+                logger.info(httpClientResponse.getMessage());
+            }
+            String strResult = httpClientResponse.getData();
             if (StringUtils.isEmpty(strResult)) {
                 return null;
             }
