@@ -143,7 +143,7 @@ dependencies {
     compile group: 'org.owasp.esapi', name: 'esapi', version: '2.1.0.1'
 
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
-    provided group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
+    compile group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
 
 
 //    compile group: 'com.google.code.kaptcha', name: 'kaptcha', version: '2.3'
@@ -189,7 +189,7 @@ buildscript {
 task deploy(dependsOn: war) {
     copy {
         from "build/libs"
-        into "G:/Program Files/apache-tomcat-9.0.0.M19/webapps"
+        into "G:/Program Files/apache-tomcat-8.0.24/webapps"
         include "*.war"
     }
 }
