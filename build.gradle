@@ -100,7 +100,9 @@ dependencies {
     compile 'com.google.guava:guava:19.0'
     compile group: 'com.googlecode.ehcache-spring-annotations', name: 'ehcache-spring-annotations', version: '1.2.0'
     compile group: 'org.apache.activemq', name: 'activemq-spring', version: '5.14.3'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.2'
+    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.8.1'
+
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
     compile('us.codecraft:webmagic-core:0.5.3',
             'us.codecraft:webmagic-extension:0.5.3')
@@ -121,7 +123,6 @@ dependencies {
     compile group: 'org.mybatis.caches', name: 'mybatis-ehcache', version: '1.1.0'
     compile group: 'com.googlecode.ehcache-spring-annotations', name: 'ehcache-spring-annotations', version: '1.2.0'
 
-    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.0.3'
     compile group: 'org.wildfly.swarm', name: 'logstash', version: '2016.12.1'
     compile group: 'io.fabric8.devops.apps', name: 'kibana', version: '2.2.298'
 
@@ -140,6 +141,9 @@ dependencies {
     compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
 
     compile group: 'org.owasp.esapi', name: 'esapi', version: '2.1.0.1'
+
+    compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
+    provided group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
 
 
 //    compile group: 'com.google.code.kaptcha', name: 'kaptcha', version: '2.3'
