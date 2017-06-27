@@ -101,6 +101,9 @@ dependencies {
     compile group: 'com.googlecode.ehcache-spring-annotations', name: 'ehcache-spring-annotations', version: '1.2.0'
     compile group: 'org.apache.activemq', name: 'activemq-spring', version: '5.14.3'
     compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
+    compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.3'
+
+
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.8.1'
 
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
@@ -145,7 +148,6 @@ dependencies {
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
     compile group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
 
-
 //    compile group: 'com.google.code.kaptcha', name: 'kaptcha', version: '2.3'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -189,9 +191,15 @@ buildscript {
 task deploy(dependsOn: war) {
     copy {
         from "build/libs"
-        into "G:/Program Files/apache-tomcat-8.0.24/webapps"
+        into "G:/Program Files/apache-tomcat-8.0.44/webapps"
         include "*.war"
+        rename 'ECMS.*war', 'ECMS.war'
     }
+}
+
+task del(dependsOn: deploy) {
+    File file = new File("G:/Program Files/apache-tomcat-8.0.44/webapps/ECMS")
+    file.deleteDir()
 }
 
 tasks.withType(AbstractCompile) {
