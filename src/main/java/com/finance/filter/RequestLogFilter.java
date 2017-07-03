@@ -17,32 +17,27 @@ import javax.servlet.http.HttpSession;
 @WebFilter(filterName = "requestLogFilter", urlPatterns = "/*", asyncSupported = true)
 public class RequestLogFilter extends AbstractFilter {
 
-    private static Logger logger = null;
+    private static final Logger logger = LoggerFactory.getLogger(RequestLogFilter.class);
 
     public static String getParamsString(Map<String, String[]> params) {
-
-        if (params == null || params.isEmpty())
-            return "" ;
-
+        if (params == null || params.isEmpty()) {
+            return "";
+        }
         StringBuilder builder = new StringBuilder();
         builder.append("?");
-
         for (String key : params.keySet()) {
-            builder.append(key).append("=").append(params.get(key)[0])
-                    .append("&");
-
+            builder.append(key).append("=").append(params.get(key)[0]).append("&");
         }
         builder.deleteCharAt(builder.lastIndexOf("&"));
-
         return builder.toString();
     }
 
     public void init(FilterConfig config) {
-        logger = LoggerFactory.getLogger(RequestLogFilter.class);
+
     }
 
     public void destroy() {
-        logger = null;
+
     }
 
     @Override
@@ -50,20 +45,15 @@ public class RequestLogFilter extends AbstractFilter {
                          HttpServletResponse response, FilterChain chain,
                          HttpSession session, String menthod, String url)
             throws IOException, ServletException {
+        long before = System.currentTimeMillis();
         logger.info("Accept:{}", request.getHeader("Accept"));
         logger.info("Content-Type:{}", request.getHeader("Content-Type"));
-        logger.info("------开始过滤--------");
-
-        long before = System.currentTimeMillis();
-        logger.info("拦截到请求:{} : {}{}", menthod, url, getParamsString(request.getParameterMap()));
+        logger.info("User-Agent:{}", request.getHeader("User-Agent"));
+        logger.info("拦截到请求:{} - {} : {}{}  {}", request.getRemoteAddr(), menthod, url, getParamsString(request.getParameterMap()), response.getStatus());
 
         chain.doFilter(request, response);
         long after = System.currentTimeMillis();
-        logger.info("请求结果:" + url + " status:" + response.getStatus());
-        logger.info("花费时间：" + (after - before) + "ms");
-
-        logger.info("------过滤结束---------\n");
-
+        logger.info("花费时间：{} ms\n", after - before);
     }
 
 }
