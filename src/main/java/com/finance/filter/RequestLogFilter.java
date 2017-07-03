@@ -50,7 +50,6 @@ public class RequestLogFilter extends AbstractFilter {
         logger.info("Content-Type:{}", request.getHeader("Content-Type"));
         logger.info("User-Agent:{}", request.getHeader("User-Agent"));
         logger.info("拦截到请求:{} - {} : {}{}  {}", request.getRemoteAddr(), menthod, url, getParamsString(request.getParameterMap()), response.getStatus());
-
         chain.doFilter(request, response);
         long after = System.currentTimeMillis();
         logger.info("花费时间：{} ms\n", after - before);
