@@ -45,14 +45,15 @@ public class RequestLogFilter extends AbstractFilter {
                          HttpServletResponse response, FilterChain chain,
                          HttpSession session, String menthod, String url)
             throws IOException, ServletException {
-        long before = System.currentTimeMillis();
-        logger.info("Accept:{}", request.getHeader("Accept"));
-        logger.info("Content-Type:{}", request.getHeader("Content-Type"));
-        logger.info("User-Agent:{}", request.getHeader("User-Agent"));
-        logger.info("拦截到请求:{} - {} : {}{}  {}", request.getRemoteAddr(), menthod, url, getParamsString(request.getParameterMap()), response.getStatus());
+        logger.info("拦截到请求:{} - {} : {}{}  {} Accept : {}   User-Agent :{}",
+                request.getRemoteAddr(),
+                menthod,
+                url,
+                getParamsString(request.getParameterMap()),
+                response.getStatus(),
+                request.getHeader("Accept"),
+                request.getHeader("User-Agent"));
         chain.doFilter(request, response);
-        long after = System.currentTimeMillis();
-        logger.info("花费时间：{} ms\n", after - before);
     }
 
 }
