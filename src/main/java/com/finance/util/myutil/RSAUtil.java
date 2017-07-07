@@ -15,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
@@ -30,12 +31,56 @@ import javax.crypto.Cipher;
  */
 public class RSAUtil {
 
-    public static final int DEFAULT_RSA_KEY_SIZE = 2048; // 秘钥默认长度
+    public static final int DEFAULT_RSA_KEY_SIZE = 1024; // 秘钥默认长度
     private static final String RSA = "RSA";
+    private static final String SIGNATURE_ALGORITHM = "MD5withRSA";
     private static final String RSA_ECB_PKCS1 = "RSA/ECB/PKCS1Padding"; // 1024/2048
     private static final int MAX_ENCRYPT_BLOCK = (DEFAULT_RSA_KEY_SIZE / 8) - 11;
     private static final int MAX_DECRYPT_BLOCK = DEFAULT_RSA_KEY_SIZE / 8;
     private static final Logger logger = LoggerFactory.getLogger(RSAUtil.class);
+
+    public static String sign(byte[] data, String privateKey) {
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(privateKey);
+
+            PKCS8EncodedKeySpec pkcs8KeySpec = new PKCS8EncodedKeySpec(keyBytes);
+
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+
+            PrivateKey priKey = keyFactory.generatePrivate(pkcs8KeySpec);
+
+            Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+            signature.initSign(priKey);
+            signature.update(data);
+
+            return Base64.getEncoder().encodeToString(signature.sign());
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
+        return null;
+    }
+
+    public static boolean verify(byte[] data, String publicKey, String sign) {
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(publicKey);
+
+            X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
+
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+
+            PublicKey pubKey = keyFactory.generatePublic(keySpec);
+
+            Signature signature = Signature.getInstance(SIGNATURE_ALGORITHM);
+            signature.initVerify(pubKey);
+            signature.update(data);
+
+            return signature.verify(Base64.getDecoder().decode(sign));
+
+        } catch (Exception e) {
+            logger.debug(e.getMessage(), e);
+        }
+        return false;
+    }
 
     public static KeyPair generateKeyPair() {
         try {
@@ -51,9 +96,10 @@ public class RSAUtil {
     public static byte[] encryptByPublicKey(byte[] plainData, PublicKey publicKey) {
         try {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
-            KeyFactory kf = KeyFactory.getInstance(RSA);
-            PublicKey keyPublic = kf.generatePublic(keySpec);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            PublicKey keyPublic = keyFactory.generatePublic(keySpec);
             Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1);
+//            Cipher cipher = Cipher.getInstance(keyFactory.getAlgorithm());
             cipher.init(Cipher.ENCRYPT_MODE, keyPublic);
             return cipher.doFinal(plainData);
         } catch (Exception e) {
@@ -65,8 +111,8 @@ public class RSAUtil {
     public static byte[] encryptByPrivateKey(byte[] plainData, PrivateKey privateKey) {
         try {
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
-            KeyFactory kf = KeyFactory.getInstance(RSA);
-            PrivateKey keyPrivate = kf.generatePrivate(keySpec);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            PrivateKey keyPrivate = keyFactory.generatePrivate(keySpec);
             Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1);
             cipher.init(Cipher.ENCRYPT_MODE, keyPrivate);
             return cipher.doFinal(plainData);
@@ -79,8 +125,8 @@ public class RSAUtil {
     public static byte[] decryptByPublicKey(byte[] cipherData, PublicKey publicKey) {
         try {
             X509EncodedKeySpec keySpec = new X509EncodedKeySpec(publicKey.getEncoded());
-            KeyFactory kf = KeyFactory.getInstance(RSA);
-            PublicKey keyPublic = kf.generatePublic(keySpec);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            PublicKey keyPublic = keyFactory.generatePublic(keySpec);
             Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1);
             cipher.init(Cipher.DECRYPT_MODE, keyPublic);
             return cipher.doFinal(cipherData);
@@ -93,8 +139,8 @@ public class RSAUtil {
     public static byte[] decryptByPrivateKey(byte[] cipherData, PrivateKey privateKey) {
         try {
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKey.getEncoded());
-            KeyFactory ke = KeyFactory.getInstance(RSA);
-            PrivateKey keyPrivate = ke.generatePrivate(keySpec);
+            KeyFactory keyFactory = KeyFactory.getInstance(RSA);
+            PrivateKey keyPrivate = keyFactory.generatePrivate(keySpec);
             Cipher cipher = Cipher.getInstance(RSA_ECB_PKCS1);
             cipher.init(Cipher.DECRYPT_MODE, keyPrivate);
             return cipher.doFinal(cipherData);
