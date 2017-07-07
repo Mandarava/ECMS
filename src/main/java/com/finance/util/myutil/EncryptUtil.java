@@ -4,10 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -352,12 +348,8 @@ public final class EncryptUtil {
     }
 
     public static String xesEncrypt(String key, String algorithm, String paddingMode, String strDataToEncrypt) {
-        SecretKeySpec secretKeySpec = null;
-        try {
-            secretKeySpec = new SecretKeySpec(new BASE64Decoder().decodeBuffer(key), algorithm);
-        } catch (IOException e) {
-            logger.debug(e.getMessage(), e);
-        }
+        SecretKeySpec secretKeySpec;
+        secretKeySpec = new SecretKeySpec(Base64.getDecoder().decode(key), algorithm);
         return xesEncrypt(secretKeySpec, paddingMode, strDataToEncrypt);
     }
 
@@ -378,7 +370,7 @@ public final class EncryptUtil {
 
             byte[] byteDataToEncrypt = strDataToEncrypt.getBytes("UTF-8");
             byte[] byteCipherText = desCipher.doFinal(byteDataToEncrypt);
-            strCipherText = new BASE64Encoder().encode(byteCipherText);
+            strCipherText = Base64.getEncoder().encodeToString(byteCipherText);
         } catch (Exception e) {
             logger.debug(e.getMessage(), e);
         }
@@ -396,7 +388,7 @@ public final class EncryptUtil {
 
             desCipher.init(Cipher.DECRYPT_MODE, secretKey, desCipher.getParameters());
 
-            byte[] byteCipherText = new BASE64Decoder().decodeBuffer(strCipherText);
+            byte[] byteCipherText = Base64.getDecoder().decode(strCipherText);
             byte[] byteDecryptedText = desCipher.doFinal(byteCipherText);
 
             strDecryptedText = new String(byteDecryptedText);
@@ -408,7 +400,7 @@ public final class EncryptUtil {
 
     public static String generateKeyBASE64Encoded(String algorithm) {
         SecretKey secretKey = generateSecrectKey(algorithm);
-        return new BASE64Encoder().encode(secretKey.getEncoded());
+        return Base64.getEncoder().encodeToString(secretKey.getEncoded());
     }
 
     public static SecretKey generateSecrectKey(String algorithm) {
