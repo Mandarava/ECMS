@@ -92,7 +92,7 @@ public class FundNetServiceImpl implements FundNetService {
                 }
                 for (int i = 0; i < futures.size(); i++) {
                     Future<List<FundNetDO>> future = futures.get(i);
-                    if (null != future.get()) {
+                    if (null != future && null != future.get()) {
                         fetchedNetList.addAll(future.get());
                     }
                 }
@@ -122,9 +122,9 @@ public class FundNetServiceImpl implements FundNetService {
             }
             pool.shutdown();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            logger.debug(e.getMessage(), e);
         }
     }
 
