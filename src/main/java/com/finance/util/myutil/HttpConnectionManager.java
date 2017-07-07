@@ -21,7 +21,9 @@ import org.apache.http.conn.ConnectionKeepAliveStrategy;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.AIMDBackoffManager;
 import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.DefaultBackoffStrategy;
 import org.apache.http.impl.client.DefaultConnectionKeepAliveStrategy;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
@@ -128,8 +130,53 @@ public class HttpConnectionManager {
 //        HttpHost localhost = new HttpHost("http://blog.csdn.net",80);
 //        cm.setMaxPerRoute(new HttpRoute(localhost), 50);
 
+        AIMDBackoffManager backoffManager = new AIMDBackoffManager(cm);
+        backoffManager.setPerHostConnectionCap(10);
+
+        httpClient = HttpClients.custom()
+                .setConnectionManager(cm)
+                .setRetryHandler(getHttpRequestRetryHandler())
+                .setDefaultRequestConfig(getRequestConfig())
+                .evictExpiredConnections()
+                .evictIdleConnections(MAX_IDLE_TIME, TimeUnit.SECONDS)
+                .setKeepAliveStrategy(getKeepAliveStrategy())
+                .setBackoffManager(backoffManager)
+                .setConnectionBackoffStrategy(new DefaultBackoffStrategy())
+                .build();
+
+        logger.info("httpclient 初始化完成！");
+    }
+
+    @PreDestroy
+    public void destory() {
+        try {
+            httpClient.close();
+            logger.info("httpclient 成功关闭！");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private ConnectionKeepAliveStrategy getKeepAliveStrategy() {
+        return new DefaultConnectionKeepAliveStrategy() {
+            @Override
+            public long getKeepAliveDuration(
+                    HttpResponse response,
+                    HttpContext context) {
+                long keepAlive = super.getKeepAliveDuration(response, context);
+                if (keepAlive == -1) {
+                    // Keep connections alive 5 seconds if a keep-alive value
+                    // has not be explicitly set by the server
+                    keepAlive = 3000;
+                }
+                return keepAlive;
+            }
+        };
+    }
+
+    private HttpRequestRetryHandler getHttpRequestRetryHandler() {
         // 请求重试处理
-        HttpRequestRetryHandler httpRequestRetryHandler = (exception, executionCount, context) -> {
+        return (exception, executionCount, context) -> {
             if (executionCount >= 3) {
                 // Do not retry if over max retry count
                 return false;
@@ -154,51 +201,15 @@ public class HttpConnectionManager {
             HttpRequest request = clientContext.getRequest();
             return !(request instanceof HttpEntityEnclosingRequest);
         };
+    }
 
-        ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
-
-            @Override
-            public long getKeepAliveDuration(
-                    HttpResponse response,
-                    HttpContext context) {
-                long keepAlive = super.getKeepAliveDuration(response, context);
-                if (keepAlive == -1) {
-                    // Keep connections alive 5 seconds if a keep-alive value
-                    // has not be explicitly set by the server
-                    keepAlive = 3000;
-                }
-                return keepAlive;
-            }
-
-        };
-
+    private RequestConfig getRequestConfig() {
         // 客户端级别请求的超时配置
-        RequestConfig requestConfig = RequestConfig.custom()
+        return RequestConfig.custom()
                 .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
                 .setConnectTimeout(CONNECT_TIMEOUT)
                 .setSocketTimeout(SOCKET_TIMEOUT)
                 .build();
-
-        httpClient = HttpClients.custom()
-                .setConnectionManager(cm)
-                .setRetryHandler(httpRequestRetryHandler)
-                .setDefaultRequestConfig(requestConfig)
-                .evictExpiredConnections()
-                .evictIdleConnections(MAX_IDLE_TIME, TimeUnit.SECONDS)
-                .setKeepAliveStrategy(keepAliveStrategy)
-                .build();
-
-        logger.info("httpclient 初始化完成！");
-    }
-
-    @PreDestroy
-    public void destory() {
-        try {
-            httpClient.close();
-            logger.info("httpclient 成功关闭！");
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
 }
