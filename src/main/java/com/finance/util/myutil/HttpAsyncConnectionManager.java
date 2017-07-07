@@ -135,33 +135,40 @@ public class HttpAsyncConnectionManager {
         connEvictor = new IdleConnectionEvictor(cm);
         connEvictor.start();
 
-        ConnectionKeepAliveStrategy keepAliveStrategy = new DefaultConnectionKeepAliveStrategy() {
+        asyncHttpClient = HttpAsyncClients.custom()
+                .setConnectionManager(cm)
+                .setDefaultRequestConfig(getRequestConfig())
+                .setKeepAliveStrategy(getKeepAliveStrategy())
+                .build();
+        asyncHttpClient.start();
+
+        logger.info("asyncHttpclient 初始化完成！");
+    }
+
+    private RequestConfig getRequestConfig() {
+        // 客户端级别请求的超时配置
+        return RequestConfig.custom()
+                .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
+                .setConnectTimeout(CONNECT_TIMEOUT)
+                .setSocketTimeout(SOCKET_TIMEOUT)
+                .build();
+    }
+
+    private ConnectionKeepAliveStrategy getKeepAliveStrategy() {
+        return new DefaultConnectionKeepAliveStrategy() {
             @Override
             public long getKeepAliveDuration(
                     HttpResponse response,
                     HttpContext context) {
                 long keepAlive = super.getKeepAliveDuration(response, context);
                 if (keepAlive == -1) {
+                    // Keep connections alive 5 seconds if a keep-alive value
+                    // has not be explicitly set by the server
                     keepAlive = 3000;
                 }
                 return keepAlive;
             }
         };
-
-        // 客户端级别请求的超时配置
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectionRequestTimeout(CONNECTION_REQUEST_TIMEOUT)
-                .setConnectTimeout(CONNECT_TIMEOUT)
-                .setSocketTimeout(SOCKET_TIMEOUT)
-                .build();
-        asyncHttpClient = HttpAsyncClients.custom()
-                .setConnectionManager(cm)
-                .setDefaultRequestConfig(requestConfig)
-                .setKeepAliveStrategy(keepAliveStrategy)
-                .build();
-        asyncHttpClient.start();
-
-        logger.info("asyncHttpclient 初始化完成！");
     }
 
     @PreDestroy
