@@ -7,8 +7,6 @@ import com.finance.service.UserService;
 import com.finance.util.myutil.RSAUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,13 +34,15 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by zt on 2017/2/3.
  */
 @Controller
+@Slf4j
 public class LoginController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
     private static final String RECAPTCHA_SECRET_KEY = "6Le_SiMUAAAAAOVSFY5u6ld6yCJ2YX0Bo_FMIaC4"; // for test
     private static final String RECAPTCHA_URL = "https://www.google.com/recaptcha/api/siteverify";
     private static final String RSA_KEY = "rsa_key";
@@ -61,14 +61,14 @@ public class LoginController {
         // Google reCaptcha
         boolean isCaptchaValid = validateReCaptcha(gRecaptchaResponse, request.getRemoteAddr());
         if (!isCaptchaValid) {
-            logger.debug("input captacha is invalid");
+            log.debug("input captacha is invalid");
         }
         // captcha by session
         String captchaText = (String) httpSession.getAttribute(captchaImageCode);
         if (StringUtils.isNotEmpty(captcha) && captcha.equalsIgnoreCase(captchaText)) {
-            logger.debug("captcha input valid");
+            log.debug("captcha input valid");
         } else {
-            logger.debug("captcha input invalid");
+            log.debug("captcha input invalid");
         }
         // 及时销毁验证码
         httpSession.removeAttribute(captchaImageCode);
@@ -127,13 +127,13 @@ public class LoginController {
             ReCaptchaResponse reCaptchaResponse = new Gson().fromJson(sb.toString(), ReCaptchaResponse.class);
             return reCaptchaResponse.isSuccess();
         } catch (MalformedURLException e) {
-            logger.debug(e.getMessage(), e);
+            log.debug(e.getMessage(), e);
         } catch (UnsupportedEncodingException e) {
-            logger.debug(e.getMessage(), e);
+            log.debug(e.getMessage(), e);
         } catch (ProtocolException e) {
-            logger.debug(e.getMessage(), e);
+            log.debug(e.getMessage(), e);
         } catch (IOException e) {
-            logger.debug(e.getMessage(), e);
+            log.debug(e.getMessage(), e);
         }
         return false;
     }

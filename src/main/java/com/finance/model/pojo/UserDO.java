@@ -3,9 +3,16 @@ package com.finance.model.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Created by zt on 2016/10/3.
  */
+@ToString
+@Setter
+@Getter
 public class UserDO implements Serializable {
 
     private String userId;
@@ -22,72 +29,4 @@ public class UserDO implements Serializable {
 
     private Date updatetime;
 
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getMailAddress() {
-        return mailAddress;
-    }
-
-    public void setMailAddress(String mailAddress) {
-        this.mailAddress = mailAddress;
-    }
-
-    public String getDeleteflg() {
-        return deleteflg;
-    }
-
-    public void setDeleteflg(String deleteflg) {
-        this.deleteflg = deleteflg;
-    }
-
-    public String getUpdaterId() {
-        return updaterId;
-    }
-
-    public void setUpdaterId(String updaterId) {
-        this.updaterId = updaterId;
-    }
-
-    public Date getUpdatetime() {
-        return updatetime;
-    }
-
-    public void setUpdatetime(Date updatetime) {
-        this.updatetime = updatetime;
-    }
-
-    @Override
-    public String toString() {
-        return "UserDO{" +
-                "userId='" + userId + '\'' +
-                ", userName='" + userName + '\'' +
-                ", password='" + password + '\'' +
-                ", mailAddress='" + mailAddress + '\'' +
-                ", deleteflg='" + deleteflg + '\'' +
-                ", updaterId='" + updaterId + '\'' +
-                ", updatetime=" + updatetime +
-                '}';
-    }
 }

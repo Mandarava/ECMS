@@ -2,8 +2,6 @@ package com.finance.controller;
 
 import com.finance.service.FundService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,11 +12,12 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Controller
 @RequestMapping(value = "/fund")
+@Slf4j
 public class FundController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FundController.class);
 
     @Resource
     private FundService fundService;
@@ -32,7 +31,7 @@ public class FundController {
             map.put("flag", 1);
             return map;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             map.put("flag", 0);
         }
         return map;

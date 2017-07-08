@@ -14,11 +14,14 @@ import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by zt
  * 2017/5/29 16:56
  */
 @Controller
+@Slf4j
 public class ImageController {
 
     @GetMapping(value = "image/captcha")

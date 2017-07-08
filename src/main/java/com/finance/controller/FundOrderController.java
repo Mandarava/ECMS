@@ -3,8 +3,6 @@ package com.finance.controller;
 import com.finance.model.pojo.FundOrderDO;
 import com.finance.service.FundOrderService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,14 +14,15 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by zt on 2017/2/7.
  */
 @Controller
 @RequestMapping(value = "/fund/order")
+@Slf4j
 public class FundOrderController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FundOrderController.class);
 
     @Resource
     private FundOrderService fundOrderService;
@@ -43,7 +42,7 @@ public class FundOrderController {
             map.put("flag", 1);
             return map;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             map.put("flag", 0);
         }
         return map;

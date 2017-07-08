@@ -23,12 +23,17 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by zt
  * 2017/5/29 21:27
  */
 @Controller
 @RequestMapping("/captcha")
+@Slf4j
 public class KaptchaController {
 
     @Resource
@@ -109,25 +114,11 @@ public class KaptchaController {
         return captchaResopnse;
     }
 
+    @Getter
+    @Setter
     private static class CaptchaResopnse implements Serializable {
         private String code;
         private String url; //http://example.com/captcha/fetch?code=1463d84555c57c29e317
-
-        public String getCode() {
-            return code;
-        }
-
-        public void setCode(String code) {
-            this.code = code;
-        }
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
     }
 
 }

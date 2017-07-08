@@ -6,9 +6,16 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Created by zt on 2016/10/4.
  */
+@ToString
+@Setter
+@Getter
 public class SinaFinanceFundNetDTO implements Serializable {
 
     /**
@@ -46,54 +53,4 @@ public class SinaFinanceFundNetDTO implements Serializable {
     @SerializedName("dwsy")
     private Double dwsy;
 
-    public Date getFbrq() {
-        return fbrq;
-    }
-
-    public void setFbrq(Date fbrq) {
-        this.fbrq = fbrq;
-    }
-
-    public Double getJjjz() {
-        return jjjz;
-    }
-
-    public void setJjjz(Double jjjz) {
-        this.jjjz = jjjz;
-    }
-
-    public Double getLjjz() {
-        return ljjz;
-    }
-
-    public void setLjjz(Double ljjz) {
-        this.ljjz = ljjz;
-    }
-
-    public Double getNhsyl() {
-        return nhsyl;
-    }
-
-    public void setNhsyl(Double nhsyl) {
-        this.nhsyl = nhsyl;
-    }
-
-    public Double getDwsy() {
-        return dwsy;
-    }
-
-    public void setDwsy(Double dwsy) {
-        this.dwsy = dwsy;
-    }
-
-    @Override
-    public String toString() {
-        return "SinaFinanceFundNetDTO{" +
-                "fbrq=" + fbrq +
-                ", jjjz=" + jjjz +
-                ", ljjz=" + ljjz +
-                ", nhsyl=" + nhsyl +
-                ", dwsy=" + dwsy +
-                '}';
-    }
 }

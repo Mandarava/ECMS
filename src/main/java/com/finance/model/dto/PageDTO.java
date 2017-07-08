@@ -4,9 +4,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Created by zt on 2016/10/3.
  */
+@Setter
+@Getter
+@ToString
 public class PageDTO<T> implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -51,70 +58,6 @@ public class PageDTO<T> implements Serializable {
      **/
     private List<T> results = new ArrayList<T>();
 
-    public int getPageNo() {
-        return pageNo;
-    }
-
-    public void setPageNo(int pageNo) {
-        this.pageNo = pageNo;
-    }
-
-    public int getOffset() {
-        return offset;
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public int getLimit() {
-        return limit;
-    }
-
-    public void setLimit(int limit) {
-        this.limit = limit;
-    }
-
-    public int getTotal() {
-        return total;
-    }
-
-    public void setTotal(int total) {
-        this.total = total;
-    }
-
-    public String getSortKey() {
-        return sortKey;
-    }
-
-    public void setSortKey(String sortKey) {
-        this.sortKey = sortKey;
-    }
-
-    public List<T> getResults() {
-        return results;
-    }
-
-    public void setResults(List<T> results) {
-        this.results = results;
-    }
-
-    public int getStart() {
-        return (pageNo - 1) * pageSize;
-    }
-
-    public void setStart(int start) {
-        this.start = start;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public void setPageSize(int pageSize) {
-        this.pageSize = pageSize;
-    }
-
     // 计算总页数
     public int getTotalPages() {
         int totalPages;
@@ -138,17 +81,4 @@ public class PageDTO<T> implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return "PageDTO{" +
-                "pageNo=" + pageNo +
-                ", offset=" + offset +
-                ", limit=" + limit +
-                ", start=" + start +
-                ", pageSize=" + pageSize +
-                ", total=" + total +
-                ", sortKey='" + sortKey + '\'' +
-                ", results=" + results +
-                '}';
-    }
 }

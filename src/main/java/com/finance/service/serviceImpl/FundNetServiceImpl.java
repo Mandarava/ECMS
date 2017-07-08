@@ -61,7 +61,7 @@ public class FundNetServiceImpl implements FundNetService {
         }
     };
     private static final int FUND_NET_PER_SELECT = 300;
-    private static final int THREAD_POOL_SIZE = 10;
+    private static final int THREAD_POOL_SIZE = 30;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
     @Resource
     private FundNetService fundNetService;
@@ -77,6 +77,7 @@ public class FundNetServiceImpl implements FundNetService {
      */
     @Override
     public void insertOrUpdateFundNetData() {
+        long start = System.currentTimeMillis();
         try {
             List<FundDO> fundList = fundService.findFunds();
             ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
@@ -126,6 +127,8 @@ public class FundNetServiceImpl implements FundNetService {
         } catch (ExecutionException e) {
             logger.debug(e.getMessage(), e);
         }
+        long end = System.currentTimeMillis();
+        logger.info("本次任务耗时 {} ms", end - start);
     }
 
     /**

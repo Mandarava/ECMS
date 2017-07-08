@@ -2,8 +2,6 @@ package com.finance.controller;
 
 import com.finance.service.FundNetService;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,14 +12,15 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by zt on 2016/12/10.
  */
 @Controller
 @RequestMapping(value = "/fund/net")
+@Slf4j
 public class FundNetController {
-
-    private static final Logger logger = LoggerFactory.getLogger(FundNetController.class);
 
     @Resource
     private FundNetService fundNetService;
@@ -35,7 +34,7 @@ public class FundNetController {
             map.put("flag", 1);
             return map;
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            log.error(e.getMessage(), e);
             map.put("flag", 0);
         }
         return map;

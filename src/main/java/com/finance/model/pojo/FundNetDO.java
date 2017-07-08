@@ -3,9 +3,16 @@ package com.finance.model.pojo;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * Created by zt on 2016/10/1.
  */
+@ToString
+@Setter
+@Getter
 public class FundNetDO implements Serializable {
 
     private int id;
@@ -33,75 +40,6 @@ public class FundNetDO implements Serializable {
     private double dailyGrowthRate;
 
     private Date updateTime;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public Date getNetDate() {
-        return netDate;
-    }
-
-    public void setNetDate(Date netDate) {
-        this.netDate = netDate;
-    }
-
-    public double getUnitNetValue() {
-        return unitNetValue;
-    }
-
-    public void setUnitNetValue(double unitNetValue) {
-        this.unitNetValue = unitNetValue;
-    }
-
-    public double getAccumulatedNetValue() {
-        return accumulatedNetValue;
-    }
-
-    public void setAccumulatedNetValue(double accumulatedNetValue) {
-        this.accumulatedNetValue = accumulatedNetValue;
-    }
-
-    public double getDailyGrowthRate() {
-        return dailyGrowthRate;
-    }
-
-    public void setDailyGrowthRate(double dailyGrowthRate) {
-        this.dailyGrowthRate = dailyGrowthRate;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "FundNetDO{" +
-                "id=" + id +
-                ", code='" + code + '\'' +
-                ", netDate=" + netDate +
-                ", unitNetValue=" + unitNetValue +
-                ", accumulatedNetValue=" + accumulatedNetValue +
-                ", dailyGrowthRate=" + dailyGrowthRate +
-                ", updateTime=" + updateTime +
-                '}';
-    }
 
     @Override
     public boolean equals(Object o) {

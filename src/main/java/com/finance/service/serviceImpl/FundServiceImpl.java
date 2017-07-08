@@ -15,8 +15,6 @@ import com.finance.util.myutil.RequestContext;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.utils.URIBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -30,10 +28,11 @@ import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 
-@Service
-public class FundServiceImpl implements FundService {
+import lombok.extern.slf4j.Slf4j;
 
-    private static final Logger logger = LoggerFactory.getLogger(FundServiceImpl.class);
+@Service
+@Slf4j
+public class FundServiceImpl implements FundService {
 
     @Resource
     private FundDao fundDao;
@@ -180,11 +179,11 @@ public class FundServiceImpl implements FundService {
                     .setParameter("dpc", "1")
                     .build();
         } catch (URISyntaxException e) {
-            logger.debug(e.getMessage(), e);
+            log.debug(e.getMessage(), e);
         }
         HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri);
         if (!httpClientResponse.isOk()) {
-            logger.info(httpClientResponse.getMessage());
+            log.info(httpClientResponse.getMessage());
         }
         String strResult = httpClientResponse.getData();
         if (StringUtils.isEmpty(strResult)) {

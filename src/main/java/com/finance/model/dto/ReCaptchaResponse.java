@@ -5,10 +5,15 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.Date;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * Created by zt
  * 2017/5/29 19:28
  */
+@Setter
+@Getter
 public class ReCaptchaResponse implements Serializable {
 
     private boolean success;
@@ -21,35 +26,4 @@ public class ReCaptchaResponse implements Serializable {
     @SerializedName("error-codes")
     private String[] errorCodes;
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public Date getChallengeTs() {
-        return challengeTs;
-    }
-
-    public void setChallengeTs(Date challengeTs) {
-        this.challengeTs = challengeTs;
-    }
-
-    public String getHostname() {
-        return hostname;
-    }
-
-    public void setHostname(String hostname) {
-        this.hostname = hostname;
-    }
-
-    public String[] getErrorCodes() {
-        return errorCodes;
-    }
-
-    public void setErrorCodes(String[] errorCodes) {
-        this.errorCodes = errorCodes;
-    }
 }

@@ -41,7 +41,8 @@ dependencies {
     // providedCompile在编译时提供，不会写入war
     providedCompile(
             "javax.servlet:javax.servlet-api:3.1.0",
-            "javax.servlet.jsp:jsp-api:2.2.1-b03"
+            "javax.servlet.jsp:jsp-api:2.2.1-b03",
+            'org.projectlombok:lombok:1.16.18'
     )
 
     //maven仓库中心没有的jar，则放入libs目录下
@@ -147,8 +148,6 @@ dependencies {
 
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
     compile group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
-
-//    compile group: 'com.google.code.kaptcha', name: 'kaptcha', version: '2.3'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
