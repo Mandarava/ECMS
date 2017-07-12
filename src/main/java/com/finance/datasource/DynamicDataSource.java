@@ -43,8 +43,9 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
             dataSourceName = DEFAULT_TARGET_DATA_SOURCE;
         } else {
             this.selectDataSource(dataSourceName);
-            if (dataSourceName.equals(DEFAULT_TARGET_DATA_SOURCE))
+            if (dataSourceName.equals(DEFAULT_TARGET_DATA_SOURCE)) {
                 dataSourceName = DEFAULT_TARGET_DATA_SOURCE;
+            }
         }
         log.debug("--------> use datasource " + dataSourceName);
         return dataSourceName;
@@ -72,8 +73,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
         } else {
             logger.info(String.format("未找到[SourceName=%s]对应的数据源，从数据库重新获取...", serverName));
             DruidDataSource druidDataSource = this.getDataSource(serverName);
-            if (null != druidDataSource)
+            if (null != druidDataSource) {
                 this.setDataSource(serverName, druidDataSource);
+            } else {
+                throw new IllegalStateException("Cannot determine target DataSource for lookup key [" + serverName + "]");
+            }
         }
     }
 
@@ -98,10 +102,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
     public DataSourceDO findDataSources(String serverName) {
         Connection conn = null;
         DataSourceDO result = null;
+        PreparedStatement ps = null;
         try {
             conn = this.getConnection();
-            PreparedStatement ps = conn
-                    .prepareStatement("SELECT * FROM data_source WHERE NAME = ?");
+            String sql = "SELECT * FROM data_source WHERE NAME = ?";
+            ps = conn.prepareStatement(sql);
             ps.setString(1, serverName);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -132,13 +137,15 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
                 result = dataSourceDO;
             }
             rs.close();
-            ps.close();
         } catch (SQLException e) {
             logger.debug(e.getMessage(), e);
         } finally {
             try {
                 if (conn != null) {
                     conn.close();
+                }
+                if (ps != null) {
+                    ps.close();
                 }
             } catch (SQLException e) {
                 logger.debug(e.getMessage(), e);
@@ -157,14 +164,14 @@ public class DynamicDataSource extends AbstractRoutingDataSource implements Appl
         druidDataSource.setMaxActive(dataSource.getMaxActive());
         druidDataSource.setMinIdle(dataSource.getMinIdle());
         druidDataSource.setMaxWait(dataSource.getMaxWait());
-        druidDataSource.setTestOnBorrow(dataSource.getTestOnBorrow().trim().equals("true") ? true : false);
-        druidDataSource.setTestOnReturn(dataSource.getTestOnReturn().trim().equals("true") ? true : false);
-        druidDataSource.setTestWhileIdle(dataSource.getTestWhileIdle().trim().equals("true") ? true : false);
+        druidDataSource.setTestOnBorrow(dataSource.getTestOnBorrow().trim().equals("true"));
+        druidDataSource.setTestOnReturn(dataSource.getTestOnReturn().trim().equals("true"));
+        druidDataSource.setTestWhileIdle(dataSource.getTestWhileIdle().trim().equals("true"));
         druidDataSource.setTimeBetweenEvictionRunsMillis(dataSource.getTimeBetweenEvictionRunMills());
         druidDataSource.setMinEvictableIdleTimeMillis(dataSource.getMinEvictableIdleTimeMills());
-        druidDataSource.setRemoveAbandoned(dataSource.getRemoveAbandoned().trim().equals("true") ? true : false);
+        druidDataSource.setRemoveAbandoned(dataSource.getRemoveAbandoned().trim().equals("true"));
         druidDataSource.setRemoveAbandonedTimeout(dataSource.getRemoveAbandonedTimeout());
-        druidDataSource.setLogAbandoned(dataSource.getLogAbandoned().trim().equals("true") ? true : false);
+        druidDataSource.setLogAbandoned(dataSource.getLogAbandoned().trim().equals("true"));
 
         return druidDataSource;
     }
