@@ -89,6 +89,7 @@ dependencies {
             'org.springframework:spring-messaging:4.3.7.RELEASE',
             'org.springframework.security:spring-security-core:4.2.1.RELEASE',
             'org.springframework:spring-jms:4.3.7.RELEASE')
+
     compile 'org.springframework.data:spring-data-redis:1.8.0.RELEASE'
     compile('redis.clients:jedis:2.9.0',
             'com.dyuproject.protostuff:protostuff-core:1.0.10',
@@ -150,6 +151,7 @@ dependencies {
     compile group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.2.17.v20160517'
 }
 
 sourceSets {

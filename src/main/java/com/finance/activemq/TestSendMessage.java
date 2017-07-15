@@ -5,14 +5,16 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * Created by zt on 2016/12/25.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = "classpath:/spring-mybatis.xml")
 public class TestSendMessage {
-    private final String QUEUENAME = "default_queue" ;
+    private static final String QUEUE_NAME = "myQueue";
 
     @Autowired
     private QueueSender queueSender;
@@ -23,7 +25,7 @@ public class TestSendMessage {
     @Test
     public void test() {
         for (int i = 0; i < 10; i++) {
-            queueSender.send(QUEUENAME, "Hi，这是第 " + (i + 1) + " 条消息！");
+            queueSender.send(QUEUE_NAME, "Hi，这是第 " + (i + 1) + " 条消息！");
         }
     }
 

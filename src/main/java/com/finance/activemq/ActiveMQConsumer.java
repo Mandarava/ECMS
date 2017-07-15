@@ -9,29 +9,30 @@ import javax.jms.Destination;
 import javax.jms.MessageConsumer;
 import javax.jms.Session;
 
-/**
- * Created with IDEA
- * Created by ${jie.chen} on 2016/7/11.
- */
 public class ActiveMQConsumer {
     private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
-    private static final String BROKERURL = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static String queueName = "queueDemo";
 
-    public static void main(String args[]) {
-        ConnectionFactory connectionFactory;//连接工厂
-        Connection connection;//连接
-        Session session;//会话
-        Destination destination;//消息的目的地
-        MessageConsumer messageConsumer;//消息的生产者
+    public static void main(String[] args) {
+        // 连接工厂
+        ConnectionFactory connectionFactory;
+        // 连接
+        Connection connection;
+        // 会话
+        Session session;
+        // 消息的目的地
+        Destination destination;
+        // 消息的消费者
+        MessageConsumer messageConsumer;
 
-        //创建会话工厂
-        connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKERURL);
+        connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKER_URL);
         try {
             connection = connectionFactory.createConnection();
-            connection.start(); //启动连接
-            session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue("queueDemo"); // 获得消息队列
+            connection.start();
+            session = connection.createSession(Boolean.FALSE, Session.AUTO_ACKNOWLEDGE);
+            destination = session.createQueue(queueName);
             messageConsumer = session.createConsumer(destination);
             messageConsumer.setMessageListener(new ConsumerMessageListener());
             connection.setExceptionListener(new ConsumerExceptionListener());
@@ -40,4 +41,5 @@ public class ActiveMQConsumer {
             e.printStackTrace();
         }
     }
+
 }

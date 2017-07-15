@@ -17,6 +17,15 @@ public class QueueSender {
     private JmsTemplate jmsTemplate;
 
     /**
+     * 发送一条消息到指定队列,使用默认队列名称
+     *
+     * @param message 消息内容
+     */
+    public void send(final String message) {
+        jmsTemplate.convertAndSend(message);
+    }
+
+    /**
      * 发送一条消息到指定队列
      *
      * @param queueName 队列名称
@@ -24,15 +33,6 @@ public class QueueSender {
      */
     public void send(String queueName, final String message) {
         jmsTemplate.send(queueName, session -> session.createTextMessage(message));
-    }
-
-    /**
-     * 发送一条消息到指定队列,使用默认队列名称
-     *
-     * @param message 消息内容
-     */
-    public void send(final String message) {
-        jmsTemplate.convertAndSend(message);
     }
 
     /**

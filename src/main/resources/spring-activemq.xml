@@ -11,9 +11,12 @@
     
     <!-- 真正可以产生Connection的ConnectionFactory，由ActiveMQ提供 -->
     <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
-        <property name="brokerURL" value="tcp://${activemq.ip}:61616"/>
+        <property name="brokerURL" value="${activemq.url}"/>
         <property name="userName" value="${activemq.username}"/>
         <property name="password" value="${activemq.password}"/>
+        <property name="useAsyncSend" value="false"/>
+        <property name="alwaysSessionAsync" value="true"/>
+        <property name="useDedicatedTaskRunner" value="false"/>
         <!-- 消息传输监听器 处理网络及服务器异常 -->
         <property name="transportListener">
             <bean class="com.finance.activemq.ActiveMQTransportListener"/>
@@ -47,14 +50,19 @@
         <!-- 非pub/sub模型（发布/订阅），即：队列模型 -->
         <property name="pubSubDomain" value="false"/>
         <property name="defaultDestinationName" value="default_queue"/>
+        <property name="sessionTransacted" value="true"/>
+        <property name="sessionAcknowledgeMode" value="1"/>
+        <property name="explicitQosEnabled" value="true"/>
+        <property name="deliveryMode" value="2"/>
         <!--<property name="messageConverter" ref="jmsMessageConverter" />-->
     </bean>
     
     <!-- 定义Queue监听器 -->
     <jms:listener-container destination-type="queue" container-type="default" concurrency="1-10"
-                            connection-factory="connectionFactory" acknowledge="auto">
+                            connection-factory="connectionFactory" acknowledge="transacted"
+                            transaction-manager="transactionManager">
         <jms:listener destination="default_queue" ref="queueReceiver" method="handle"/>
-        <jms:listener destination="default_queue" ref="consumerMessageListener"/>
+        <!--<jms:listener destination="default_queue" ref="consumerMessageListener"/>-->
     </jms:listener-container>
     
     <!-- 定义Topic类型的JmsTemplate -->
@@ -73,26 +81,27 @@
     
     <!-- ////////////////////////////////////////////////////////////////////////////////////// -->
     <!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->
-    <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+    <!--<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
         <property name="connectionFactory" ref="connectionFactory"/>
     </bean>
     
-    <!--这个是队列目的地 -->
+    &lt;!&ndash;这个是队列目的地 &ndash;&gt;
     <bean id="queueDestination" class="org.apache.activemq.command.ActiveMQQueue">
         <constructor-arg>
             <value>default_queue</value>
         </constructor-arg>
     </bean>
     
-    <!-- 消息监听容器 -->
+    &lt;!&ndash; 消息监听容器 &ndash;&gt;
     <bean id="jmsContainer"
           class="org.springframework.jms.listener.DefaultMessageListenerContainer">
         <property name="connectionFactory" ref="connectionFactory"/>
         <property name="destination" ref="queueDestination"/>
         <property name="messageListener" ref="consumerMessageListener"/>
-        <!-- 设置固定的线程数 -->
+        <property name="sessionTransacted" value="true" />
+        &lt;!&ndash; 设置固定的线程数 &ndash;&gt;
         <property name="concurrentConsumers" value="2"></property>
-        <!-- 设置动态的线程数 -->
+        &lt;!&ndash; 设置动态的线程数 &ndash;&gt;
         <property name="concurrency" value="2-5"></property>
-    </bean>
+    </bean>-->
 </beans>

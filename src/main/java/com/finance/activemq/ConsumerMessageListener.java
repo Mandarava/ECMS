@@ -22,7 +22,7 @@ public class ConsumerMessageListener implements MessageListener {
             // 监听发送到消息队列的文本消息，作强制转换。
             TextMessage textMessage = (TextMessage) message;
             try {
-                System.out.println("接收到的消息内容是：" + textMessage.getText());
+                System.out.println("ConsumerMessageListener收到消息：" + textMessage.getText());
                 // TODO: 你喜欢的任何事情...
             } catch (JMSException e) {
                 LOGGER.error("", e);

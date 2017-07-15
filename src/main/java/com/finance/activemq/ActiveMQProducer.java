@@ -5,6 +5,7 @@ import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
+import javax.jms.DeliveryMode;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -12,32 +13,35 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 
-/**
- * Created with IDEA
- * Created by ${jie.chen} on 2016/7/11.
- */
 public class ActiveMQProducer {
     private static final String USERNAME = ActiveMQConnection.DEFAULT_USER;
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
-    private static final String BROKERURL = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static final String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;
+    private static String queueName = "queueDemo";
 
-    public static void main(String args[]) {
-        ConnectionFactory connectionFactory;//连接工厂
-        Connection connection = null;//连接
-        Session session;//会话
-        Destination destination;//消息的目的地
-        MessageProducer messageProducer;//消息的生产者
+    public static void main(String[] args) {
+        // 连接工厂
+        ConnectionFactory connectionFactory;
+        // 连接
+        Connection connection = null;
+        // 会话
+        Session session;
+        // 消息的目的地
+        Destination destination;
+        // 消息的生产者
+        MessageProducer messageProducer;
 
-        //创建会话工厂
-        connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKERURL);
+        connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKER_URL);
         try {
             connection = connectionFactory.createConnection();
-            connection.start(); //启动连接
+            connection.start();
             session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
-            destination = session.createQueue("queueDemo"); // 创建消息队列
+            destination = session.createQueue(queueName);
             messageProducer = session.createProducer(destination);
-            sendMessage(session, messageProducer);//发送消息
-            //因为开了事务的，所以需要提交事务
+            messageProducer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            // 发送消息
+            sendMessage(session, messageProducer);
+            // 因为开了事务的，所以需要提交事务
             session.commit();
         } catch (Exception e) {
             e.printStackTrace();
