@@ -26,6 +26,9 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 
 import java.net.URI;
@@ -209,20 +212,6 @@ public class FundNetServiceImpl implements FundNetService {
         return fundNetList;
     }
 
-
-    @Override
-    public void test() {
-//        try {
-//            String[] headers = {"1", "2", "3", "4"};
-//            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
-//        } catch (IOException e) {
-//            logger.debug(e.getMessage(), e);
-//        }
-
-        DynamicDataSourceContextHolder.setCustomerType("keen");
-        int i = fundNetDao.findFundNetCount();
-    }
-
     static class FetchFundNetDataFromSinaThread implements Callable<List<FundNetDO>> {
 
         private final HttpContext context;
@@ -330,6 +319,32 @@ public class FundNetServiceImpl implements FundNetService {
             }
             return result;
         }
+    }
+
+    @Override
+    public void test() {
+//        try {
+//            String[] headers = {"1", "2", "3", "4"};
+//            ExportExcelUtil.exportBigDataExcel(Arrays.asList(headers), "test", fundNetDao);
+//        } catch (IOException e) {
+//            logger.debug(e.getMessage(), e);
+//        }
+
+        DynamicDataSourceContextHolder.setCustomerType("keen");
+        int i = fundNetDao.findFundNetCount();
+    }
+
+    @Retryable(value = {Exception.class}, maxAttempts = 5, backoff = @Backoff(delay = 100, maxDelay = 500))
+    public void retry() {
+        logger.info("start executing test retry");
+        int i = 1 / 0;
+    }
+
+    @Recover
+    public void recover(Exception e) throws Exception {
+        logger.info("retry failed and try to recover.");
+        logger.info(e.getMessage(), e);
+        throw e;
     }
 
 }

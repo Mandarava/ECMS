@@ -16,4 +16,6 @@ public interface FundNetService {
     void batchInsertFundNetData(List<FundNetDO> fundNetList);
 
     void test();
+
+    void retry();
 }

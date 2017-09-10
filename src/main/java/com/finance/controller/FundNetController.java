@@ -46,4 +46,10 @@ public class FundNetController {
         fundNetService.test();
     }
 
+    @RequestMapping(value = "/retry", method = RequestMethod.GET)
+    @ResponseBody
+    public void retry() {
+        fundNetService.retry();
+    }
+
 }

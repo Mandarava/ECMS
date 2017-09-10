@@ -22,6 +22,8 @@
     <import resource="classpath*:spring-activemq.xml"/>
     <import resource="classpath*:spring-kaptcha.xml"/>
     
+    <bean class="org.springframework.retry.annotation.RetryConfiguration"/>
+    
     <!-- 引入配置文件 -->
     <bean id="propertyConfigurer"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
@@ -230,7 +232,7 @@
         <property name="testOnBorrow" value="${redis.testOnBorrow}"/>
     </bean>
     
-    <bean id="jedisConnFactory"
+    <bean id="jedisConnectionFactory"
           class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory"
           p:use-pool="true"
           p:host-name="${redis.host}"
@@ -241,7 +243,7 @@
     <!-- redis template definition -->
     <bean id="redisTemplate"
           class="org.springframework.data.redis.core.RedisTemplate"
-          p:connection-factory-ref="jedisConnFactory"/>
+          p:connection-factory-ref="jedisConnectionFactory"/>
     
     <!-- webservice  -->
     <import resource="classpath:cxf.xml"/>
