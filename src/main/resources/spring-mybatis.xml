@@ -21,6 +21,7 @@
     <import resource="classpath*:spring-ehcache.xml"/>
     <import resource="classpath*:spring-activemq.xml"/>
     <import resource="classpath*:spring-kaptcha.xml"/>
+    <import resource="classpath*:spring-quartz.xml"/>
     
     <bean class="org.springframework.retry.annotation.RetryConfiguration"/>
     
