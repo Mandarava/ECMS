@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
  * 6L 可以表示倒数第６天
  */
 @Component
-public class GlodQuartz {
+public class GoldQuartz {
 
     /**
      * 用户自动加金币
