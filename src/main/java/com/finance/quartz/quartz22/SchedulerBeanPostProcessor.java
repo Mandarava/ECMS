@@ -28,9 +28,9 @@ import java.util.List;
 public class SchedulerBeanPostProcessor implements ApplicationListener<ContextRefreshedEvent> {
 
     private static boolean overwriteExistingJobs = true;
-    private Scheduler schedulerCluster = (Scheduler) ApplicationContextUtil.getBean("quartzCluster");
-    private Scheduler schedulerLocal = (Scheduler) ApplicationContextUtil.getBean("quartzNonCluster");
-    private Logger logger = Logger.getLogger(SchedulerBeanPostProcessor.class);
+    private static final Logger logger = Logger.getLogger(SchedulerBeanPostProcessor.class);
+    private static Scheduler schedulerCluster = (Scheduler) ApplicationContextUtil.getBean("quartzCluster");
+    private static Scheduler schedulerLocal = (Scheduler) ApplicationContextUtil.getBean("quartzNonCluster");
 
     @Autowired
     private ScheduleJobService scheduleJobService;

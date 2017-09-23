@@ -10,12 +10,12 @@ import org.slf4j.LoggerFactory;
  */
 public class QuartzExceptionSchedulerListener extends SchedulerListenerSupport {
 
-    private Logger logger = LoggerFactory.getLogger(QuartzExceptionSchedulerListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(QuartzExceptionSchedulerListener.class);
 
     @Override
     public void schedulerError(String message, SchedulerException e) {
         super.schedulerError(message, e);
-        logger.error(message, e.getUnderlyingException());
+        logger.error(message, e);
     }
 
 }
