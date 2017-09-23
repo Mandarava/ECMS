@@ -45,17 +45,13 @@
                     org.quartz.plugins.history.LoggingTriggerHistoryPlugin
                 </prop>
                 <prop key="org.quartz.plugin.triggHistory.triggerFiredMessage">
-                    Trigger {1}.{0} fired job {6}.{5} at: {4, date, yyyy/MM/dd HH:mm:ss.SSS}. Next
-                    scheduled at: {3, date,yyyy/MM/dd HH:mm:ss.SSS}
+                    Trigger {1}.{0} fired job {6}.{5} at: {4, date, yyyy/MM/dd HH:mm:ss.SSS}. Next scheduled at: {3, date,yyyy/MM/dd HH:mm:ss.SSS}
                 </prop>
                 <prop key="org.quartz.plugin.triggHistory.triggerCompleteMessage">
-                    Trigger {1}.{0} completed firing job {6}.{5} at {4, date, yyyy/MM/dd
-                    HH:mm:ss.SSS} with resulting trigger instruction code: {8} -> {9}, re-fire
-                    count:{7}. Next scheduled at: {3, date, yyyy/MM/dd HH:mm:ss.SSS}
+                    Trigger {1}.{0} completed firing job {6}.{5} at {4, date, yyyy/MM/dd HH:mm:ss.SSS} with resulting trigger instruction code: {8} -> {9}, re-fire count:{7}. Next scheduled at: {3, date, yyyy/MM/dd HH:mm:ss.SSS}
                 </prop>
                 <prop key="org.quartz.plugin.triggHistory.triggerMisfiredMessage">
-                    Trigger {1}.{0} misfired job {6}.{5} at: {4, date, yyyy/MM/dd HH:mm:ss.SSS}.
-                    Should have fired at: {3, date, yyyy/MM/dd HH:mm:ss.SSS}
+                    Trigger {1}.{0} misfired job {6}.{5} at: {4, date, yyyy/MM/dd HH:mm:ss.SSS}. Should have fired at: {3, date, yyyy/MM/dd HH:mm:ss.SSS}
                 </prop>
                 <prop key="org.quartz.plugin.shutdownhook.class">
                     org.quartz.plugins.management.ShutdownHookPlugin
@@ -80,11 +76,11 @@
         <property name="autoStartup" value="true"/>
         
         <!-- 注册触发器 -->
-        <!-- <property name="triggers">
-             <list>
-                 <ref bean="trigger_hello_world"/>
-             </list>
-         </property>-->
+        <!--<property name="triggers">
+            <list>
+                <ref bean="trigger_hello_world"/>
+            </list>
+        </property>-->
         
         <property name="schedulerListeners">
             <list>
@@ -92,6 +88,6 @@
             </list>
         </property>
     </bean>
-
-
+    
+    
 </beans>
