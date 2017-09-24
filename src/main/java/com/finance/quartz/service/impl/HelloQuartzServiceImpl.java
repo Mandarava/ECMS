@@ -16,4 +16,10 @@ public class HelloQuartzServiceImpl implements HelloQuartzService {
     public void helloWorld() {
         System.out.println(new Date() + " Hello World!");
     }
+
+    @Override
+    public void print(String value) {
+        System.out.println(new Date() + " " + value);
+    }
+
 }

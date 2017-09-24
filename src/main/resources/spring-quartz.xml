@@ -3,13 +3,13 @@
        xmlns="http://www.springframework.org/schema/beans"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
-    <bean id="quartzNonCluster"
-          class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/>
-    
     <bean id="quartzExceptionSchedulerListener"
           class="com.finance.quartz.listener.QuartzExceptionSchedulerListener"/>
     
     <bean class="com.finance.quartz.quartz22.SchedulerBeanPostProcessor"/>
+    
+    <bean id="quartzNonCluster"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean"/>
     
     <!-- 定时器集群配置 -->
     <!-- 调度工厂 -->
@@ -76,11 +76,11 @@
         <property name="autoStartup" value="true"/>
         
         <!-- 注册触发器 -->
-        <!--<property name="triggers">
+        <property name="triggers">
             <list>
-                <ref bean="trigger_hello_world"/>
+                <ref bean="trigger_print"/>
             </list>
-        </property>-->
+        </property>
         
         <property name="schedulerListeners">
             <list>
@@ -89,5 +89,25 @@
         </property>
     </bean>
     
+    <bean id="trigger_print"
+          class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="cronExpression" value="0/10 * * * * ?"/>
+        <property name="misfireInstruction" value="2"/>
+        <property name="jobDetail">
+            <bean id="job_print"
+                  class="com.finance.quartz.quartz22.BeanInvokingJobDetailFactoryBean">
+                <property name="targetBean" value="helloQuartzService" />
+                <property name="targetMethod" value="print" />
+                <property name="concurrent" value="false"/>
+                <property name="shouldRecover" value="true" />
+                <property name="durable" value="true" />
+                <property name="arguments">
+                    <list>
+                        <value>This is a test !</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+    </bean>
     
 </beans>

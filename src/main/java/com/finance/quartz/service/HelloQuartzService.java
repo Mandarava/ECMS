@@ -7,4 +7,6 @@ public interface HelloQuartzService {
 
     void helloWorld();
 
+    void print(String value);
+
 }
