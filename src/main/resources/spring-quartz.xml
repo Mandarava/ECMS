@@ -75,6 +75,8 @@
         <!-- 设置自动启动 -->
         <property name="autoStartup" value="true"/>
         
+        <property name="waitForJobsToCompleteOnShutdown" value="true" />
+        
         <!-- 注册触发器 -->
         <property name="triggers">
             <list>
