@@ -32,7 +32,6 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
         scheduleJobCluster.setRecovery(false);
         scheduleJobCluster.setDurable(true);
         scheduleJobCluster.setDescription("Cluster job test");
-        scheduleJobCluster.setJobListenerNames(new String[]{"quartzExceptionSchedulerListener"});
         scheduleJobList.add(scheduleJobCluster);
         return scheduleJobList;
     }

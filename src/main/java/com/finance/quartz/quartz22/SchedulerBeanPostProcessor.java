@@ -11,13 +11,11 @@ import org.quartz.CronTrigger;
 import org.quartz.JobBuilder;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
-import org.quartz.JobKey;
 import org.quartz.ObjectAlreadyExistsException;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
-import org.quartz.impl.matchers.KeyMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -55,7 +53,6 @@ public class SchedulerBeanPostProcessor implements ApplicationListener<ContextRe
                     CronTrigger trigger = createTrigger(scheduleJob);
                     addJobToScheduler(jobDetail, scheduler);
                     addTriggerToScheduler(trigger, scheduler);
-                    addJobListener(scheduleJob, scheduler);
                 }
             }
             logger.info((scheduleJobs == null ? 0 : scheduleJobs.size()) + "条计划任务已经开始调度!");
@@ -64,7 +61,7 @@ public class SchedulerBeanPostProcessor implements ApplicationListener<ContextRe
         }
     }
 
-    private void addJobListener(ScheduleJob job, Scheduler scheduler) throws SchedulerException {
+/*    private void addJobListener(ScheduleJob job, Scheduler scheduler) throws SchedulerException {
         String[] jobListenerNames = job.getJobListenerNames();
         if (jobListenerNames != null) {
             for (int i = 0; i < jobListenerNames.length; i++) {
@@ -72,7 +69,7 @@ public class SchedulerBeanPostProcessor implements ApplicationListener<ContextRe
                         , KeyMatcher.keyEquals(new JobKey(job.getJobName(), job.getJobGroup())));
             }
         }
-    }
+    }*/
 
     private JobDetail createJobDetail(ScheduleJob job) {
         JobDataMap jobDataMap = new JobDataMap();

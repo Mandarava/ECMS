@@ -89,6 +89,12 @@
                 <ref bean="quartzExceptionSchedulerListener"/>
             </list>
         </property>
+        
+        <property name="globalJobListeners">
+            <list>
+                <ref bean="quartzJobListener" />
+            </list>
+        </property>
     </bean>
     
     <bean id="trigger_print"
