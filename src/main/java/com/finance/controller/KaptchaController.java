@@ -9,8 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.awt.image.BufferedImage;
 import java.io.Serializable;
@@ -28,8 +26,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Created by zt
- * 2017/5/29 21:27
+ * Created by zt 2017/5/29 21:27
  */
 @Controller
 @RequestMapping("/captcha")
@@ -102,12 +99,10 @@ public class KaptchaController {
 
     @ResponseBody
     @RequestMapping(value = "/code")
-    public CaptchaResopnse getKaptchaImageCode() {
+    public CaptchaResopnse getKaptchaImageCode(HttpSession session) {
         CaptchaResopnse captchaResopnse = new CaptchaResopnse();
         String code = UUID.randomUUID().toString().replace("-", "");
         // method 1, put into session, and then get from session
-        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        HttpSession session = attr.getRequest().getSession();
         session.setAttribute(code, code);
         // memcached.set.....   //or put into Key-value database  and  then get from it.
         captchaResopnse.setCode(code);

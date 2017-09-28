@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -61,7 +59,7 @@ public class LoginController {
         // Google reCaptcha
         boolean isCaptchaValid = validateReCaptcha(gRecaptchaResponse, request.getRemoteAddr());
         if (!isCaptchaValid) {
-            log.debug("input captacha is invalid");
+            log.debug("input captcha is invalid");
         }
         // captcha by session
         String captchaText = (String) httpSession.getAttribute(captchaImageCode);
@@ -100,10 +98,10 @@ public class LoginController {
 
     @GetMapping(value = "rsa/public_key")
     @ResponseBody
-    public String getRsaPublicKey() {
+    public String getRsaPublicKey(HttpSession session) {
         KeyPair keyPair = RSAUtil.generateKeyPair();
         String publicKey = Base64.getEncoder().encodeToString(keyPair.getPublic().getEncoded());
-        RequestContextHolder.getRequestAttributes().setAttribute(RSA_KEY, keyPair, RequestAttributes.SCOPE_SESSION);
+        session.setAttribute(RSA_KEY, keyPair);
         return publicKey;
     }
 
