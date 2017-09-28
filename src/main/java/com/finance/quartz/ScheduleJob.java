@@ -2,14 +2,9 @@ package com.finance.quartz;
 
 import java.io.Serializable;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
  * Created by zt 2017/9/21 21:02
  */
-@Getter
-@Setter
 public class ScheduleJob implements Serializable {
 
     /**
@@ -76,4 +71,119 @@ public class ScheduleJob implements Serializable {
 
     private String[] jobListenerNames;
 
+    public String getTriggerName() {
+        return jobName == null ? "" : "trigger_" + jobName;
+    }
+
+    public String getJobName() {
+        return jobName == null ? "" : "job_" + jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
+    public String getJobGroup() {
+        return jobGroup;
+    }
+
+    public void setJobGroup(String jobGroup) {
+        this.jobGroup = jobGroup;
+    }
+
+    public String getCronExpression() {
+        return cronExpression;
+    }
+
+    public void setCronExpression(String cronExpression) {
+        this.cronExpression = cronExpression;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getTargetObject() {
+        return targetObject;
+    }
+
+    public void setTargetObject(String targetObject) {
+        this.targetObject = targetObject;
+    }
+
+    public String getTargetMethod() {
+        return targetMethod;
+    }
+
+    public void setTargetMethod(String targetMethod) {
+        this.targetMethod = targetMethod;
+    }
+
+    public String getMisfireInstruction() {
+        return misfireInstruction;
+    }
+
+    public void setMisfireInstruction(String misfireInstruction) {
+        this.misfireInstruction = misfireInstruction;
+    }
+
+    public boolean isRecovery() {
+        return recovery;
+    }
+
+    public void setRecovery(boolean recovery) {
+        this.recovery = recovery;
+    }
+
+    public boolean isDurable() {
+        return durable;
+    }
+
+    public void setDurable(boolean durable) {
+        this.durable = durable;
+    }
+
+    public boolean isConcurrent() {
+        return concurrent;
+    }
+
+    public void setConcurrent(boolean concurrent) {
+        this.concurrent = concurrent;
+    }
+
+    public boolean isCluster() {
+        return cluster;
+    }
+
+    public void setCluster(boolean cluster) {
+        this.cluster = cluster;
+    }
+
+    public Object[] getArguments() {
+        return arguments;
+    }
+
+    public void setArguments(Object[] arguments) {
+        this.arguments = arguments;
+    }
+
+    public String[] getJobListenerNames() {
+        return jobListenerNames;
+    }
+
+    public void setJobListenerNames(String[] jobListenerNames) {
+        this.jobListenerNames = jobListenerNames;
+    }
 }
