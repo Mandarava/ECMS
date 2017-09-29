@@ -35,9 +35,15 @@ public class DynamicScheduler {
     private static Scheduler schedulerLocal = (Scheduler) ApplicationContextUtil.getBean("quartzNonCluster");
 
     public static void addJob(ScheduleJob job) throws ParseException, SchedulerException {
-        if (!checkIsJobValid(job)) {
-            logger.info("add job failed, the job is invalid");
-            throw new BusinessException("add job failed, the plan is invalid");
+        if (!validateScheduleJob(job)) {
+            throw new BusinessException("add job failed, the job is invalid");
+        }
+        if (StringUtils.isEmpty(job.getTargetObject()) || StringUtils.isEmpty(job.getTargetMethod())) {
+            throw new BusinessException("add job failed, target object or target method is empty");
+        }
+        Scheduler existScheduler = findScheduler(job.getTriggerName(), job.getJobGroup());
+        if (existScheduler != null) {
+            throw new BusinessException(String.format("add job failed, trigger: {}.{} is already existed", job.getJobGroup(), job.getTriggerName()));
         }
         Scheduler scheduler;
         if (job.isCluster()) {
@@ -53,7 +59,7 @@ public class DynamicScheduler {
     }
 
     public static void deleteJob(ScheduleJob job) throws SchedulerException {
-        if (!checkIsJobValid(job)) {
+        if (!validateScheduleJob(job)) {
             return;
         }
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
@@ -67,7 +73,7 @@ public class DynamicScheduler {
     }
 
     public static void unScheduleJob(ScheduleJob job) throws SchedulerException {
-        if (!checkIsJobValid(job)) {
+        if (!validateScheduleJob(job)) {
             return;
         }
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
@@ -80,47 +86,21 @@ public class DynamicScheduler {
     }
 
     public static void triggerJob(ScheduleJob job) throws SchedulerException {
-        if (!checkIsJobValid(job)) {
+        if (!validateScheduleJob(job)) {
             return;
         }
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
         Scheduler scheduler = findScheduler(triggerKey);
         if (scheduler == null) {
-            throw new BusinessException("resume job failed, can not find the exist job either in cluser or local");
+            throw new BusinessException("trigger job failed, can not find the exist job either in cluster or local");
         }
         JobKey jobKey = JobKey.jobKey(job.getJobName(), job.getJobGroup());
         scheduler.triggerJob(jobKey);
-        logger.info(">>>>>>>resume job {} success.", jobKey);
-    }
-
-    public static void pauseJob(ScheduleJob job) throws SchedulerException {
-        if (!checkIsJobValid(job)) {
-            return;
-        }
-        TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
-        Scheduler scheduler = findScheduler(triggerKey);
-        if (scheduler == null) {
-            throw new BusinessException("pause job failed, can not find the exist job either in cluster or local");
-        }
-        scheduler.pauseTrigger(triggerKey);
-        logger.info(">>>>>>>pause job {} success.", triggerKey);
-    }
-
-    public static void resumeJob(ScheduleJob job) throws SchedulerException {
-        if (!checkIsJobValid(job)) {
-            return;
-        }
-        TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
-        Scheduler scheduler = findScheduler(triggerKey);
-        if (scheduler == null) {
-            throw new BusinessException("resume job failed, can not find the exist job either in cluster or local");
-        }
-        scheduler.resumeTrigger(triggerKey);
-        logger.info(">>>>>>>resume job {} success.", triggerKey);
+        logger.info(">>>>>>>trigger job {} success.", jobKey);
     }
 
     public static void rescheduleJob(ScheduleJob job) throws SchedulerException, ParseException {
-        if (!checkIsJobValid(job)) {
+        if (!validateScheduleJob(job)) {
             return;
         }
         TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
@@ -131,6 +111,32 @@ public class DynamicScheduler {
         CronTrigger cronTrigger = createTrigger(job);
         scheduler.rescheduleJob(cronTrigger.getKey(), cronTrigger);
         logger.info(">>>>>>>reschedule job {} success", cronTrigger.getKey());
+    }
+
+    public static void pauseTrigger(ScheduleJob job) throws SchedulerException {
+        if (!validateScheduleJob(job)) {
+            return;
+        }
+        TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
+        Scheduler scheduler = findScheduler(triggerKey);
+        if (scheduler == null) {
+            throw new BusinessException("pause trigger failed, can not find the exist trigger either in cluster or local");
+        }
+        scheduler.pauseTrigger(triggerKey);
+        logger.info(">>>>>>>pause trigger {} success.", triggerKey);
+    }
+
+    public static void resumeTrigger(ScheduleJob job) throws SchedulerException {
+        if (!validateScheduleJob(job)) {
+            return;
+        }
+        TriggerKey triggerKey = TriggerKey.triggerKey(job.getTriggerName(), job.getJobGroup());
+        Scheduler scheduler = findScheduler(triggerKey);
+        if (scheduler == null) {
+            throw new BusinessException("resume trigger failed, can not find the exist trigger either in cluster or local");
+        }
+        scheduler.resumeTrigger(triggerKey);
+        logger.info(">>>>>>>resume trigger {} success.", triggerKey);
     }
 
     public static Scheduler findScheduler(String triggerName, String triggerGroup) throws SchedulerException {
@@ -152,9 +158,16 @@ public class DynamicScheduler {
         return null;
     }
 
-    private static boolean checkIsJobValid(ScheduleJob job) {
-        // TODO
-        return job != null;
+    private static boolean validateScheduleJob(ScheduleJob job) {
+        if (job == null) {
+            logger.debug("job is invalid: job is null");
+            return false;
+        }
+        if (StringUtils.isEmpty(job.getJobName()) || StringUtils.isEmpty(job.getJobGroup())) {
+            logger.debug("job is invalid: job name or job group is empty");
+            return false;
+        }
+        return true;
     }
 
     public static JobDetail createJobDetail(ScheduleJob job) {
@@ -171,8 +184,14 @@ public class DynamicScheduler {
 
     public static CronTrigger createTrigger(ScheduleJob job) throws ParseException {
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder
-                .cronSchedule(job.getCronExpression())
-                .withMisfireHandlingInstructionDoNothing();
+                .cronSchedule(job.getCronExpression());
+        if (CronTrigger.MISFIRE_INSTRUCTION_FIRE_ONCE_NOW == job.getMisfireInstruction()) {
+            cronScheduleBuilder.withMisfireHandlingInstructionFireAndProceed();
+        } else if (CronTrigger.MISFIRE_INSTRUCTION_DO_NOTHING == job.getMisfireInstruction()) {
+            cronScheduleBuilder.withMisfireHandlingInstructionDoNothing();
+        } else if (Trigger.MISFIRE_INSTRUCTION_IGNORE_MISFIRE_POLICY == job.getMisfireInstruction()) {
+            cronScheduleBuilder.withMisfireHandlingInstructionIgnoreMisfires();
+        }
         return TriggerBuilder.newTrigger()
                 .forJob(job.getJobName(), job.getJobGroup())
                 .withIdentity(job.getTriggerName(), job.getJobGroup())
