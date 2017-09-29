@@ -45,7 +45,7 @@ public class ScheduleJob implements Serializable {
     /**
      * misfire后的处理方式
      */
-    private String misfireInstruction;
+    private int misfireInstruction;
 
     /**
      * 是否恢复
@@ -131,11 +131,11 @@ public class ScheduleJob implements Serializable {
         this.targetMethod = targetMethod;
     }
 
-    public String getMisfireInstruction() {
+    public int getMisfireInstruction() {
         return misfireInstruction;
     }
 
-    public void setMisfireInstruction(String misfireInstruction) {
+    public void setMisfireInstruction(int misfireInstruction) {
         this.misfireInstruction = misfireInstruction;
     }
 
