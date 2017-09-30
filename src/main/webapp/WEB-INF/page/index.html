@@ -19,10 +19,7 @@
             <form id="form">
                 <br>
                 <select id="fundId" class="form-control" required="true">
-                    <option id="160706">嘉实沪深300ETF联接</option>
-                    <option id="210009">金鹰核心资源混合</option>
-                    <option id="502003">易方达军工指数</option>
-                    <option id="502053">长盛中证全指证券公司指数分级</option>
+
                 </select><br>
                 <input id="profit_date" type="date" placeholder="收益日期" class="form-control"
                        required="true"><br>
@@ -60,6 +57,15 @@
         <form id="formProducer" method="post" action="produce/redirect" class="form-inline">
             <div class="col-md-2">
                 <input type="button" id="gotoProducer" value="gotoProducer"
+                       class="btn btn-default"><br><br>
+            </div>
+        </form>
+    </div>
+
+    <div class="row">
+        <form id="formScheduler" method="post" action="scheduler" class="form-inline">
+            <div class="col-md-2">
+                <input type="button" id="gotoScheduler" value="gotoScheduler"
                        class="btn btn-default"><br><br>
             </div>
         </form>

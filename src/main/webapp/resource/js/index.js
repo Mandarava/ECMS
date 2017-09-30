@@ -87,14 +87,18 @@ $(document).ready(function () {
 
     $('#websocket').on('click', function () {
         $('#form1').submit();
-    })
+    });
 
     $('#gotoFundOrder').on('click', function () {
         $('#formFundOrder').submit();
-    })
+    });
 
     $('#gotoProducer').on('click', function () {
         $('#formProducer').submit();
+    });
+
+    $('#gotoScheduler').on('click', function () {
+        $('#formScheduler').submit();
     })
 
 });
