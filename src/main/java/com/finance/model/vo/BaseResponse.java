@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by zt 2017/9/30 12:32
  */
-public class BaseResponse<T extends Serializable> implements Serializable {
+public class BaseResponse<T> implements Serializable {
 
     private int code;
 
