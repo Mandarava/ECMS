@@ -11,4 +11,18 @@ public interface ScheduleJobService {
 
     List<ScheduleJob> findAllScheduleJobs();
 
+    boolean addJob(ScheduleJob job);
+
+    boolean deleteJob(ScheduleJob job);
+
+    boolean unScheduleJob(ScheduleJob job);
+
+    boolean rescheduleJob(ScheduleJob job);
+
+    boolean triggerJob(ScheduleJob job);
+
+    boolean pauseTrigger(ScheduleJob job);
+
+    boolean resumeTrigger(ScheduleJob job);
+
 }
