@@ -5,7 +5,7 @@ var timer;
 $(document).ready(function () {
     $.ajax({
                type: "GET",
-               url: "../produce/data",
+               url: "/producer/data",
                cache: false,
                async: true,
                success: function (data) {
@@ -24,7 +24,7 @@ $(document).ready(function () {
 function getData() {
     $.ajax({
                type: "GET",
-               url: "../produce/data",
+               url: "/producer/data",
                cache: false,
                async: true,
                success: function (data) {

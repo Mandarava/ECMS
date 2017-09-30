@@ -38,7 +38,7 @@
     <!-- spring-mvc 首页配置 -->
     <servlet-mapping>
         <servlet-name>mvc-dispatcher</servlet-name>
-        <url-pattern>/WEB-INF/page/login.html</url-pattern>
+        <url-pattern>/resource/page/login.html</url-pattern>
     </servlet-mapping>
     
     <!-- 编码过滤器 -->
@@ -138,13 +138,13 @@
     <!-- 错误页面 -->
     <error-page>
         <error-code>404</error-code>
-        <location>/WEB-INF/page/404.html</location>
+        <location>/resource/page/404.html</location>
     </error-page>
     <error-page>
         <error-code>500</error-code>
-        <location>/WEB-INF/page/500.html</location>
+        <location>/resource/page/500.html</location>
     </error-page>
     <welcome-file-list>
-        <welcome-file>/WEB-INF/page/login.html</welcome-file>
+        <welcome-file>/resource/page/login.html</welcome-file>
     </welcome-file-list>
 </web-app>

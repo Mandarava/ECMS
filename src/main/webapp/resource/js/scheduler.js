@@ -1,7 +1,7 @@
 $(document).ready(function () {
     $.ajax({
                type: "GET",
-               url: "/ECMS/scheduler/list",
+               url: "/scheduler/list",
                cache: false,
                async: true,
                success: function (data) {

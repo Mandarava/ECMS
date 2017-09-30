@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>index</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="/resource/css/common.css">
+    <link rel="import" href="/resource/html/header.html">
+</head>
+<body>
+<header-nav></header-nav>
+<div id="main-content" class="container-fluid">
+    <div class="col-md-2">
+        <form id="form">
+            <br>
+            <select id="fundId" class="form-control" required="true">
+
+            </select><br>
+            <input id="profit_date" type="date" placeholder="收益日期" class="form-control"
+                   required="true"><br>
+            <input id="profit" type="text" placeholder="昨日收益(元)" class="form-control"
+                   required="true"><br>
+            <input type="button" id="button_submit" placeholder="提交" value="提交"
+                   class="btn btn-default"><br><br>
+            <input type="button" id="insertOrUpdateFundNetValue" value="更新基金净值数据"
+                   class="btn btn-default"><br><br>
+            <input type="button" id="insertOrUpdateFundValue" value="更新基金数据"
+                   class="btn btn-default"><br><br>
+            <input type="button" id="test" value="test" class="btn btn-default"><br><br>
+        </form>
+        <a class="btn btn-default" href="/websocket" target="_self">websocket</a><br><br>
+        <a class="btn btn-default" href="/fund/order/insertpage" target="_self">gotoFundOrder</a><br><br>
+        <a class="btn btn-default" href="/producer" target="_self">gotoProducer</a><br><br>
+        <a class="btn btn-default" href="/scheduler" target="_self">gotoScheduler</a><br><br>
+    </div>
+
+</div>
+<script type="text/javascript">
+    function getContextPath() {
+        var curWwwPath = window.document.location.href;
+        var pathName = window.document.location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        var localhostPath = curWwwPath.substring(0, pos);
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPath + projectName);
+    }
+</script>
+<script src="/resource/static/jquery-3.1.1.min.js"></script>
+<script src="/resource/js/index.js"></script>
+</body>
+</html>

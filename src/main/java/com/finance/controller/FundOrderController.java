@@ -27,7 +27,7 @@ public class FundOrderController {
     @Resource
     private FundOrderService fundOrderService;
 
-    @RequestMapping(value = "/insertpage", method = RequestMethod.POST)
+    @RequestMapping(value = "/insertpage")
     public String gotoInsertFundOrder() {
         return "insertFundOrder" ;
     }

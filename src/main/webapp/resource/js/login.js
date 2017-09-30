@@ -6,7 +6,7 @@ $('#login').on('click', function () {
     // load_rsa_public_key 请求RSA公钥
     $.ajax({
                type: "GET",
-               url: "/ECMS/rsa/public_key",
+               url: "/rsa/public_key",
                cache: false,
                async: false,
                success: function (data) {

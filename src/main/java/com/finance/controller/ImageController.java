@@ -24,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ImageController {
 
-    @GetMapping(value = "image/captcha")
+    @GetMapping(value = "/image/captcha")
     public void getCaptchaImage(HttpServletResponse response, HttpSession session) throws IOException {
         Object[] object = ImageUtil.createCaptchaImage();
         String captcha = (String) object[0];

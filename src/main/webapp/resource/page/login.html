@@ -9,14 +9,15 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
           integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
           crossorigin="anonymous">
-    <link rel="import" href="/ECMS/resource/html/header.html">
+    <link rel="stylesheet" href="/resource/css/common.css">
+    <link rel="import" href="/resource/html/header.html">
 </head>
 <body>
 <header-nav></header-nav>
 <div id="main-content" class="container-fluid">
     <div class="row">
         <div class="col-md-2">
-            <form id="form" method="post" action="login">
+            <form id="form" method="post" action="/login">
                 <br>
                 <input type="hidden" id="rsa_public_key" name="rsa_public_key"/>
                 <input type="text" id="userId" name="userId" placeholder="用户名"
@@ -36,7 +37,7 @@
                 <!--
                <input type="text" name="captcha" placeholder="请输入验证码"
                       class="form-control"/><br>
-               <img id="captchaImg" src="/ECMS/captcha/image" alt="验证码">
+               <img id="captchaImg" src="/captcha/image" alt="验证码">
                <a href="javascript:reloadCaptcha()">看不清楚</a><br><br>
                -->
                 <!-- demo3 Google reCaptcha for test domain:localhost-->
@@ -48,9 +49,9 @@
         </div>
     </div>
 </div>
-<script src="resource/static/jquery-3.1.1.min.js"></script>
-<script src="resource/js/login.js"></script>
-<script src="resource/js/rsa/jsencrypt.min.js"></script>
+<script src="/resource/static/jquery-3.1.1.min.js"></script>
+<script src="/resource/js/login.js"></script>
+<script src="/resource/js/rsa/jsencrypt.min.js"></script>
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 <script type="text/javascript">
     $(document).ready(function () {
@@ -59,7 +60,7 @@
     });
 
     function reloadCaptcha() {
-        captchaImg.src = "/ECMS/captcha/image?time=" + new Date().getTime();
+        captchaImg.src = "/captcha/image?time=" + new Date().getTime();
     }
 
     /**
@@ -68,14 +69,14 @@
     function load_captcha_image() {
         $.ajax({
                    type: "GET",
-                   url: "/ECMS/captcha/code",
+                   url: "/captcha/code",
                    cache: false,
                    async: true,
                    success: function (data) {
                        if (data.hasOwnProperty('code')) {
                            $('#imgCode').val(data.code);
                            captchaImg.src =
-                               "/ECMS/captcha/image/" + data.code + "?time=" + new Date().getTime();
+                               "/captcha/image/" + data.code + "?time=" + new Date().getTime();
                        }
                    },
                    error: function (e) {
