@@ -76,7 +76,7 @@ public class ScheduleJob implements Serializable {
     }
 
     public String getJobName() {
-        return jobName == null ? "" : "job_" + jobName;
+        return jobName;
     }
 
     public void setJobName(String jobName) {
