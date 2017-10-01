@@ -1,11 +1,12 @@
 package com.finance.quartz.controller;
 
+import com.finance.enums.ResponseCodeEnum;
 import com.finance.model.vo.BaseResponse;
 import com.finance.quartz.ScheduleJob;
 import com.finance.quartz.service.ScheduleJobService;
+import com.finance.util.ResponseUtil;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,51 +35,84 @@ public class SchedulerController {
     @ResponseBody
     public BaseResponse<List<ScheduleJob>> findScheduleJobs() {
         List<ScheduleJob> jobList = scheduleJobService.findAllScheduleJobs();
-        BaseResponse<List<ScheduleJob>> response = new BaseResponse<>();
-        response.setData(jobList);
-        return response;
+        return ResponseUtil.success(jobList);
     }
 
     @PostMapping("/add")
     @ResponseBody
-    public void addJob(ScheduleJob job) {
-        scheduleJobService.addJob(job);
+    public BaseResponse addJob(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.addJob(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
-    @DeleteMapping("/delete")
+    @PostMapping("/delete")
     @ResponseBody
-    public void deleteJob(ScheduleJob job) {
-        scheduleJobService.deleteJob(job);
+    public BaseResponse deleteJob(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.deleteJob(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
     @PostMapping("/unschedule")
     @ResponseBody
-    public void unScheduleJob(ScheduleJob job) {
-        scheduleJobService.unScheduleJob(job);
+    public BaseResponse unScheduleJob(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.unScheduleJob(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
     @PostMapping("/reschedule")
     @ResponseBody
-    public void rescheduleJob(ScheduleJob job) {
-        scheduleJobService.rescheduleJob(job);
+    public BaseResponse rescheduleJob(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.rescheduleJob(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
     @PostMapping("/trigger")
     @ResponseBody
-    public void triggerJob(ScheduleJob job) {
-        scheduleJobService.triggerJob(job);
+    public BaseResponse triggerJob(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.triggerJob(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
     @PostMapping("/pause")
     @ResponseBody
-    public void pauseTrigger(ScheduleJob job) {
-        scheduleJobService.pauseTrigger(job);
+    public BaseResponse pauseTrigger(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.pauseTrigger(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
     @PostMapping("/resume")
     @ResponseBody
-    public void resumeTrigger(ScheduleJob job) {
-        scheduleJobService.resumeTrigger(job);
+    public BaseResponse resumeTrigger(ScheduleJob job) {
+        boolean isSuccess = scheduleJobService.resumeTrigger(job);
+        if (isSuccess) {
+            return ResponseUtil.success();
+        } else {
+            return ResponseUtil.error(ResponseCodeEnum.ERROR.getCode());
+        }
     }
 
 }

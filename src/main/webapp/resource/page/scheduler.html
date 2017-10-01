@@ -33,7 +33,7 @@
 <header-nav></header-nav>
 <div id="main-content">
     <div class="row">
-        <button type="button" class="btn btn-primary  pull-right" data-toggle="modal" data-target="#newTask">
+        <button type="button" class="btn btn-primary  pull-right" data-toggle="modal" data-target="#newTaskModal">
             新建任务
         </button>
     </div>
@@ -41,6 +41,7 @@
     <table id="scheduler_table" class="table table-hover">
         <thead>
         <tr>
+            <th>ID</th>
             <th>任务名称</th>
             <th>任务分组</th>
             <th>cron表达式</th>
@@ -58,8 +59,7 @@
         </tbody>
     </table>
 </div>
-
-<div class="modal fade" id="newTask" tabindex="-1" role="dialog" aria-labelledby="newTaskLabel">
+<div class="modal fade" id="newTaskModal" tabindex="-1" role="dialog" aria-labelledby="newTaskLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -164,7 +164,7 @@
                             <select id="clusterSelect" class="form-control">
                                 <option></option>
                                 <option id="isCluster" value="true">集群</option>
-                                <option id="isNotCluster" value="false">单机</option>
+                                <!--<option id="isNotCluster" value="false">单机</option>--> <!-- not supported  -->
                             </select>
                         </div>
                     </div>
@@ -172,7 +172,37 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-primary" id="saveTask">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="editTaskLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editTaskLabel">编辑任务</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input type="hidden" id = "editJobId" />
+                    <input type="hidden" id = "editJobName" />
+                    <input type="hidden" id = "editJobGroup" />
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label  for="editCronExpressionTxt"  class="pull-right">cron表达式</label>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" id="editCronExpressionTxt" class="form-control"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="editTaskSave">Save changes</button>
             </div>
         </div>
     </div>

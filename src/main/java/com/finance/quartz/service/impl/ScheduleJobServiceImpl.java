@@ -1,17 +1,20 @@
 package com.finance.quartz.service.impl;
 
+import com.finance.dao.ScheduleJobDAO;
 import com.finance.quartz.DynamicScheduler;
 import com.finance.quartz.ScheduleJob;
 import com.finance.quartz.service.ScheduleJobService;
 
-import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+
+import javax.annotation.Resource;
 
 /**
  * Created by zt 2017/9/23 14:31
@@ -21,40 +24,48 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
 
     private static final Logger logger = LoggerFactory.getLogger(ScheduleJobServiceImpl.class);
 
+    @Resource
+    private ScheduleJobDAO scheduleJobDAO;
+
     @Override
     public List<ScheduleJob> findAllScheduleJobs() {
-        List<ScheduleJob> scheduleJobList = new ArrayList<>();
-        // query data...
-        ScheduleJob scheduleJobCluster = new ScheduleJob();
-        scheduleJobCluster.setJobId(UUID.randomUUID().toString());
-        scheduleJobCluster.setJobName("Cluster_Hello_World");
-        scheduleJobCluster.setJobGroup(Scheduler.DEFAULT_GROUP);
-        scheduleJobCluster.setCronExpression("0/10 * * * * ?");
-        scheduleJobCluster.setTargetObject("helloQuartzService");
-        scheduleJobCluster.setTargetMethod("helloWorld");
-        scheduleJobCluster.setCluster(true);
-        scheduleJobCluster.setConcurrent(false);
-        scheduleJobCluster.setRecovery(false);
-        scheduleJobCluster.setDurable(true);
-        scheduleJobCluster.setDescription("Cluster job test");
-        scheduleJobList.add(scheduleJobCluster);
-        return scheduleJobList;
+        return scheduleJobDAO.findAllScheduleJobs();
     }
 
     @Override
+    @Transactional
     public boolean addJob(ScheduleJob job) {
-        return false;
-    }
-
-    @Override
-    public boolean deleteJob(ScheduleJob job) {
-        return false;
-    }
-
-    @Override
-    public boolean unScheduleJob(ScheduleJob job) {
+        scheduleJobDAO.insertScheduleJob(job);
         try {
-            DynamicScheduler.unScheduleJob(job);
+            DynamicScheduler.addJob(job);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean deleteJob(ScheduleJob job) {
+        scheduleJobDAO.deleteScheduleJob(job);
+        try {
+            DynamicScheduler.deleteJob(job);
+        } catch (SchedulerException e) {
+            logger.error(e.getMessage(), e);
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public boolean rescheduleJob(ScheduleJob job) {
+        scheduleJobDAO.updateCronExpression(job);
+        try {
+            DynamicScheduler.rescheduleJob(job);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
@@ -63,9 +74,9 @@ public class ScheduleJobServiceImpl implements ScheduleJobService {
     }
 
     @Override
-    public boolean rescheduleJob(ScheduleJob job) {
+    public boolean unScheduleJob(ScheduleJob job) {
         try {
-            DynamicScheduler.rescheduleJob(job);
+            DynamicScheduler.unScheduleJob(job);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return false;
