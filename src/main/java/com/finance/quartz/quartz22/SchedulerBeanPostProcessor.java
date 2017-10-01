@@ -34,17 +34,19 @@ public class SchedulerBeanPostProcessor implements ApplicationListener<ContextRe
             List<ScheduleJob> scheduleJobs = scheduleJobService.findAllScheduleJobs();
             if (CollectionUtils.isNotEmpty(scheduleJobs)) {
                 for (ScheduleJob scheduleJob : scheduleJobs) {
-                    // 区分本机运行或集群运行
-                    Scheduler scheduler;
-                    if (scheduleJob.isCluster()) {
-                        scheduler = schedulerCluster;
-                    } else {
-                        scheduler = schedulerLocal;
+                    if (!scheduleJob.isDeleted()) {
+                        // 区分本机运行或集群运行
+                        Scheduler scheduler;
+                        if (scheduleJob.isCluster()) {
+                            scheduler = schedulerCluster;
+                        } else {
+                            scheduler = schedulerLocal;
+                        }
+                        JobDetail jobDetail = DynamicScheduler.createJobDetail(scheduleJob);
+                        CronTrigger trigger = DynamicScheduler.createTrigger(scheduleJob);
+                        DynamicScheduler.addJobToScheduler(jobDetail, scheduler);
+                        DynamicScheduler.addTriggerToScheduler(trigger, scheduler);
                     }
-                    JobDetail jobDetail = DynamicScheduler.createJobDetail(scheduleJob);
-                    CronTrigger trigger = DynamicScheduler.createTrigger(scheduleJob);
-                    DynamicScheduler.addJobToScheduler(jobDetail, scheduler);
-                    DynamicScheduler.addTriggerToScheduler(trigger, scheduler);
                 }
             }
             logger.info((scheduleJobs == null ? 0 : scheduleJobs.size()) + "条计划任务已经开始调度!");

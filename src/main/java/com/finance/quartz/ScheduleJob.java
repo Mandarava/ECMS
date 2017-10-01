@@ -71,6 +71,8 @@ public class ScheduleJob implements Serializable {
 
     private String[] jobListenerNames;
 
+    private boolean deleted;
+
     public String getTriggerName() {
         return jobName == null ? "" : "trigger_" + jobName;
     }
@@ -185,5 +187,13 @@ public class ScheduleJob implements Serializable {
 
     public void setJobListenerNames(String[] jobListenerNames) {
         this.jobListenerNames = jobListenerNames;
+    }
+
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
     }
 }
