@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.finance.dao.ScheduleJobDAO">
+    
+    <resultMap id="BaseResultMap" type="com.finance.quartz.ScheduleJob">
+        <id column="job_id" jdbcType="INTEGER" property="jobId" />
+        <result column="job_name" jdbcType="VARCHAR" property="jobName" />
+        <result column="job_group" jdbcType="VARCHAR" property="jobGroup" />
+        <result column="cron_expression" jdbcType="VARCHAR" property="cronExpression" />
+        <result column="description" jdbcType="VARCHAR" property="description" />
+        <result column="target_object" jdbcType="VARCHAR" property="targetObject" />
+        <result column="target_method" jdbcType="VARCHAR" property="targetMethod" />
+        <result column="misfire_instruction" jdbcType="SMALLINT" property="misfireInstruction" />
+        <result column="is_recovery" jdbcType="TINYINT" property="recovery" />
+        <result column="is_durable" jdbcType="TINYINT" property="durable" />
+        <result column="is_concurrent" jdbcType="TINYINT" property="concurrent" />
+        <result column="is_cluster" jdbcType="TINYINT" property="cluster" />
+        <result column="is_deleted" jdbcType="TINYINT" property="deleted" />
+    </resultMap>
+    
+    <insert id="insertScheduleJob" parameterType="com.finance.quartz.ScheduleJob">
+        INSERT INTO schedule_job
+            (job_name, job_group, cron_expression, description, target_object,
+            target_method, is_recovery, is_durable, is_concurrent, is_cluster, misfire_instruction
+            ,create_time, update_time, is_deleted)
+        VALUES (#{jobName,jdbcType=VARCHAR},#{jobGroup,jdbcType=VARCHAR},#{cronExpression,jdbcType=VARCHAR}
+                ,#{description,jdbcType=VARCHAR},#{targetObject,jdbcType=VARCHAR},#{targetMethod,jdbcType=VARCHAR}
+                ,#{recovery,jdbcType=TINYINT},#{durable,jdbcType=TINYINT},#{concurrent,jdbcType=TINYINT}
+                ,#{cluster,jdbcType=TINYINT},#{misfireInstruction,jdbcType=SMALLINT},NOW(),NOW(),'0')
+    </insert>
+    
+    <update id="updateCronExpression" parameterType="com.finance.quartz.ScheduleJob">
+        UPDATE
+          schedule_job
+        <set>
+            <if test="null != cronExpression and '' != cronExpression">cron_expression = #{cronExpression}</if>
+            ,update_time = NOW()
+        </set>
+        WHERE job_id = #{jobId}
+    </update>
+    
+    <delete id="deleteScheduleJob" parameterType="com.finance.quartz.ScheduleJob">
+        DELETE FROM schedule_job WHERE job_id = #{jobId}
+    </delete>
+    
+    <select id="findAllScheduleJobs" resultMap="BaseResultMap" parameterType="com.finance.quartz.ScheduleJob">
+        SELECT * FROM schedule_job
+    </select>
+
+
+</mapper>
