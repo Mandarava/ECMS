@@ -2,8 +2,7 @@ package com.finance.exception;
 
 import com.google.gson.Gson;
 
-import com.finance.util.StrUtil;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -28,7 +27,7 @@ public class ExceptionHandler implements HandlerExceptionResolver {
 
         String requestType = request.getHeader("X-Requested-With");
         String type = "api" ;    //TODO:
-        if (!type.equals("api") && StrUtil.isNullOrEmpty(requestType)) {
+        if (!type.equals("api") && StringUtils.isEmpty(requestType)) {
             // 非API请求
             return new ModelAndView("redirect:/500.html");
         } else {// JSON格式返回
