@@ -1,60 +1,52 @@
 package com.finance.util;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * 字符串处理类
- *
- * @Version 1.0
- * @Remark
  */
 public final class StrUtil {
+    
     /**
      * 7位ASCII字符，也叫作ISO646-US、Unicode字符集的基本拉丁块
      */
-    private static final String US_ASCII = "US-ASCII" ;
+    private static final String US_ASCII = "US-ASCII";
 
     /**
      * ISO 拉丁字母表 No.1，也叫作 ISO-LATIN-1
      */
-    private static final String ISO_8859_1 = "ISO-8859-1" ;
+    private static final String ISO_8859_1 = "ISO-8859-1";
 
     /**
      * 8 位 UCS 转换格式
      */
-    private static final String UTF_8 = "UTF-8" ;
+    private static final String UTF_8 = "UTF-8";
 
     /**
      * 16 位 UCS 转换格式，Big Endian（最低地址存放高位字节）字节顺序
      */
-    private static final String UTF_16BE = "UTF-16BE" ;
+    private static final String UTF_16BE = "UTF-16BE";
 
     /**
      * 16 位 UCS 转换格式，Little-endian（最高地址存放低位字节）字节顺序
      */
-    private static final String UTF_16LE = "UTF-16LE" ;
+    private static final String UTF_16LE = "UTF-16LE";
 
     /**
      * 16 位 UCS 转换格式，字节顺序由可选的字节顺序标记来标识
      */
-    private static final String UTF_16 = "UTF-16" ;
+    private static final String UTF_16 = "UTF-16";
 
     /**
      * 中文超大字符集
      */
-    private static final String GBK = "GBK" ;
+    private static final String GBK = "GBK";
 
 
     /**
@@ -155,16 +147,15 @@ public final class StrUtil {
      *
      * @return List<String>
      */
-    public final static List<String> getRegexResult(String sStr, String sPattern) {
+    public final static List<String> getRegexResult(String sStr, String pattern) {
         ArrayList<String> aList = new ArrayList<String>();
-        Pattern oPattern = Pattern.compile(sPattern);
-        Matcher oMatcher = oPattern.matcher(sStr);
-        while (oMatcher.find()) {
-            for (int i = 1, nTotal = oMatcher.groupCount(); i <= nTotal; i++) {
-                aList.add(oMatcher.group(i));
+        Pattern oPattern = Pattern.compile(pattern);
+        Matcher matcher = oPattern.matcher(sStr);
+        while (matcher.find()) {
+            for (int i = 1, nTotal = matcher.groupCount(); i <= nTotal; i++) {
+                aList.add(matcher.group(i));
             }
         }
-
         return aList;
     }
 
@@ -173,11 +164,10 @@ public final class StrUtil {
      *
      * @return String
      */
-    public final static String getRegexReplaceResult(String sSource, String sReplace, String sPattern) {
-        Pattern oPattern = Pattern.compile(sPattern);
-        Matcher oMatcher = oPattern.matcher(sSource);
-
-        return oMatcher.replaceAll(sReplace);
+    public final static String getRegexReplaceResult(String sSource, String sReplace, String pattern) {
+        Pattern oPattern = Pattern.compile(pattern);
+        Matcher matcher = oPattern.matcher(sSource);
+        return matcher.replaceAll(sReplace);
     }
 
     /**
@@ -185,130 +175,10 @@ public final class StrUtil {
      *
      * @return boolean
      */
-    public final static boolean checkMather(String sStr, String sPattern) {
-        Pattern oPattern = Pattern.compile(sPattern);
-        Matcher oMather = oPattern.matcher(sStr);
-        return oMather.matches();
-    }
-
-    /**
-     * 如果字符串为空则用默认值
-     *
-     * @return String
-     */
-    public final static String toStr(Object sStr, String sDefault) {
-        return sStr == null ? sDefault : sStr.toString().trim();
-    }
-
-    /**
-     * 如果字符串为空则用默认值
-     *
-     * @return String
-     */
-    public final static String toStrNOTrim(Object sStr, String sDefault) {
-        return sStr == null ? sDefault : sStr.toString();
-    }
-
-    /**
-     * 把字符串转换成整数
-     *
-     * @return int
-     */
-    public final static int toInt(String sValue, int nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        try {
-            return Integer.valueOf(sValue);
-        } catch (Exception ex) {
-            return nDefault;
-        }
-
-    }
-
-    /**
-     * 把字符串转换成Long数
-     *
-     * @return int
-     */
-    public final static Long toLong(String sValue, Long nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        try {
-            return Long.valueOf(sValue);
-        } catch (Exception ex) {
-            return nDefault;
-        }
-
-    }
-
-    /**
-     * 把字符串转换成小数
-     *
-     * @return Float
-     */
-    public final static Float toFloat(String sValue, Float nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        return Float.valueOf(sValue);
-    }
-
-    /**
-     * 把字符串转换成双精度小数
-     *
-     * @return Double
-     */
-    public final static Double toDouble(String sValue, Double nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        return Double.valueOf(sValue);
-    }
-
-    /**
-     * 把字符串转换成浮点
-     *
-     * @return float
-     */
-    public final static float toFloat(String sValue, float nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        return Float.valueOf(sValue);
-    }
-
-    /**
-     * 把字符串转换成 布尔型
-     *
-     * @return boolean
-     */
-    public final static boolean toBoolean(String sValue, boolean nDefault) {
-        if (sValue == null || sValue.isEmpty())
-            return nDefault;
-        return Boolean.valueOf(sValue);
-    }
-
-    /**
-     * 数据显示小数点问题
-     */
-    public final static String doubleToStr(Double dd) {
-        if (null == dd) {
-            return "" ;
-        }
-        double d = dd;
-        double c = d - (int) d;
-        if (c == 0)
-            return (int) d + "" ;
-        else {
-            BigDecimal b = new BigDecimal(d);
-            BigDecimal one = new BigDecimal("1");
-            c = b.divide(one, 2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            return String.valueOf(c);
-        }
-    }
-
-    public final static String floatToStr(float d) {
-        if (Math.round(d) - d == 0) {
-            return String.valueOf((long) d);
-        }
-        return String.valueOf(d);
+    public final static boolean checkMather(String sStr, String pattern) {
+        Pattern oPattern = Pattern.compile(pattern);
+        Matcher matcher = oPattern.matcher(sStr);
+        return matcher.matches();
     }
 
     /**
@@ -325,7 +195,7 @@ public final class StrUtil {
     /**
      * 获取八位不重复随机码（取当前时间戳转化为16进制）
      */
-    public final static String toHex(long time) {
+    public final static String randomCode(long time) {
         return Integer.toHexString((int) time);
     }
 
@@ -342,15 +212,6 @@ public final class StrUtil {
         String afterShuffle = sb.toString();
         String result = afterShuffle.substring(0, count);
         return result;
-    }
-
-    /**
-     * 检测字符串是否为空(null,"","null")
-     *
-     * @return 为空则返回true，否则返回false
-     */
-    public final static boolean isNullOrEmpty(String value) {
-        return value == null || "".equals(value.trim()) || "null".equals(value.trim());
     }
 
     /**
@@ -374,26 +235,23 @@ public final class StrUtil {
     }
 
     /**
-     * json字符串转换为List<Map<String, Object>>
+     * 十六进制格式打印字节数组
      */
-    public final static List<Map<String, Object>> toMapList(String jsonString) {
-        List<Map<String, Object>> mapList = new ArrayList<>();
-        if (!StrUtil.isNullOrEmpty(jsonString)) {
-            mapList = new Gson().fromJson(jsonString, new TypeToken<ArrayList<Map<String, Object>>>() {
-            }.getType());
+    public static String hexFormat(byte[] data) {
+        StringBuilder stringBuilder = new StringBuilder();
+        int n = 0;
+        for (byte b : data) {
+            if (n % 16 == 0) {
+                stringBuilder.append(String.format("%05X: ", n));
+            }
+            stringBuilder.append(String.format("%02X ", b));
+            n++;
+            if (n % 16 == 0) {
+                stringBuilder.append("\n");
+            }
         }
-        return mapList;
+        stringBuilder.append("\n");
+        return stringBuilder.toString();
     }
 
-    /**
-     * json字符串转换为Map<String, Object>
-     */
-    public final static Map<String, Object> toMap(String jsonString) {
-        Map<String, Object> map = new HashMap<>();
-        if (!StrUtil.isNullOrEmpty(jsonString)) {
-            map = new Gson().fromJson(jsonString, new TypeToken<Map<String, Object>>() {
-            }.getType());
-        }
-        return map;
-    }
 }
