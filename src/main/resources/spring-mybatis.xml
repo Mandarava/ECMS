@@ -16,6 +16,7 @@
     <!-- 自动扫描 -->
     <context:component-scan base-package="com.finance">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+        <context:exclude-filter type="annotation" expression="org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker" />
     </context:component-scan>
     <!-- AOP自动代理功能 -->
     <aop:aspectj-autoproxy proxy-target-class="true"/>
