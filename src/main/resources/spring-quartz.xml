@@ -99,7 +99,7 @@
     
     <bean id="trigger_print"
           class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="cronExpression" value="0/10 * * * * ?"/>
+        <property name="cronExpression" value="0 0/30 * * * ?"/>
         <property name="misfireInstruction" value="2"/>
         <property name="jobDetail">
             <bean id="job_print"
