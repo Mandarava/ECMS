@@ -18,6 +18,7 @@ public class ActiveMQProducer {
     private static final String PASSWORD = ActiveMQConnection.DEFAULT_PASSWORD;
     private static final String BROKER_URL = ActiveMQConnection.DEFAULT_BROKER_URL;
     private static String queueName = "queueDemo";
+    private static String topicName = "topicDemo";
 
     public static void main(String[] args) {
         // 连接工厂
@@ -62,6 +63,43 @@ public class ActiveMQProducer {
             messageProducer.send(textMessage);
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public static void durableTopicProducer() {
+        // 连接工厂
+        ConnectionFactory connectionFactory;
+        // 连接
+        Connection connection = null;
+        // 会话
+        Session session;
+        // 消息的目的地
+        Destination destination;
+        // 消息的生产者
+        MessageProducer messageProducer;
+
+        connectionFactory = new ActiveMQConnectionFactory(USERNAME, PASSWORD, BROKER_URL);
+        try {
+            connection = connectionFactory.createConnection();
+            connection.start();
+            session = connection.createSession(Boolean.TRUE, Session.AUTO_ACKNOWLEDGE);
+            // create topic
+            destination = session.createTopic(topicName);
+            messageProducer = session.createProducer(destination);
+            // persist mode
+            messageProducer.setDeliveryMode(DeliveryMode.PERSISTENT);
+            sendMessage(session, messageProducer);
+            session.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (JMSException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }
