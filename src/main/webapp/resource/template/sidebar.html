@@ -1,0 +1,173 @@
+<template id = "sidebar">
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Title</title>
+        <link rel="stylesheet" type="text/css" href="/resource/static/ztree/css/zTreeStyle/zTreeStyle.css">
+        <link rel="stylesheet" type="text/css" href="/resource/static/ztree/css/outlookStyle/outlookStyle.css">
+        <style type="text/css">
+            body {
+                margin: 0px;
+            }
+            .ztree * {
+                font-size: .85rem;
+                font-weight: 400;
+                font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+            }
+            .ztree li {
+                text-indent: 20px;
+                line-height: 40px;
+            }
+            .ztree li a {
+                display: block;
+                text-decoration: none;
+                color: #999999;
+                height: 40px;
+                width: 250px;
+            }
+            .ztree li a:hover {
+                color: #fff;
+                background: rgba(255, 255, 255, 0.2);
+            }
+            .ztree li a:active,
+            .ztree li a:focus {
+                text-decoration: none;
+            }
+            .ztree li a.curSelectedNode {
+                background-color: #999999;
+                height: 40px;
+            }
+            .ztree li span {
+                line-height:40px;
+            }
+            .ztree li a.level0 span {font-size: 120%;}
+            ul.ztree {
+                position: fixed;
+                top: 50px;
+                width: 250px;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+                list-style: none;
+                overflow-y: auto;
+                overflow-x: hidden;
+                background: #101010;
+            }
+        </style>
+
+    </head>
+    <body>
+        <ul id="ztree" class="ztree"></ul>
+    </body>
+    <script type="text/javascript" src="/resource/static/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="/resource/static/ztree/js/jquery.ztree.all.min.js"></script>
+    <script type="text/javascript">
+        var setting = {
+            view: {
+                showLine: false,
+                showIcon: false,
+                selectedMulti: false,
+                dblClickExpand: false,
+                addDiyDom: addDiyDom
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            async: {
+                enable: true,
+                url: "/menu/list",
+                autoParam: ["id=pid"],
+                dataFilter: filter
+                //异步返回后经过Filter
+            },
+            callback: {
+                asyncSuccess: zTreeOnAsyncSuccess,//异步加载成功
+                asyncError: zTreeOnAsyncError, //加载错误
+                onClick: zTreeOnClick,
+                beforeClick: beforeClick
+                //捕获单击节点之前的事件回调函数
+            }
+        };
+
+        function zTreeOnClick(event, treeId, treeNode) {
+            if (!treeNode.isParent) {
+                alert(treeNode.tId + ", " + treeNode.name);
+            }
+        }
+
+        function addDiyDom(treeId, treeNode) {
+            var spaceWidth = 5;
+            var switchObj = $("#" + treeNode.tId + "_switch"), icoObj = $("#" + treeNode.tId + "_ico");
+            switchObj.remove();
+            icoObj.before(switchObj);
+            if (treeNode.level > 1) {
+                var spaceStr = "<span style='display: inline-block;width:"
+                               + (spaceWidth * treeNode.level) + "px'></span>";
+                switchObj.before(spaceStr);
+            }
+        }
+
+        function filter(treeId, parentNode, childNodes) {
+            if (!childNodes) {
+                return null;
+            }
+            for (var i = 0, l = childNodes.length; i < l; i++) {
+                childNodes[i].name = childNodes[i].name.replace(/\.n/g, '.');
+            }
+            return childNodes;
+        }
+
+        function beforeClick(treeId, treeNode) {
+            if (treeNode.level == 0) {
+                var zTree = $.fn.zTree.getZTreeObj("ztree");
+                zTree.expandNode(treeNode);
+                return false;
+            }
+            return true;
+        }
+
+        function zTreeOnAsyncError(event, treeId, treeNode) {
+            alert("异步加载失败!");
+        }
+
+        function zTreeOnAsyncSuccess(event, treeId, treeNode, msg) {
+        }
+
+        var zNodes = [];
+        $(document).ready(function () {
+            var treeObj = $("#ztree");
+//            var treeObj = $('side-bar::shadow #ztree')
+            $.fn.zTree.init(treeObj, setting, zNodes);
+            treeObj.hover(function () {
+                if (!treeObj.hasClass("showIcon")) {
+                    treeObj.addClass("showIcon");
+                }
+            }, function () {
+                treeObj.removeClass("showIcon");
+            });
+        });
+        console.log($('#ztree'));
+    </script>
+    </html>
+</template>
+
+<script>
+    (function () {
+        var importDoc = document.currentScript.ownerDocument; // 指向被加载的网页
+        var sidebarProto = Object.create(HTMLElement.prototype);
+        sidebarProto.createdCallback = function () {
+            // get template in import
+            var template = importDoc.querySelector('#sidebar');
+            // import template into
+            var clone = document.importNode(template.content, true);
+            var root = this.createShadowRoot();
+            root.appendChild(clone);
+        };
+        sidebarProto.attachedCallback = function () {
+
+        };
+        document.registerElement('side-bar', {prototype: sidebarProto});
+    })();
+</script>
