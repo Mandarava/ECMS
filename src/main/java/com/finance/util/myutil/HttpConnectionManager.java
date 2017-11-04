@@ -102,7 +102,7 @@ public class HttpConnectionManager {
             }
         } catch (Exception e) {
             httpClientResponse.setCode(response == null ? -1 : response.getStatusLine().getStatusCode());
-            httpClientResponse.setMessage("网络连接失败，请检查网络！");
+            httpClientResponse.setMessage("网络连接失败，请检查网络！ " + e.getMessage());
         } finally {
             try {
                 httpget.releaseConnection();
