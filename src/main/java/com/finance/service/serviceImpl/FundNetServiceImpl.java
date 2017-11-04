@@ -80,11 +80,12 @@ public class FundNetServiceImpl implements FundNetService {
      */
     @Override
     public void insertOrUpdateFundNetData() {
+        ExecutorService pool = null;
         long start = System.currentTimeMillis();
         try {
             List<FundDO> fundList = fundService.findFunds();
-            ExecutorService pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
-            while (fundList.size() > 0) {
+            pool = Executors.newFixedThreadPool(THREAD_POOL_SIZE);
+            while (CollectionUtils.isNotEmpty(fundList)) {
                 List<FundDO> funds = fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size());
                 List<Future<List<FundNetDO>>> futures = new ArrayList<>();
                 // 获得到的净值数据
@@ -96,8 +97,11 @@ public class FundNetServiceImpl implements FundNetService {
                 }
                 for (int i = 0; i < futures.size(); i++) {
                     Future<List<FundNetDO>> future = futures.get(i);
-                    if (null != future && null != future.get()) {
-                        fetchedNetList.addAll(future.get());
+                    if (null != future.get()) {
+                        List<FundNetDO> results = future.get();
+                        if (CollectionUtils.isNotEmpty(results)) {
+                            fetchedNetList.addAll(results);
+                        }
                     }
                 }
                 if (CollectionUtils.isEmpty(fetchedNetList)) {
@@ -114,8 +118,8 @@ public class FundNetServiceImpl implements FundNetService {
                 }
                 List<FundNetDO> fundNetList = new ArrayList<>(fundNets);
                 fundNetList.sort(Comparator.comparing(FundNetDO::getNetDate));
-                if (fundNetList.size() > 0) {
-                    while (fundNetList.size() > 0) {
+                if (CollectionUtils.isNotEmpty(fundNetList)) {
+                    while (CollectionUtils.isNotEmpty(fundNetList)) {
                         List<FundNetDO> subFundNetList = fundNetList.subList(0, fundNetList.size() > RECORDS_PER_INSERT ? RECORDS_PER_INSERT : fundNetList.size());
                         /* 自己注给自己，否则嵌套事务无法执行*/
                         fundNetService.batchInsertFundNetData(subFundNetList);
@@ -124,11 +128,14 @@ public class FundNetServiceImpl implements FundNetService {
                 }
                 fundList.subList(0, fundList.size() > FUND_NET_PER_SELECT ? FUND_NET_PER_SELECT : fundList.size()).clear();
             }
-            pool.shutdown();
         } catch (InterruptedException e) {
-            logger.debug(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (ExecutionException e) {
-            logger.debug(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
+        } finally {
+            if (pool != null) {
+                pool.shutdown();
+            }
         }
         long end = System.currentTimeMillis();
         logger.info("本次任务耗时 {} ms", end - start);
@@ -205,9 +212,9 @@ public class FundNetServiceImpl implements FundNetService {
                 }
             }
         } catch (URISyntaxException e) {
-            logger.debug(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         } catch (ParseException e) {
-            logger.debug(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
         return fundNetList;
     }
@@ -231,7 +238,7 @@ public class FundNetServiceImpl implements FundNetService {
                         .setHost("finance.sina.com.cn/")
                         .setPath(String.format("fund/quotes/%s/bc.shtml", fundCode)).build();
             } catch (URISyntaxException e) {
-                logger.debug(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
             HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri, context);
             if (!httpClientResponse.isOk()) {
@@ -252,11 +259,10 @@ public class FundNetServiceImpl implements FundNetService {
 
         @Override
         public List<FundNetDO> call() {
-            String currency = getFundType();
             List<FundNetDO> result = new ArrayList<>();
             // 万份收益
-            if (currency.equals("1")) {
-                return null;
+            if ("1".equals(getFundType())) {
+                return result;
             }
             URI uri = null;
             // http://stock.finance.sina.com.cn/fundInfo/api/openapi.php/CaihuiFundInfoService.getNav?callback=fundnetcallback&symbol=160706&page=1
@@ -272,7 +278,7 @@ public class FundNetServiceImpl implements FundNetService {
                         .setParameter("num", "200000")
                         .build();
             } catch (URISyntaxException e) {
-                logger.debug(e.getMessage(), e);
+                logger.error(e.getMessage(), e);
             }
             HttpClientResponse httpClientResponse = HttpConnectionManager.executeHttpGet(uri, context);
             if (!httpClientResponse.isOk()) {
@@ -280,10 +286,10 @@ public class FundNetServiceImpl implements FundNetService {
             }
             String strResult = httpClientResponse.getData();
             if (StringUtils.isEmpty(strResult)) {
-                return null;
+                return result;
             }
             if (strResult.contains("\"data\":null") || strResult.contains("\"total_num\":\"0\"")) {
-                return null;
+                return result;
             }
             Pattern pattern = Pattern.compile("\\[.*?]");
             Matcher matcher = pattern.matcher(strResult);
@@ -293,8 +299,7 @@ public class FundNetServiceImpl implements FundNetService {
             Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().serializeNulls().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
             List<SinaFinanceFundNetDTO> fundNets = gson.fromJson(strResult, new TypeToken<List<SinaFinanceFundNetDTO>>() {
             }.getType());
-            if (fundNets != null && fundNets.size() > 0) {
-                result = new ArrayList<>();
+            if (CollectionUtils.isNotEmpty(fundNets)) {
                 for (int i = 0; i < fundNets.size(); i++) {
                     // the last one is the fund's initial value 1
                     if (i == fundNets.size() - 1) {
