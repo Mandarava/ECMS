@@ -53,12 +53,12 @@ import javax.net.ssl.SSLException;
 public class HttpConnectionManager {
 
     private static final Logger logger = LoggerFactory.getLogger(HttpConnectionManager.class);
-    private static final int MAX_TOTAL = 300;
-    private static final int DEFAULT_MAX_PER_ROUTE = 50;
+    private static final int MAX_TOTAL = 500;
+    private static final int DEFAULT_MAX_PER_ROUTE = 500;
     private static final int CONNECTION_REQUEST_TIMEOUT = 2000; // 当连接池里没有可用连接时，等待的超时时间，这个值一定要设置，且不能太长，不然会出现大量请求等待。
     private static final int CONNECT_TIMEOUT = 2500;
     private static final int SOCKET_TIMEOUT = 2500;
-    private static final long MAX_IDLE_TIME = 3L;
+    private static final long MAX_IDLE_TIME = 1;
     private static final String USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.86 Safari/537.36";
     private static CloseableHttpClient httpClient;
 
@@ -167,7 +167,7 @@ public class HttpConnectionManager {
                 if (keepAlive == -1) {
                     // Keep connections alive 5 seconds if a keep-alive value
                     // has not be explicitly set by the server
-                    keepAlive = 3000;
+                    keepAlive = 5000;
                 }
                 return keepAlive;
             }
