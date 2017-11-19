@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -64,7 +65,7 @@ public class FundNetServiceImpl implements FundNetService {
         }
     };
     private static final int FUND_NET_PER_SELECT = 300;
-    private static final int THREAD_POOL_SIZE = 20;
+    private static final int THREAD_POOL_SIZE = 5;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
     @Resource
     private FundNetService fundNetService;
@@ -321,6 +322,11 @@ public class FundNetServiceImpl implements FundNetService {
                     }
                     result.add(fundNet);
                 }
+            }
+            try {
+                Thread.sleep(new Random().nextInt(200) + 250);
+            } catch (InterruptedException e) {
+                logger.error(e.getMessage(), e);
             }
             return result;
         }
