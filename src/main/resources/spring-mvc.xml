@@ -20,7 +20,35 @@
         <mvc:argument-resolvers>
             <bean class="com.finance.bind.RequestPageInfoMethodArgumentResolver"/>
         </mvc:argument-resolvers>
+        <mvc:message-converters register-defaults="true">
+            <ref bean="mappingJacksonHttpMessageConverter" />
+        </mvc:message-converters>
     </mvc:annotation-driven>
+    
+    <bean id="mappingJacksonHttpMessageConverter"
+          class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+        <property name="supportedMediaTypes">
+            <list>
+                <value>application/json;charset=UTF-8</value>
+                <value>text/html;charset=UTF-8</value>
+            </list>
+        </property>
+        <property name="objectMapper">
+            <bean id="objectMapper" class="com.fasterxml.jackson.databind.ObjectMapper">
+                <property name="timeZone">
+                    <bean class="java.util.TimeZone" factory-method="getTimeZone" >
+                        <constructor-arg value="GMT+08"/>
+                    </bean>
+                </property>
+                <property name="dateFormat">
+                    <bean class="java.text.SimpleDateFormat">
+                        <constructor-arg type="java.lang.String" value="yyyy-MM-dd HH:mm:ss"/>
+                    </bean>
+                </property>
+            </bean>
+        </property>
+    </bean>
+    
     <!-- 启动SpringMVC的注解功能，完成请求和注解POJO的映射 -->
     
     <mvc:default-servlet-handler/>
