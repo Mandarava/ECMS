@@ -5,6 +5,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 /**
  * Created by zt 2017/9/21 21:04
  */
@@ -31,5 +33,9 @@ public class ApplicationContextUtil implements ApplicationContextAware {
 
     public static <T> T getBean(Class clazz) {
         return applicationContext.getBean((Class<T>) clazz);
+    }
+
+    public static <T> Map<String, T> getBeansOfType(Class<T> type) {
+        return applicationContext.getBeansOfType(type);
     }
 }
