@@ -8,6 +8,7 @@ $(document).ready(function () {
                url: "/producer/data",
                cache: false,
                async: true,
+               dataType: "json",
                success: function (data) {
                    for (var i = 0; i < data.length; i++) {
                        $("#numbers").append("<tr><td>" + data[i] + "</td></tr>");
@@ -26,6 +27,7 @@ function getData() {
                type: "GET",
                url: "/producer/data",
                cache: false,
+               dataType: "json",
                async: true,
                success: function (data) {
                    for (var i = 0; i < data.length; i++) {

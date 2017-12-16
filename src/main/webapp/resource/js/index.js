@@ -10,6 +10,7 @@ $("#button_submit").click(function () {
                type: "POST",
                url: "/fund/profit/addProfit",
                data: profit,
+               dataType: "json",
                success: function (data) {
                    if (data.hasOwnProperty('flag')) {
                        if (data.flag === 1) {
@@ -32,6 +33,7 @@ $('#insertOrUpdateFundNetValue').click(function () {
                url: "/fund/net/insertOrUpdateFundNetData",
                async: true,
                cache: false,
+               dataType: "json",
                success: function (data) {
                    if (data.hasOwnProperty('flag')) {
                        if (data.flag === 1) {
@@ -53,6 +55,7 @@ $('#insertOrUpdateFundValue').click(function () {
                url: "/fund/insertOrUpdateFundData",
                async: true,
                cache: false,
+               dataType: "json",
                success: function (data) {
                    if (data.hasOwnProperty('flag')) {
                        if (data.flag === 1) {
@@ -74,6 +77,7 @@ $('#producer').click(function () {
                url: "/fund/net/producer",
                async: true,
                cache: false,
+               dataType: "json",
                success: function (data) {
 
                },
