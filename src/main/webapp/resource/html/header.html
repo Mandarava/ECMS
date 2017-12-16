@@ -38,23 +38,18 @@
 
 <script>
     (function () {
-        var importDoc = document.currentScript.ownerDocument; // importee
-
+        var importDoc = document.currentScript.ownerDocument; // 指向被加载的网页
         // Define and register <shadow-element>
         // that uses Shadow DOM and a template.
-        var proto2 = Object.create(HTMLElement.prototype);
-
-        proto2.createdCallback = function () {
+        var headerProto = Object.create(HTMLElement.prototype);
+        headerProto.createdCallback = function () {
             // get template in import
             var template = importDoc.querySelector('#header');
-
             // import template into
             var clone = document.importNode(template.content, true);
-
             var root = this.createShadowRoot();
             root.appendChild(clone);
         };
-
-        document.registerElement('header-nav', {prototype: proto2});
+        document.registerElement('header-nav', {prototype: headerProto});
     })();
 </script>
