@@ -15,4 +15,16 @@
         INSERT INTO profit (CODE,time,profit,user_id)
         VALUES(#{code,jdbcType=VARCHAR},#{time,jdbcType=TIMESTAMP},#{profit},#{userId})
     </insert>
+    
+    <select id="findFundCodes" resultType="FundDO">
+        select p.code ,f.name from profit p left join fund  f on p.code = f.code group by code order by max(time) desc, code
+    </select>
+    
+    <select id="findSumProfitByDay" parameterType="string" resultType="ProfitDO">
+        select DATE_FORMAT(t.time,'%Y-%m-%d') time,
+          (select sum(profit) from profit p where p.code = t.code and p.TIME &lt;= t.TIME) profit
+        from profit t
+        where t.code = #{code}
+        order by time asc
+    </select>
 </mapper>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>累计收益图</title>
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous">
+    <link rel="import" href="/resource/html/header.html">
+    <script src="/resource/static/jquery-3.1.1.min.js"></script>
+    <script src="/resource/static/echarts/echarts.min.js"></script>
+</head>
+<body id="main">
+<header-nav></header-nav>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $.ajax({
+           type: "GET",
+           url: "/fund/profit/sum",
+           cache: false,
+           async: false,
+           success: function (data) {
+               // calculate total profit
+               var map = new Map();
+               for(var i = 0; i < data.length; i++) {
+                   var profits = data[i].profits;
+                   for(var j = 0 ; j < profits.length; j++) {
+                      var date = profits[j].time;
+                      var profit = profits[j].profit;
+                      if (map.get(date)) {
+                          map.set(date, map.get(date) + profit);
+                      } else {
+                          map.set(date, profit);
+                      }
+                   }
+               }
+               var profits = [];
+               map.forEach(function(value, key) {
+                   var profit = {
+                       "time" : key,
+                       "profit": value.toFixed(2)
+                   };
+                   profits.push(profit);
+               }, map);
+               profits.sort(function (a, b) {
+                   if (a.time > b.time) {
+                       return 1;
+                   }
+                   if (a.time < b.time) {
+                       return -1;
+                   }
+                   // a 必须等于 b
+                   return 0;
+               });
+               var fundProfitSum= {
+                   "code": "00000",
+                   "name": "统计",
+                   "profits": profits
+               };
+               var html = '<div id="total" style="width: 90%;height:400px;padding-left: 3%"></div>';
+               $('#main').append(html);
+               initChart('total', fundProfitSum);
+
+               for (var i = 0; i < data.length; i++) {
+                   var fundProfitSum = data[i];
+                   var id = 'fund' + fundProfitSum.code;
+                   var html = '<div id="' + id + '" style="width: 90%;height:400px;padding-left: 3%"></div>';
+                   $('#main').append(html);
+                   initChart(id, fundProfitSum);
+               }
+           },
+           error: function (e) {
+               alert('load failed');
+           }
+       });
+    });
+
+    function initChart(elementId, data) {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById(elementId));
+        var xAxisData = [];
+        var yAxisData = [];
+        for (var i in data.profits) {
+            xAxisData.push(data.profits[i].time);
+            yAxisData.push(data.profits[i].profit);
+        }
+        // 显示标题，图例和空的坐标轴
+        myChart.setOption({
+              title: {
+                  text: data.name + "  " +  data.code
+              },
+              dataZoom: [
+                  {
+                      id: 'dataZoomX',
+                      type: 'inside',
+                      xAxisIndex: [0],
+                      filterMode: 'filter'
+                  }
+              ],
+              tooltip : {
+                  trigger: 'axis',
+                  axisPointer: {
+                      type: 'cross',
+                      label: {
+                          backgroundColor: '#6a7985'
+                      }
+                  }
+              },
+              legend: {
+                  data:['累计收益']
+              },
+              toolbox: {
+                  show : true,
+                  feature : {
+                      saveAsImage : {show: true}
+                  }
+              },
+              grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+              },
+              // 背景图的内置表格中“边框”的颜色线条  这个是x跟y轴轴的线
+              splitLine: {
+                  show: true,
+                  lineStyle:{
+                      color:"#e4e4e4",
+                      type:"solid"
+                  }
+              },
+              xAxis : [
+                  {
+                      type : 'category',
+                      boundaryGap : false,
+                      axisLabel: {
+                          textStyle: {
+                              color: "#a7aab3",
+                              fontSize: "13",
+                          },
+                          // 刻度标签与轴线之间的距离。
+                          margin: 16
+                      },
+                      data : xAxisData
+                  }
+              ],
+              yAxis : [
+                  {
+                      type : 'value',
+                      axisLabel: {
+                          textStyle: {
+                              color: "#a7aab3",
+                              fontSize: "13",
+                          },
+                          margin: 16
+                      }
+                  }
+              ],
+              series : [
+                  {
+                      name:'累计收益',
+                      type:'line',
+                      stack: '累计收益',
+                      smooth: false,
+                      label: {
+                          normal: {
+                              show: true,
+                              color: '#B0E0E6',
+                              position: 'top'
+                          }
+                      },
+                      // 折线的颜色
+                      lineStyle:{
+                          normal: {
+                              color:"#1ba0fc",
+                              width:1.0,
+                              // shadowBlur:80
+                          },
+                      },
+                      areaStyle: {
+                          normal: {
+                            color: '#B0E0E6'
+                      }},itemStyle : {
+                          normal : {
+                              color:'#1ba0fc',
+                              lineStyle:{
+                                  color:'#1ba0fc'
+                              }
+                          }
+                      },
+                      data: yAxisData
+                  }
+              ]
+          });
+    }
+</script>
+</body>
+</html>

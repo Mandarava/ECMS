@@ -1,6 +1,7 @@
 package com.finance.controller;
 
 import com.finance.model.pojo.ProfitDO;
+import com.finance.model.vo.FundProfitSumVO;
 import com.finance.service.FundProfitService;
 import com.finance.util.myutil.RequestContext;
 
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -41,6 +43,12 @@ public class FundProfitController {
             map.put("flag", 0);
         }
         return map;
+    }
+
+    @RequestMapping(value = "/sum", method = RequestMethod.GET)
+    @ResponseBody
+    public List<FundProfitSumVO> findSumProfit() {
+        return fundProfitService.findSumProfit();
     }
 
 }

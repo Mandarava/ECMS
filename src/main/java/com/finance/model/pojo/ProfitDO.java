@@ -1,5 +1,7 @@
 package com.finance.model.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
@@ -22,6 +24,7 @@ public class ProfitDO implements Serializable {
     private String code;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date time;
 
     private double profit;

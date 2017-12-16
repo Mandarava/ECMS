@@ -11,6 +11,7 @@
           crossorigin="anonymous">
     <link rel="stylesheet" href="/resource/css/common.css">
     <link rel="import" href="/resource/html/header.html">
+    <link rel="import" href="/resource/template/sidebar.html">
 </head>
 <body>
 <header-nav></header-nav>
@@ -37,9 +38,13 @@
         <a class="btn btn-default" href="/fund/order/insertpage" target="_self">gotoFundOrder</a><br><br>
         <a class="btn btn-default" href="/producer" target="_self">gotoProducer</a><br><br>
         <a class="btn btn-default" href="/scheduler" target="_self">gotoScheduler</a><br><br>
+        <a class="btn btn-default" href="/resource/page/profitChart.html" target="_self">gotoProfitChart</a><br><br>
     </div>
 
 </div>
+<script src="/resource/static/jquery-3.1.1.min.js"></script>
+<script type="text/javascript" src="/resource/static/ztree/js/jquery.ztree.all.min.js"></script>
+<script src="/resource/js/index.js"></script>
 <script type="text/javascript">
     function getContextPath() {
         var curWwwPath = window.document.location.href;
@@ -50,7 +55,5 @@
         return (localhostPath + projectName);
     }
 </script>
-<script src="/resource/static/jquery-3.1.1.min.js"></script>
-<script src="/resource/js/index.js"></script>
 </body>
 </html>
