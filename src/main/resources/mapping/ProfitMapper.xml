@@ -16,15 +16,27 @@
         VALUES(#{code,jdbcType=VARCHAR},#{time,jdbcType=TIMESTAMP},#{profit},#{userId})
     </insert>
     
-    <select id="findFundCodes" resultType="FundDO">
-        select p.code ,f.name from profit p left join fund  f on p.code = f.code group by code order by max(time) desc, code
+    <resultMap id="profitSumResultMap" type="com.finance.model.vo.FundProfitSumVO">
+        <result column="code" jdbcType="VARCHAR" property="code" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <collection property="profits" ofType="ProfitDO">
+            <result column="time" jdbcType="DATE" property="time" />
+            <result column="profit" jdbcType="NUMERIC" property="profit" />
+        </collection>
+    </resultMap>
+    
+    <select id="findSumProfit" resultMap="profitSumResultMap">
+        select
+          f.code,f.name,k.time,k.profit
+        from
+        (select f.code ,f.name from profit p left join fund  f on p.code = f.code group by code order by max(time) desc, code) f
+        left join
+        (select
+            DATE_FORMAT(time,'%Y-%m-%d') time
+            ,code
+            ,(select sum(profit) from profit p where p.code = t.code and p.TIME &lt;= t.TIME) profit
+         from profit t
+        ) k on f.code = k.code
     </select>
     
-    <select id="findSumProfitByDay" parameterType="string" resultType="ProfitDO">
-        select DATE_FORMAT(t.time,'%Y-%m-%d') time,
-          (select sum(profit) from profit p where p.code = t.code and p.TIME &lt;= t.TIME) profit
-        from profit t
-        where t.code = #{code}
-        order by time asc
-    </select>
 </mapper>
