@@ -5,6 +5,8 @@ import com.finance.model.pojo.FundNetDO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +25,7 @@ public class TransactionTestImpl implements TransactionTest {
     @Resource
     private FundNetDao fundNetDao;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void insertA() {
         fundNetDao.batchInsertFundNetData(mockData()); // 这个也会回滚啊!
         try {
@@ -34,12 +37,26 @@ public class TransactionTestImpl implements TransactionTest {
             transactionTest.insertB();
 //            TransactionTest transactionTest = (TransactionTest) AopContext.currentProxy();
 //            transactionTest.insertB();
+            // <aop:aspectj-autoproxy expose-proxy="true" />
         } catch (Exception e) {
 
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void insertA2() {
+        fundNetDao.batchInsertFundNetData(mockData()); // 这个不会回滚
+        try {
+            // 加try catch,insertB()抛出异常时
+            // B回滚
+            transactionTest.insertB2();
+        } catch (Exception e) {
+
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void insertA3() {
         fundNetDao.batchInsertFundNetData(mockData());
         try {
             // !!!  this will not rollback
@@ -50,7 +67,14 @@ public class TransactionTestImpl implements TransactionTest {
         }
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public void insertB() {
+        fundNetDao.batchInsertFundNetData(mockData());
+        throw new RuntimeException("error occurred!");
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void insertB2() {
         fundNetDao.batchInsertFundNetData(mockData());
         throw new RuntimeException("error occurred!");
     }

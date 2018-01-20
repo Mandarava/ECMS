@@ -7,6 +7,11 @@ public interface TransactionTest {
 
     void insertA();
 
+    void insertA2();
+
+    void insertA3();
+
     void insertB();
 
+    void insertB2();
 }
