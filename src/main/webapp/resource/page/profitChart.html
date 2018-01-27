@@ -24,19 +24,39 @@
            dataType: "json",
            async: false,
            success: function (data) {
+               var daysSet = new Set();
+               for(var i = 0; i < data.length; i++) {
+                   var profits = data[i].profits;
+                   for(var j = 0 ; j < profits.length; j++) {
+                       daysSet.add(profits[j].time);
+                   }
+               }
                // calculate total profit
                var map = new Map();
                for(var i = 0; i < data.length; i++) {
                    var profits = data[i].profits;
+                   var currentFundKeepDays = new Set();
                    for(var j = 0 ; j < profits.length; j++) {
                       var date = profits[j].time;
                       var profit = profits[j].profit;
+                      currentFundKeepDays.add(date);
                       if (map.get(date)) {
-                          map.set(date, map.get(date) + profit);
+                          map.set(date, (map.get(date) + profit));
                       } else {
                           map.set(date, profit);
                       }
                    }
+
+                   var keptLastDayProfit = profits[profits.length - 1];
+                   daysSet.forEach(function(value) {
+                        if (!currentFundKeepDays.has(value) && value > keptLastDayProfit.time) {
+                            if (map.get(value)) {
+                                map.set(value, map.get(value) + keptLastDayProfit.profit);
+                            } else {
+                                map.set(value, keptLastDayProfit.profit);
+                            }
+                        }
+                   });
                }
                var profits = [];
                map.forEach(function(value, key) {
@@ -46,6 +66,7 @@
                    };
                    profits.push(profit);
                }, map);
+
                profits.sort(function (a, b) {
                    if (a.time > b.time) {
                        return 1;

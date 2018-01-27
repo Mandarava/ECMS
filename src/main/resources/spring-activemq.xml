@@ -9,14 +9,29 @@
     
     <jms:annotation-driven/>
     
+    <!-- 用spring启动消息服务器 -->
+    <!--<bean id="broker" class="org.apache.activemq.broker.BrokerService" init-method="start" destroy-method="stop">
+        <property name="brokerName" value="myBroker" />
+        <property name="persistent" value="true" />
+        <property name="transportConnectorURIs">
+            <list>
+                <value>tcp://localhost:61616</value>
+            </list>
+        </property>
+    </bean>-->
+    
     <!-- 真正可以产生Connection的ConnectionFactory，由ActiveMQ提供 -->
     <bean id="activeMQConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL" value="${activemq.url}"/>
         <property name="userName" value="${activemq.username}"/>
         <property name="password" value="${activemq.password}"/>
-        <property name="useAsyncSend" value="false"/>
+        <property name="dispatchAsync" value="true"/>
+        <property name="useAsyncSend" value="true"/>
         <property name="alwaysSessionAsync" value="true"/>
         <property name="useDedicatedTaskRunner" value="false"/>
+        <property name="optimizeAcknowledge" value="true"/>
+        <property name="useCompression" value="true" />
+        <property name="optimizeAcknowledgeTimeOut" value="5000"/>
         <!-- 消息传输监听器 处理网络及服务器异常 -->
         <property name="transportListener">
             <bean class="com.finance.activemq.ActiveMQTransportListener"/>
@@ -33,11 +48,18 @@
         </property>-->
     </bean>
     
+    <!-- If you use XA transaction managers like Bitronix (or Atomikos), you have no choice but to go with PoolingConnectionFactory  -->
+    <!--<bean id="connectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory" destroy-method="stop">
+        <property name="connectionFactory" ref="activeMQConnectionFactory" />
+        <property name="maxConnections" value="200" />
+    </bean>-->
+    
     <!-- Spring用于管理真正的ConnectionFactory的ConnectionFactory -->
     <bean id="connectionFactory"
-          class="org.springframework.jms.connection.SingleConnectionFactory">
+          class="org.springframework.jms.connection.CachingConnectionFactory">
         <property name="targetConnectionFactory" ref="activeMQConnectionFactory"/>
         <property name="reconnectOnException" value="true"/>
+        <property name="sessionCacheSize" value="100" />
     </bean>
     
     <!-- 使用Jackson2 JSON库实现消息与JSON格式的相互转换 -->
@@ -60,8 +82,9 @@
     <!-- 定义Queue监听器 -->
     <jms:listener-container destination-type="queue" container-type="default" concurrency="1-10"
                             connection-factory="connectionFactory" acknowledge="transacted"
-                            transaction-manager="transactionManager">
-        <jms:listener destination="default_queue" ref="queueReceiver" method="handle"/>
+                            prefetch="100"
+                            ><!--transaction-manager="transactionManager"-->
+        <jms:listener destination="default_queue" ref="queueReceiver" method="handle" />
         <!--<jms:listener destination="default_queue" ref="consumerMessageListener"/>-->
     </jms:listener-container>
     
@@ -74,8 +97,9 @@
     </bean>
     
     <!-- 定义Topic监听器 -->
-    <jms:listener-container destination-type="topic" container-type="default"
-                            connection-factory="connectionFactory" acknowledge="auto">
+    <jms:listener-container destination-type="topic" container-type="default" concurrency="1-10"
+                            connection-factory="connectionFactory" acknowledge="auto" prefetch="100"
+                            ><!--transaction-manager="transactionManager"-->
         <jms:listener destination="default_topic" ref="topicReceiver" method="handle"/>
     </jms:listener-container>
     
