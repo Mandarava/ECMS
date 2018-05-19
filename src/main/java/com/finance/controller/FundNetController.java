@@ -5,12 +5,16 @@ import com.finance.service.FundNetService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +54,19 @@ public class FundNetController {
     @ResponseBody
     public void retry() {
         fundNetService.retry();
+    }
+
+    @RequestMapping(value = "/upload")
+    @ResponseBody
+    public void upload(@RequestParam(value = "file") MultipartFile multipartFile, HttpServletRequest httpServletRequest) {
+        try {
+            System.out.println(multipartFile.getOriginalFilename());
+            MultipartUtility multipart = new MultipartUtility("http://localhost:8089/xxx");
+            multipart.addFilePart("file", System.currentTimeMillis() + ".txt", multipartFile.getInputStream());
+            multipart.finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
