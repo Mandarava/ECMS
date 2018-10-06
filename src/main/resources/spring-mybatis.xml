@@ -247,6 +247,53 @@
     </bean>
     -->
     
+    <bean id="clientHttpRequestFactory" class="org.springframework.http.client.SimpleClientHttpRequestFactory">
+        <property name="connectTimeout" value="${http.connectTimeout}"/>
+        <property name="readTimeout" value="${http.readTimeout}"/>
+        <!--<property name="proxy">-->
+        <!--<bean class="java.net.Proxy">-->
+        <!--<constructor-arg index="0" value="HTTP"/>-->
+        <!--<constructor-arg index="1">-->
+        <!--<bean class="java.net.InetSocketAddress">-->
+        <!--<constructor-arg index="0" value="127.0.0.1"/>-->
+        <!--<constructor-arg index="1" value="8888"/>-->
+        <!--</bean>-->
+        <!--</constructor-arg>-->
+        <!--</bean>-->
+        <!--</property>-->
+    </bean>
+    
+    <bean id="restTemplate" class="org.springframework.web.client.RestTemplate">
+        <constructor-arg ref="clientHttpRequestFactory"/>
+        <property name="errorHandler">
+            <bean class="org.springframework.web.client.DefaultResponseErrorHandler"/>
+        </property>
+        <property name="messageConverters">
+            <list>
+                <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.FormHttpMessageConverter"/>
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value>text/plain;charset=UTF-8</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.springframework.http.converter.support.AllEncompassingFormHttpMessageConverter"/>
+                <bean class="com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter">
+                    <property name="defaultCharset" value="UTF-8"/>
+                    <property name="supportedMediaTypes">
+                        <list>
+                            <value type="org.springframework.http.MediaType">application/json</value>
+                            <value type="org.springframework.http.MediaType">application/*+json</value>
+                        </list>
+                    </property>
+                </bean>
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+    
     <!-- redis -->
     <bean id="poolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxIdle" value="${redis.maxIdle}"/>
