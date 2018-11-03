@@ -25,6 +25,7 @@
     <import resource="classpath*:spring-activemq.xml"/>
     <import resource="classpath*:spring-kaptcha.xml"/>
     <import resource="classpath*:spring-quartz.xml"/>
+    <import resource="classpath:activiti-context.xml" />
     
     <bean class="org.springframework.retry.annotation.RetryConfiguration"/>
     
@@ -183,13 +184,13 @@
         <property name="dataSource" ref="dataSource"/>
     </bean>
     
+    <tx:annotation-driven transaction-manager="transactionManager" />
+    
     <aop:config>
         <aop:pointcut id="defaultServiceOperation"
                       expression="execution(* com.finance.service..*.*(..))"/>
         <aop:advisor pointcut-ref="defaultServiceOperation" advice-ref="TxAdvice"/>
     </aop:config>
-    
-    <tx:annotation-driven transaction-manager="transactionManager" />
     
     <tx:advice id="TxAdvice" transaction-manager="transactionManager">
         <tx:attributes>

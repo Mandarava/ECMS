@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <bean id="uuidGenerator" class="org.activiti.engine.impl.persistence.StrongUuidGenerator"/>
+    
+    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="databaseSchemaUpdate" value="true"/>
+        <property name="jobExecutorActivate" value="false"/>
+        <property name="processDefinitionCacheLimit" value="20"/>
+        <property name="dbIdentityUsed" value="false"/>
+        <property name="idGenerator" ref="uuidGenerator"/>
+        <property name="activityFontName" value="宋体"/>
+        <property name="labelFontName" value="宋体"/>
+        <!-- JPA -->
+        <!--<property name="jpaEntityManagerFactory" ref="entityManagerFactory"/>-->
+        <!--<property name="jpaHandleTransaction" value="false"/>-->
+        <!--<property name="jpaCloseEntityManager" value="false"/>-->
+        <!-- 全局事件 -->
+        <!--<property name="eventListeners">-->
+            <!--<list>-->
+                <!--<ref bean="workflowListener"/>-->
+            <!--</list>-->
+        <!--</property>-->
+        <property name="customDefaultBpmnParseHandlers">
+            <list>
+                <bean class="com.finance.activiti.parser.ExtensionUserTaskParseHandler">
+                    <property name="extensionElementsClass" value="com.finance.activiti.entity.CustomExtensionElements"/>
+                </bean>
+            </list>
+        </property>
+        <property name="customMybatisMappers">
+            <set>
+                <value>com.finance.activiti.mapper.ActivitiMapper</value>
+            </set>
+        </property>
+    </bean>
+    
+    <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+        <property name="processEngineConfiguration" ref="processEngineConfiguration"/>
+    </bean>
+    <bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService"/>
+    <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
+    <bean id="formService" factory-bean="processEngine" factory-method="getFormService"/>
+    <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
+    <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
+    <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
+
+</beans>

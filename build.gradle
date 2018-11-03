@@ -108,6 +108,7 @@ dependencies {
             'org.slf4j:slf4j-log4j12:1.7.25'
 //            'org.slf4j:jcl-over-slf4j:1.7.25'
     )
+    compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
     compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
     compile group: 'commons-io', name: 'commons-io', version: '2.5'
     compile 'com.google.guava:guava:19.0'
@@ -119,6 +120,7 @@ dependencies {
     compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 
     compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.8.1'
+    compile group: 'com.github.pagehelper', name: 'pagehelper', version: '5.1.7'
 
     compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
     compile('us.codecraft:webmagic-core:0.5.3',
@@ -144,15 +146,26 @@ dependencies {
     compile group: 'io.fabric8.devops.apps', name: 'kibana', version: '2.2.298'
 
     compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.1.2'
-
     compile group: 'org.apache.solr', name: 'solr-core', version: '6.4.0'
     compile group: 'org.apache.solr', name: 'solr-solrj', version: '6.4.0'
-
     compile('org.apache.lucene:lucene-core:6.4.0',
             'org.apache.lucene:lucene-highlighter:6.4.0',
             'org.apache.lucene:lucene-queryparser:6.4.0',
             'org.apache.lucene:lucene-analyzers-common:6.4.0'
     )
+
+    compile(
+            'org.activiti:activiti-spring:5.17.0',
+            'org.activiti:activiti-engine:5.17.0',
+            'org.activiti:activiti-json-converter:5.17.0',
+            'org.activiti:activiti-modeler:5.17.0',
+            'org.activiti:activiti-rest:5.17.0',
+            'org.activiti:activiti-diagram-rest:5.17.0',
+            'org.activiti:activiti-cxf:5.17.0',
+            'org.infinispan:infinispan-core:9.4.0.Final',
+            'com.fasterxml.uuid:java-uuid-generator:3.1.5'
+    )
+
     compile group: 'com.xiaoleilu', name: 'hutool-all', version: '3.3.2'
     compile group: 'org.jdom', name: 'jdom', version: '2.0.2'
     compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
@@ -164,13 +177,7 @@ dependencies {
 
     compile group: 'net.bytebuddy', name: 'byte-buddy-dep', version: '1.8.12'
 
-    compile group: 'org.activiti', name: 'activiti-spring', version: '5.22.0'
-    compile group: 'org.activiti', name: 'activiti-engine', version: '5.22.0'
-
-
     testCompile group: 'org.atteo.moonshine', name: 'atomikos', version: '1.2'
-
-
     testCompile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.2.17.v20160517'
 }
