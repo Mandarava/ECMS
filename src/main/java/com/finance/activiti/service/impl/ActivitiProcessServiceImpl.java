@@ -34,6 +34,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
+import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.image.ProcessDiagramGenerator;
@@ -241,9 +242,9 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
         if (variables != null) {
             map.putAll(variables);
         }
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         try {
             if (StringUtils.isNotEmpty(comment)) {
-                Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
                 String processInstancesId = task.getProcessInstanceId();
                 Authentication.setAuthenticatedUserId(userId);
                 taskService.addComment(taskId, processInstancesId, comment);
@@ -251,7 +252,11 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
         } finally {
             Authentication.setAuthenticatedUserId(null);
         }
-        taskService.complete(taskId, map);
+        if (task.getDelegationState() == DelegationState.PENDING) {
+            this.resolveTask(taskId, variables);
+        } else {
+            taskService.complete(taskId, map);
+        }
     }
 
     @Override
