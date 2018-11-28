@@ -32,7 +32,7 @@ import java.sql.SQLException;
  * [, col_name={expr | DEFAULT}] ...]
  * <p>
  * SELECT * FROM c_rule_result INTO OUTFILE 'C:\\ProgramData\\MySQL\MySQL Server 5.7\\Uploads\\1.sql' FIELDS TERMINATED BY '|' ENCLOSED BY '"' LINES TERMINATED BY '\r\n';
- *
+ * max_heap_table_size=768M net_buffer_length=512K bulk_insert_buffer_size=100M
  * @see "https://dev.mysql.com/doc/refman/5.7/en/load-data.html"
  */
 public class BulkLoadData2MySQL {
