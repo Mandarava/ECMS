@@ -35,10 +35,12 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -626,5 +628,47 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
             }
         }
         return highFlows;
+    }
+
+    @Override
+    public void setStartables(String processDefinitionId, String[] userArray, String[] groupArray) {
+        List<IdentityLink> links = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+        for (IdentityLink link : links) {
+            if (StringUtils.isNotBlank(link.getUserId())) {
+                repositoryService.deleteCandidateStarterUser(processDefinitionId, link.getUserId());
+            }
+            if (StringUtils.isNotBlank(link.getGroupId())) {
+                repositoryService.deleteCandidateStarterGroup(processDefinitionId, link.getGroupId());
+            }
+            if (!ArrayUtils.isEmpty(userArray)) {
+                for (String user : userArray) {
+                    repositoryService.addCandidateStarterUser(processDefinitionId, user);
+                }
+            }
+            if (!ArrayUtils.isEmpty(groupArray)) {
+                for (String group : groupArray) {
+                    repositoryService.addCandidateStarterGroup(processDefinitionId, group);
+                }
+            }
+        }
+    }
+
+    @Override
+    public Map<String, List<? extends Object>> getProcessCandidateUserAndGroups(String processDefinitionId) {
+        List<IdentityLink> identityLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+        Map<String, List<? extends Object>> result = new HashMap<>();
+        List<User> linkUsers = new ArrayList<>();
+        List<Group> linkGroups = new ArrayList<>();
+        for (IdentityLink identityLink : identityLinks) {
+            if (StringUtils.isNotBlank(identityLink.getUserId())) {
+                linkUsers.add(identityService.createUserQuery().userId(identityLink.getUserId()).singleResult());
+            }
+            if (StringUtils.isNotBlank(identityLink.getGroupId())) {
+                linkGroups.add(identityService.createGroupQuery().groupId(identityLink.getGroupId()).singleResult());
+            }
+        }
+        result.put("user", linkUsers);
+        result.put("group", linkGroups);
+        return result;
     }
 }

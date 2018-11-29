@@ -332,4 +332,15 @@ public interface ActivitiProcessService {
      * @return
      */
     List<ResourceAuthority> resourceAuthorities(String taskId);
+
+    /**
+     * 设置流程定义的候选启动人和候选启动组
+     */
+    void setStartables(String processDefinitionId, String[] userArray, String[] groupArray);
+
+    /**
+     * 读取流程定义的候选属性
+     */
+    Map<String, List<? extends Object>> getProcessCandidateUserAndGroups(String processDefinitionId);
+
 }
