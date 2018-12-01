@@ -15,6 +15,7 @@
         <property name="idGenerator" ref="uuidGenerator"/>
         <property name="activityFontName" value="宋体"/>
         <property name="labelFontName" value="宋体"/>
+        <property name="enableDatabaseEventLogging" value="false" /> <!-- 全局事件日志 -->
         <!-- JPA -->
         <!--<property name="jpaEntityManagerFactory" ref="entityManagerFactory"/>-->
         <!--<property name="jpaHandleTransaction" value="false"/>-->

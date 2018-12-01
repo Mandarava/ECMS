@@ -6,6 +6,7 @@ import com.finance.activiti.entity.ResourceProcessDefinition;
 import com.finance.activiti.entity.TodoTask;
 import com.github.pagehelper.Page;
 
+import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.identity.User;
@@ -343,4 +344,8 @@ public interface ActivitiProcessService {
      */
     Map<String, List<? extends Object>> getProcessCandidateUserAndGroups(String processDefinitionId);
 
+    /**
+     * 根据流程实例ID读取事件日志列表
+     */
+    List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId);
 }

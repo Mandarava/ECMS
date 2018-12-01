@@ -20,6 +20,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricTaskInstance;
@@ -634,10 +635,10 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
     public void setStartables(String processDefinitionId, String[] userArray, String[] groupArray) {
         List<IdentityLink> links = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
         for (IdentityLink link : links) {
-            if (StringUtils.isNotBlank(link.getUserId())) {
+            if (StringUtils.isNotEmpty(link.getUserId())) {
                 repositoryService.deleteCandidateStarterUser(processDefinitionId, link.getUserId());
             }
-            if (StringUtils.isNotBlank(link.getGroupId())) {
+            if (StringUtils.isNotEmpty(link.getGroupId())) {
                 repositoryService.deleteCandidateStarterGroup(processDefinitionId, link.getGroupId());
             }
             if (!ArrayUtils.isEmpty(userArray)) {
@@ -660,10 +661,10 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
         List<User> linkUsers = new ArrayList<>();
         List<Group> linkGroups = new ArrayList<>();
         for (IdentityLink identityLink : identityLinks) {
-            if (StringUtils.isNotBlank(identityLink.getUserId())) {
+            if (StringUtils.isNotEmpty(identityLink.getUserId())) {
                 linkUsers.add(identityService.createUserQuery().userId(identityLink.getUserId()).singleResult());
             }
-            if (StringUtils.isNotBlank(identityLink.getGroupId())) {
+            if (StringUtils.isNotEmpty(identityLink.getGroupId())) {
                 linkGroups.add(identityService.createGroupQuery().groupId(identityLink.getGroupId()).singleResult());
             }
         }
@@ -671,4 +672,11 @@ public class ActivitiProcessServiceImpl implements ActivitiProcessService {
         result.put("group", linkGroups);
         return result;
     }
+
+    @Override
+    public List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId) {
+        return managementService.getEventLogEntriesByProcessInstanceId(processInstanceId);
+    }
+
+
 }
