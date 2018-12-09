@@ -15,7 +15,6 @@ public class DistributedLock {
 
     private static final Logger logger = LoggerFactory.getLogger(DistributedLock.class);
 
-    private static final long RETRY_BARRIER = 600; // 重试屏障，单位毫秒
     private static final long INTERVAL_TIMES = 200; // 下一次重试等待，单位毫秒
     private static final String LOCK_MSG = "OK";
     private static final Long UNLOCK_MSG = 1L;
@@ -90,7 +89,7 @@ public class DistributedLock {
         return lockExpiryInMillis;
     }
 
-    private String nextUid(Jedis jedis) {
+    private String nextUid() {
         return UUID.randomUUID().toString();
     }
 
@@ -109,7 +108,7 @@ public class DistributedLock {
      * @return 成功获取锁返回true, 否则返回false
      */
     private boolean tryAcquire(Jedis jedis) {
-        final Lock nLock = new Lock(nextUid(jedis));
+        final Lock nLock = new Lock(nextUid());
         String result = jedis.set(this.lockKey, nLock.toString(), "NX", "PX", this.lockExpiryInMillis);
         if (LOCK_MSG.equals(result)) {
             lockThreadLocal.set(nLock);
