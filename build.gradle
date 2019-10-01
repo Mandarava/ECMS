@@ -1,7 +1,6 @@
 group 'com.finance'
 version '1.0-SNAPSHOT'
 
-apply plugin: 'groovy'
 apply plugin: 'java'
 apply plugin: 'war'
 apply plugin: 'idea'
@@ -13,26 +12,14 @@ idea {
     }
 }
 
-//指定gradle wrapper版本
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.4.7'
-}
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
 ext {
     jvmVersion = "1.8"
-    springVersion = "4.3.7.RELEASE"
-    sl4jVersion = "1.7.21"
 
     if (!project.hasProperty("env")) {
         println '没有配置数据环境，默认使用 开发环境'
         env = "dev"
-
     }
     println "使用数据库环境为:${project['env']}"
-
 }
 
 repositories {
@@ -47,112 +34,99 @@ dependencies {
 
     // providedCompile在编译时提供，不会写入war
     providedCompile(
-            "javax.servlet:javax.servlet-api:3.1.0",
-            "javax.servlet.jsp:jsp-api:2.2.1-b03",
-            'org.projectlombok:lombok:1.16.18'
+            "javax.servlet.jsp:jsp-api:2.2.1-b03"
     )
 
     //maven仓库中心没有的jar，则放入libs目录下
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    //2.3.11
-    compile 'org.codehaus.groovy:groovy-all:2.4.8'
-    compile 'mysql:mysql-connector-java:5.1.41'
-    compile 'com.alibaba:druid:1.1.3'
-    compile 'org.javassist:javassist:3.20.0-GA'
-    compile 'javax:javaee-api:7.0'
-    compile 'javax.servlet:javax.servlet-api:3.1.0'
-    compile 'junit:junit:4.12'
-    compile('org.mybatis:mybatis-spring:1.3.1',
-            'org.mybatis:mybatis:3.4.5',
-            'org.mybatis.generator:mybatis-generator-core:1.3.5')
-    compile group: 'tk.mybatis', name: 'mapper', version: '3.3.9'
-    compile('commons-pool:commons-pool:1.6',
-            'commons-beanutils:commons-beanutils:1.9.2',
-            'commons-codec:commons-codec:1.10',
-            'commons-io:commons-io:2.5',
-            'commons-fileupload:commons-fileupload:1.3.2',
-            'org.apache.commons:commons-lang3:3.4',
-            'commons-dbcp:commons-dbcp:1.4')
-    compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13',
-            'com.fasterxml.jackson.core:jackson-databind:2.8.2',
-            'com.fasterxml.jackson.core:jackson-annotations:2.8.2',
-            'com.fasterxml.jackson.core:jackson-core:2.8.2',
-            'com.google.code.gson:gson:2.7',
-            'com.alibaba:fastjson:1.2.28')
-    compile('org.springframework:spring-core:4.3.7.RELEASE',
-            'org.springframework:spring-context:4.3.7.RELEASE',
-            'org.springframework:spring-context-support:4.3.7.RELEASE',
-            'org.springframework:spring-beans:4.3.7.RELEASE',
-            'org.springframework:spring-tx:4.3.7.RELEASE',
-            'org.springframework:spring-jdbc:4.3.7.RELEASE',
-            'org.springframework:spring-web:4.3.7.RELEASE',
-            'org.springframework:spring-webmvc:4.3.7.RELEASE',
-            'org.springframework:spring-aop:4.3.7.RELEASE',
-            'org.springframework:spring-oxm:4.3.7.RELEASE',
-            'org.springframework:spring-test:4.3.7.RELEASE',
-            'org.springframework:spring-orm:4.3.7.RELEASE',
-            'org.springframework:spring-websocket:4.3.7.RELEASE',
-            'org.springframework:spring-messaging:4.3.7.RELEASE',
-            'org.springframework.security:spring-security-core:4.2.1.RELEASE',
-            'org.springframework:spring-jms:4.3.7.RELEASE',
-            'org.springframework.retry:spring-retry:1.2.1.RELEASE')
-    compile group: 'org.springframework.session', name: 'spring-session-data-redis', version: '1.3.1.RELEASE'
+    annotationProcessor 'org.projectlombok:lombok:1.18.2'
+    compileOnly 'org.projectlombok:lombok:1.18.2'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.2'
+    testCompileOnly 'org.projectlombok:lombok:1.18.2'
 
-    compile 'org.springframework.data:spring-data-redis:1.8.0.RELEASE'
-    compile('redis.clients:jedis:2.9.0',
-            'com.dyuproject.protostuff:protostuff-core:1.0.10',
-            'com.dyuproject.protostuff:protostuff-runtime:1.0.10')
+    compile 'javax:javaee-api:8.0'
+    compile 'javax.servlet:javax.servlet-api:4.0.1'
+    compile('com.alibaba:druid:1.1.20',
+            'mysql:mysql-connector-java:5.1.47',
+            'org.mybatis:mybatis-spring:1.3.3',
+            'org.mybatis:mybatis:3.5.2',
+            'org.mybatis.generator:mybatis-generator-core:1.3.7',
+            'com.github.pagehelper:pagehelper:5.1.10',
+            'tk.mybatis:mapper:4.1.5')
+
+    compile('commons-pool:commons-pool:1.6',
+            'commons-beanutils:commons-beanutils:1.9.4',
+            'commons-codec:commons-codec:1.13',
+            'commons-io:commons-io:2.6',
+            'commons-fileupload:commons-fileupload:1.4',
+            'org.apache.commons:commons-lang3:3.9',
+            'org.apache.commons:commons-collections4:4.4',
+            'com.google.guava:guava:23.0',
+            'joda-time:joda-time:2.10.4',
+            'cn.hutool:hutool-all:4.6.8',
+            'net.bytebuddy:byte-buddy:1.10.1',
+            'com.lmax:disruptor:3.4.2',
+            'net.sf.jxls:jxls-core:1.0.6',
+            'org.apache.poi:poi:4.1.0',
+            'org.apache.poi:poi-ooxml:4.1.0',
+            'org.apache.httpcomponents:httpclient:4.5.10',
+            'org.apache.httpcomponents:httpasyncclient:4.1.3',
+            'org.javassist:javassist:3.25.0-GA',
+            'org.jsoup:jsoup:1.12.1',
+            'us.codecraft:webmagic-core:0.7.3',
+            'us.codecraft:webmagic-extension:0.7.3',
+            'org.mapstruct:mapstruct:1.2.0.Final'
+    )
+    
+    compile('org.codehaus.jackson:jackson-mapper-asl:1.9.13',
+            'com.fasterxml.jackson.core:jackson-databind:2.9.10',
+            'com.fasterxml.jackson.core:jackson-annotations:2.9.10',
+            'com.fasterxml.jackson.core:jackson-core:2.9.10',
+            'com.google.code.gson:gson:2.8.5',
+            'com.alibaba:fastjson:1.2.60')
+    
+    compile('org.springframework:spring-core:4.3.25.RELEASE',
+            'org.springframework:spring-context:4.3.25.RELEASE',
+            'org.springframework:spring-context-support:4.3.25.RELEASE',
+            'org.springframework:spring-beans:4.3.25.RELEASE',
+            'org.springframework:spring-tx:4.3.25.RELEASE',
+            'org.springframework:spring-jdbc:4.3.25.RELEASE',
+            'org.springframework:spring-web:4.3.25.RELEASE',
+            'org.springframework:spring-webmvc:4.3.25.RELEASE',
+            'org.springframework:spring-aop:4.3.25.RELEASE',
+            'org.springframework:spring-oxm:4.3.25.RELEASE',
+            'org.springframework:spring-test:4.3.25.RELEASE',
+            'org.springframework:spring-orm:4.3.25.RELEASE',
+            'org.springframework:spring-websocket:4.3.25.RELEASE',
+            'org.springframework:spring-messaging:4.3.25.RELEASE',
+            'org.springframework.security:spring-security-core:4.2.13.RELEASE',
+            'org.springframework:spring-jms:4.3.25.RELEASE',
+            'org.springframework.retry:spring-retry:1.2.4.RELEASE',
+            'org.springframework.session:spring-session-data-redis:1.3.5.RELEASE')
+    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.14'
+
+    compile('redis.clients:jedis:2.9.3',
+            'io.protostuff:protostuff-core:1.6.0',
+            'io.protostuff:protostuff-runtime:1.6.0')
+
     compile('log4j:log4j:1.2.17',
-            'org.slf4j:slf4j-api:1.7.25',
-            'org.slf4j:slf4j-log4j12:1.7.25'
+            'org.slf4j:slf4j-api:1.7.28',
+            'org.slf4j:slf4j-log4j12:1.7.28'
 //            'org.slf4j:jcl-over-slf4j:1.7.25'
     )
-    compile group: 'joda-time', name: 'joda-time', version: '2.10.1'
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
-    compile 'com.google.guava:guava:19.0'
     compile group: 'com.googlecode.ehcache-spring-annotations', name: 'ehcache-spring-annotations', version: '1.2.0'
+    compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.3'
+    compile group: 'org.mybatis.caches', name: 'mybatis-ehcache', version: '1.1.0'
+
     compile group: 'org.apache.activemq', name: 'activemq-spring', version: '5.14.3'
-    compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.3'
-    compile group: 'org.apache.httpcomponents', name: 'httpasyncclient', version: '4.1.3'
 
     compile group: 'org.quartz-scheduler', name: 'quartz', version: '2.3.0'
 
-    compile group: 'com.squareup.okhttp3', name: 'okhttp', version: '3.8.1'
-    compile group: 'com.github.pagehelper', name: 'pagehelper', version: '5.1.7'
-
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.10.2'
-    compile('us.codecraft:webmagic-core:0.5.3',
-            'us.codecraft:webmagic-extension:0.5.3')
-    compile group: 'org.aspectj', name: 'aspectjweaver', version: '1.8.9'
-    compile('org.apache.cxf:cxf-core:3.1.7',
-            'org.apache.cxf:cxf-rt-transports-http:3.1.7',
-            'org.apache.cxf:cxf-rt-frontend-jaxws:3.1.7')
-    compile group: 'org.mockito', name: 'mockito-core', version: '2.2.6'
-
-    compile group: 'org.apache.poi', name: 'poi', version: '3.15'
-    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.15'
-    compile group: 'net.sf.jxls', name: 'jxls-core', version: '1.0.6'
+    compile group: 'org.mockito', name: 'mockito-core', version: '2.28.2'
 
     compile group: 'net.java.dev.jna', name: 'jna-platform', version: '4.2.2'
     compile group: 'net.java.dev.jna', name: 'jna', version: '4.2.2'
-
-    compile group: 'net.sf.ehcache', name: 'ehcache', version: '2.10.3'
-    compile group: 'org.mybatis.caches', name: 'mybatis-ehcache', version: '1.1.0'
-    compile group: 'com.googlecode.ehcache-spring-annotations', name: 'ehcache-spring-annotations', version: '1.2.0'
-
-    compile group: 'org.wildfly.swarm', name: 'logstash', version: '2016.12.1'
-    compile group: 'io.fabric8.devops.apps', name: 'kibana', version: '2.2.298'
-
-    compile group: 'org.elasticsearch', name: 'elasticsearch', version: '5.1.2'
-    compile group: 'org.apache.solr', name: 'solr-core', version: '6.4.0'
-    compile group: 'org.apache.solr', name: 'solr-solrj', version: '6.4.0'
-    compile('org.apache.lucene:lucene-core:6.4.0',
-            'org.apache.lucene:lucene-highlighter:6.4.0',
-            'org.apache.lucene:lucene-queryparser:6.4.0',
-            'org.apache.lucene:lucene-analyzers-common:6.4.0'
-    )
 
     compile(
             'org.activiti:activiti-spring:5.17.0',
@@ -166,19 +140,13 @@ dependencies {
             'com.fasterxml.uuid:java-uuid-generator:3.1.5'
     )
 
-    compile group: 'com.xiaoleilu', name: 'hutool-all', version: '3.3.2'
     compile group: 'org.jdom', name: 'jdom', version: '2.0.2'
     compile group: 'dom4j', name: 'dom4j', version: '1.6.1'
-
     compile group: 'org.owasp.esapi', name: 'esapi', version: '2.1.0.1'
-
     compile group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
-    compile group: 'org.mapstruct', name: 'mapstruct', version: '1.1.0.Final'
-
-    compile group: 'net.bytebuddy', name: 'byte-buddy-dep', version: '1.8.12'
 
     testCompile group: 'org.atteo.moonshine', name: 'atomikos', version: '1.2'
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile group: 'junit', name: 'junit', version: '4.12'
     compile group: 'org.eclipse.jetty.websocket', name: 'websocket-server', version: '9.2.17.v20160517'
 }
 
@@ -231,6 +199,6 @@ task del(dependsOn: deploy) {
     file.deleteDir()
 }
 
-tasks.withType(AbstractCompile) {
-    options.encoding = "UTF-8"
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

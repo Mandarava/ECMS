@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:jaxws="http://cxf.apache.org/jaxws" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:tx="http://www.springframework.org/schema/tx"
        xmlns:p="http://www.springframework.org/schema/p"
        xmlns:aop="http://www.springframework.org/schema/aop"
        xmlns="http://www.springframework.org/schema/beans"
@@ -12,7 +12,7 @@
                         http://www.springframework.org/schema/aop
                         http://www.springframework.org/schema/aop/spring-aop-3.2.xsd
                         http://www.springframework.org/schema/tx
-                        http://www.springframework.org/schema/tx/spring-tx.xsd http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd">
+                        http://www.springframework.org/schema/tx/spring-tx.xsd">
     <!-- 自动扫描 -->
     <context:component-scan base-package="com.finance">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller" />
@@ -35,10 +35,7 @@
         <property name="ignoreResourceNotFound" value="false"/>
         <property name="locations">
             <list>
-                <value>classpath*:/jdbc.properties</value>
                 <value>classpath*:/config.properties</value>
-                <value>classpath*:/redis.properties</value>
-                <value>classpath*:/activemq.properties</value>
             </list>
         </property>
         <property name="fileEncoding" value="utf-8"/>
@@ -323,15 +320,5 @@
         <constructor-arg index="3" value="${redis.timeout}" />
         <!--         <constructor-arg index="4" value="${redis.password}" /> -->
     </bean>
-    
-    <!-- webservice  -->
-    <import resource="classpath:cxf.xml"/>
-    <import resource="classpath:cxf-servlet.xml"/>
-    <!-- 自动扫描webService -->
-    <context:component-scan base-package="com.finance.webservice"/>
-    <!-- 定义webservice的发布接口  -->
-    <jaxws:endpoint
-            implementor="#helloWorld"
-            address="/HelloWorld"/>
     
 </beans>

@@ -64,7 +64,7 @@ public class FundNetServiceImpl implements FundNetService {
             return new SimpleDateFormat("yyyy-MM-dd");
         }
     };
-    private static final int FUND_NET_PER_SELECT = 300;
+    private static final int FUND_NET_PER_SELECT = 350;
     private static final int THREAD_POOL_SIZE = 5;
     private static final Logger logger = LoggerFactory.getLogger(FundNetServiceImpl.class);
     @Resource
@@ -324,7 +324,7 @@ public class FundNetServiceImpl implements FundNetService {
                 }
             }
             try {
-                Thread.sleep(new Random().nextInt(200) + 250);
+                Thread.sleep(new Random().nextInt(200) + 100);
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }

@@ -8,6 +8,7 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
 import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRichTextString;
@@ -189,7 +190,7 @@ public class Export {
         font.setFontName("宋体");
         font.setColor((short) 10);
         style.setFont(font);
-        style.setAlignment((short) 2);
+        style.setAlignment(HorizontalAlignment.CENTER);
         return style;
 
     }
